@@ -1,7 +1,10 @@
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-restricted-syntax */
 import Web3 from 'web3'
 import Auction4Reputation from '../../../external-contracts/Auction4Reputation.json'
 import * as contractService from './contractService'
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
+const BID_EVENT = 'Bid'
 
 async function getContractInstance(provider) {
     const { web3Provider } = provider
@@ -20,15 +23,14 @@ export async function getUserBids(provider) {
 export async function getUserRedemptions(provider) {
 }
 
-export async function getAllAuctionData(provider) {
-    //This is for dislaying the past bid data.
-
-    //Action -> Bids, TotalBid
-}
-
-export async function getStartTime(provider) {
+export async function getAuctionsStartTime(provider) {
     const contract = await getContractInstance(provider)
     return contract.methods.auctionsStartTime().call()
+}
+
+export async function getAuctionsEndTime(provider) {
+    const contract = await getContractInstance(provider)
+    return contract.methods.auctionsEndTime().call()
 }
 
 export async function getAuctionLength(provider) {
@@ -36,10 +38,30 @@ export async function getAuctionLength(provider) {
     return contract.methods.auctionPeriod().call()
 }
 
+export async function getNumAuctions(provider) {
+    const contract = await getContractInstance(provider)
+    return contract.methods.numberOfAuctions().call()
+}
+
+export async function getRedeemEnableTime(provider) {
+    const contract = await getContractInstance(provider)
+    return contract.methods.redeemEnableTime().call()
+}
+
+export async function getAuctionReputationReward(provider) {
+    const contract = await getContractInstance(provider)
+    return contract.methods.auctionReputationReward().call()
+}
+
+export async function getTotalReputationRewardLeft(provider) {
+    const contract = await getContractInstance(provider)
+    return contract.methods.reputationRewardLeft().call()
+}
+
 export async function getActiveAuction(provider) {
     const { BN } = Web3.utils
 
-    const startTime = new BN(await getStartTime(provider))
+    const startTime = new BN(await getAuctionsStartTime(provider))
     const currentTime = new BN(Math.round((new Date()).getTime() / 1000))
     const auctionLength = new BN(await getAuctionLength(provider))
 
@@ -52,7 +74,7 @@ export async function getActiveAuction(provider) {
 export async function getNextAuctionStartTime(provider) {
     const { BN } = Web3.utils
 
-    const startTime = new BN(await getStartTime(provider))
+    const startTime = new BN(await getAuctionsStartTime(provider))
     const auctionLength = new BN(await getAuctionLength(provider))
 
     const activeAuctionIndex = new BN(await getActiveAuction(provider))
@@ -84,4 +106,62 @@ export async function redeem(provider, beneficiary, auctionId) {
     const contract = await getContractInstance(provider)
     await contract.methods.redeem(beneficiary, auctionId).send()
 }
+
+export async function getAllAuctionData(provider) {
+    const { BN } = Web3.utils
+
+    const contract = await getContractInstance(provider)
+    console.log(contract)
+
+    const currentAuction = await getActiveAuction(provider)
+
+    const bidEvents = await contract.getPastEvents(BID_EVENT, {
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    console.log(bidEvents)
+    let bids = {}
+    let totalBids = {}
+    let statusData = {}
+
+    for (const event of bidEvents) {
+        const { _bidder, _auctionId, _amount } = event.returnValues
+
+        if (!bids[_auctionId]) {
+            bids[_auctionId] = {}
+        }
+
+        if (!totalBids[_auctionId]) {
+            totalBids[_auctionId] = '0'
+        }
+
+        if (!bids[_auctionId][_bidder]) {
+            bids[_auctionId][_bidder] = '0'
+        }
+
+        const currentBid = new BN(bids[_auctionId][_bidder])
+        const amountToAdd = new BN(_amount)
+
+        bids[_auctionId][_bidder] = (currentBid.add(amountToAdd)).toString()
+
+        const currentTotalBid = new BN(totalBids[_auctionId])
+        totalBids[_auctionId] = (currentTotalBid.add(amountToAdd)).toString()
+
+        if (Number(_auctionId) < Number(currentAuction)) {
+            statusData[_auctionId] = 'Complete'
+        } else if (Number(_auctionId) === Number(currentAuction)) {
+            statusData[_auctionId] = 'In Progress'
+        } else {
+            statusData[_auctionId] = 'Not Started'
+        }
+    }
+
+    return {
+        bids,
+        totalBids,
+        statusData
+    }
+}
+
 

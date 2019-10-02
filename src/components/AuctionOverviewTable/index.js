@@ -11,30 +11,32 @@ import { styles } from './styles.scss'
 
 
 const columns = [
-  { id: 'period', label: 'Period #', minWidth: 200 },
-  { id: 'lockId', label: 'Lock ID', minWidth: 200 },
-  { id: 'amount', label: 'Amount', minWidth: 200 },
-  { id: 'duration', label: 'Duration', minWidth: 200 }
+  { id: 'auction', label: 'Auction #', minWidth: 20 },
+  { id: 'userBid', label: 'You Have Bid', minWidth: 50 },
+  { id: 'totalBid', label: 'Total Bid', minWidth: 50 },
+  { id: 'status', label: 'Status', minWidth: 50 }
 ]
 
-export default function LocksTable(props) {
+export default function AuctionOverviewTable(props) {
   const {
-    data
+    data, user
   } = props
+
+  const { totalBids, bids, statusData } = data
 
   const rows = []
 
-  Object.keys(data).forEach((key) => {
-    const { period } = data[key]
-    const { lockId } = data[key]
-    const amount = numberLib.toEther(data[key].amount)
-    const { duration } = data[key].duration
+  Object.keys(bids).forEach((key) => {
+    const auction = key
+    const userBid = numberLib.toEther(bids[key][user])
+    const totalBid = numberLib.toEther(totalBids[key])
+    const status = statusData[key]
 
     rows.push({
-      period,
-      lockId,
-      amount,
-      duration
+      auction,
+      userBid,
+      totalBid,
+      status
     })
   })
 

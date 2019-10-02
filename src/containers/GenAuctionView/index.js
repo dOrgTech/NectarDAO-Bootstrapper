@@ -23,6 +23,13 @@ class GenAuctionView extends Component {
         currentAuction: '',
         nextAuctionStartTime: '',
         timeUntilNextAuction: '',
+        auctionsStartTime: '',
+        auctionsEndTime: '',
+        redeemEnableTime: '',
+        numAuctions: '',
+        auctionLength: '',
+        auctionReward: '',
+        totalRewardLeft: '',
         auctionData: {},
         isLoaded: false
       },
@@ -53,6 +60,15 @@ class GenAuctionView extends Component {
     const currentAuction = await auction4RepService.getActiveAuction(provider, defaultAccount)
     const nextAuctionStartTime = await auction4RepService.getNextAuctionStartTime(provider)
     const timeUntilNextAuction = await auction4RepService.getTimeUntilNextAuction(provider)
+
+    const auctionsStartTime = await auction4RepService.getAuctionsStartTime(provider)
+    const auctionsEndTime = await auction4RepService.getAuctionsEndTime(provider)
+    const redeemEnableTime = await auction4RepService.getRedeemEnableTime(provider)
+    const numAuctions = await auction4RepService.getNumAuctions(provider)
+    const auctionLength = await auction4RepService.getAuctionLength(provider)
+    const auctionReward = await auction4RepService.getAuctionReputationReward(provider)
+    const totalRewardLeft = await auction4RepService.getTotalReputationRewardLeft(provider)
+
     const auctionData = await auction4RepService.getAllAuctionData(provider)
 
     this.setState({
@@ -62,6 +78,13 @@ class GenAuctionView extends Component {
         currentAuction,
         nextAuctionStartTime,
         timeUntilNextAuction,
+        auctionsStartTime,
+        auctionsEndTime,
+        redeemEnableTime,
+        numAuctions,
+        auctionLength,
+        auctionReward,
+        totalRewardLeft,
         auctionData,
         isLoaded: true
       }
@@ -225,7 +248,7 @@ class GenAuctionView extends Component {
   }
 
   render() {
-    const { auction } = this.state;
+    const { defaultAccount, auction } = this.state;
 
     if (!auction.isLoaded) {
       return <div />;
@@ -252,8 +275,29 @@ class GenAuctionView extends Component {
           <Grid item xs={12} sm={4}>
             <IconCard title="Time Until Next Auction" text={auction.timeUntilNextAuction} />
           </Grid>
+          <Grid item xs={12} sm={3}>
+            <IconCard title="Start Time" text={auction.auctionsStartTime} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <IconCard title="End Time" text={auction.auctionsEndTime} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <IconCard title="Auction Length" text={auction.auctionLength} />
+          </Grid>
+          <Grid item xs={12} sm={3}>
+            <IconCard title="Num Auctions" text={auction.numAuctions} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Redeem Enable Time" text={auction.redeemEnableTime} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Auction Reward" text={auction.auctionReward} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Total Reward Left" text={auction.totalRewardLeft} />
+          </Grid>
           <Grid item xs={12} sm={12}>
-            {/* <LocksTable data={auction.userLocks} /> */}
+            <AuctionOverviewTable data={auction.auctionData} user={defaultAccount} />
           </Grid>
           <Grid item xs={12} sm={12}>
             <Typography variant="h5">
