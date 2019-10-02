@@ -104,6 +104,8 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
         console.log(result)
 
         const lockingPeriod = getLockingPeriodByTimestamp(startTime, batchTime, result.lockingTime)
+        const lockDuration = new BN(_period).mul(new BN(batchTime))
+        const releasable = (new BN(result.lockingTime).add(lockDuration)).toString()
 
         data[_lockingId] = {
             account: _locker,
@@ -111,6 +113,7 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
             amount: _amount,
             duration: _period,
             lockingPeriod,
+            releasable,
             released: false
         }
     }

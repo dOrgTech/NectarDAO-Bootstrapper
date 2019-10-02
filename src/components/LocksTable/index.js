@@ -11,10 +11,12 @@ import { styles } from './styles.scss'
 
 
 const columns = [
-  { id: 'lockingPeriod', label: 'Locking Period', minWidth: 200 },
-  { id: 'lockId', label: 'Lock ID', minWidth: 200 },
-  { id: 'amount', label: 'Amount', minWidth: 200 },
-  { id: 'duration', label: 'Duration', minWidth: 200 }
+  { id: 'lockingPeriod', label: 'Locking Period', minWidth: 20 },
+  { id: 'lockId', label: 'Lock ID', minWidth: 20 },
+  { id: 'amount', label: 'Amount', minWidth: 20 },
+  { id: 'duration', label: 'Duration', minWidth: 20 },
+  { id: 'releasable', label: 'Releaseable', minWidth: 100 },
+  { id: 'released', label: 'Is Released?', minWidth: 20 }
 ]
 
 export default function AuctionOverviewTable(props) {
@@ -24,19 +26,28 @@ export default function AuctionOverviewTable(props) {
 
   const rows = []
 
+  console.log(data)
   Object.keys(data).forEach((key) => {
-    const { lockingPeriod } = data[key]
-    const { lockId } = data[key]
+    let { lockingPeriod, lockId, duration, releasable, released } = data[key]
     const amount = numberLib.toEther(data[key].amount)
-    const { duration } = data[key]
+
+    if (released) {
+      released = 'Yes'
+    } else {
+      released = 'No'
+    }
 
     rows.push({
       lockingPeriod,
       lockId,
       amount,
-      duration
+      duration,
+      releasable,
+      released
     })
   })
+
+  console.log(rows)
 
 
   const [page, setPage] = React.useState(0)
