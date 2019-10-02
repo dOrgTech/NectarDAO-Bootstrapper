@@ -24,6 +24,8 @@ class ContinuousLockingAuctionView extends Component {
         auctionData: {},
         timeElapsed: '',
         agreementHash: '',
+        startTime: '',
+        lockingPeriodLength: '',
         isLoaded: false
       },
       lockForm: {
@@ -61,6 +63,8 @@ class ContinuousLockingAuctionView extends Component {
     const userLocks = await continuousLocking4RepService.getUserTokenLocks(provider, locking4RepInstance, defaultAccount)
     const lockingPeriods = await continuousLocking4RepService.getNumLockingPeriods(provider, locking4RepInstance)
     const activeLockingPeriod = await continuousLocking4RepService.getActiveLockingPeriod(provider, locking4RepInstance)
+    const startTime = await continuousLocking4RepService.getStartTime(provider, locking4RepInstance)
+    const lockingPeriodLength = await continuousLocking4RepService.getLockingPeriodLength(provider, locking4RepInstance)
     // const auctionData = await continuousLocking4RepService.getAuctionData(provider, locking4RepInstance)
     const timeElapsed = await continuousLocking4RepService.getTimeElapsed(provider, locking4RepInstance)
 
@@ -72,6 +76,8 @@ class ContinuousLockingAuctionView extends Component {
         lockingPeriods,
         activeLockingPeriod,
         agreementHash,
+        startTime,
+        lockingPeriodLength,
         // auctionData,
         timeElapsed,
         isLoaded: true
@@ -201,7 +207,7 @@ class ContinuousLockingAuctionView extends Component {
                 type="number"
                 placeholder="0"
                 value={extendLockForm.durationToExtend}
-                onChange={e => this.setLockFormPropertysetExtendLockFormProperty('durationToExtend', e)}
+                onChange={e => this.setExtendLockFormProperty('durationToExtend', e)}
                 fullWidth
               />
             </Grid>
@@ -361,8 +367,11 @@ class ContinuousLockingAuctionView extends Component {
           <Grid item xs={12} sm={4}>
             <IconCard title="User NEC Balance" text={lock.userBalance} />
           </Grid>
-          <Grid item xs={12} sm={8}>
-            <IconCard title="Agreement Hash" text={lock.agreementHash} />
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Start Time" text={lock.startTime} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Locking Period Length" text={lock.lockingPeriodLength} />
           </Grid>
           <Grid item xs={12} sm={12}>
             <LocksTable data={lock.userLocks} />

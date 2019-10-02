@@ -18,6 +18,9 @@ class SnapshotView extends Component {
       snapshot: {
         currentBlock: '',
         snapshotBlock: '',
+        claimStartTime: '',
+        claimEndTime: '',
+        currentTime: '',
         userSnapshotBalance: '',
         userSnapshotRep: '',
         totalSupplyAtSnapshot: '',
@@ -44,6 +47,9 @@ class SnapshotView extends Component {
     const currentBlock = await necRepAllocationService.getCurrentBlock(provider)
     const snapshotBlock = await necRepAllocationService.getSnapshotBlock(provider, necRepAllocationInstance)
     const userSnapshotBalance = await minimeTokenService.balanceOfAt(provider, necTokenInstance, defaultAccount, snapshotBlock)
+    const claimStartTime = await necRepAllocationService.getClaimStartTime(provider, necRepAllocationInstance)
+    const claimEndTime = await necRepAllocationService.getClaimEndTime(provider, necRepAllocationInstance)
+    const currentTime = await necRepAllocationService.getCurrentTime()
     const userSnapshotRep = await necRepAllocationService.getSnapshotRep(provider, necRepAllocationInstance, defaultAccount)
     const totalSupplyAtSnapshot = await minimeTokenService.totalSupplyAt(provider, necTokenInstance, snapshotBlock)
     const totalSnapshotRep = await necRepAllocationService.getTotalReputationReward(provider, necRepAllocationInstance)
@@ -53,6 +59,9 @@ class SnapshotView extends Component {
         ...this.state.snapshot,
         currentBlock,
         snapshotBlock,
+        claimStartTime,
+        claimEndTime,
+        currentTime,
         userSnapshotBalance: numberLib.toEther(userSnapshotBalance),
         userSnapshotRep,
         totalSupplyAtSnapshot: numberLib.toEther(totalSupplyAtSnapshot),
@@ -83,6 +92,15 @@ class SnapshotView extends Component {
           </Grid>
           <Grid item xs={12} sm={6}>
             <IconCard title="Snapshot Block" text={snapshot.snapshotBlock} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Claiming Start Time" text={snapshot.claimStartTime} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Claiming End Time" text={snapshot.claimEndTime} />
+          </Grid>
+          <Grid item xs={12} sm={4}>
+            <IconCard title="Current Time" text={snapshot.currentTime} />
           </Grid>
           <Grid item xs={12} sm={6}>
             <IconCard title="User Snapshot NEC Balance" text={snapshot.userSnapshotBalance} />

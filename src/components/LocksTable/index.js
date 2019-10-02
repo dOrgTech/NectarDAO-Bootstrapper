@@ -11,7 +11,7 @@ import { styles } from './styles.scss'
 
 
 const columns = [
-  { id: 'period', label: 'Period #', minWidth: 200 },
+  { id: 'lockingPeriod', label: 'Locking Period', minWidth: 200 },
   { id: 'lockId', label: 'Lock ID', minWidth: 200 },
   { id: 'amount', label: 'Amount', minWidth: 200 },
   { id: 'duration', label: 'Duration', minWidth: 200 }
@@ -25,13 +25,13 @@ export default function AuctionOverviewTable(props) {
   const rows = []
 
   Object.keys(data).forEach((key) => {
-    const { period } = data[key]
+    const { lockingPeriod } = data[key]
     const { lockId } = data[key]
     const amount = numberLib.toEther(data[key].amount)
-    const { duration } = data[key].duration
+    const { duration } = data[key]
 
     rows.push({
-      period,
+      lockingPeriod,
       lockId,
       amount,
       duration

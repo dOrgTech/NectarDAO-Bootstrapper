@@ -30,6 +30,10 @@ export async function getCurrentBlock(provider) {
     return web3.eth.getBlockNumber()
 }
 
+export async function getCurrentTime() {
+    return Math.round((new Date()).getTime() / 1000)
+}
+
 export async function getSnapshotBlock(provider, contractAddress) {
     const contract = await getContractInstance(provider, contractAddress)
     return contract.methods.blockReference().call()

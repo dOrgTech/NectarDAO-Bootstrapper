@@ -15,59 +15,6 @@ async function getContractInstance(provider, contractAddress) {
     return new web3.eth.Contract(ContinuousLocking4Reputation.abi, contractAddress, { from: defaultAccount })
 }
 
-export async function getUserTokenLocks(provider, contractAddress, account) {
-    const contract = await getContractInstance(provider, contractAddress)
-    console.log(contract)
-    const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
-        fromBlock: 0,
-        toBlock: 'latest'
-    })
-
-    const extendEvents = await contract.getPastEvents(EXTEND_LOCKING_EVENT, {
-        fromBlock: 0,
-        toBlock: 'latest'
-    })
-
-    const releaseEvents = await contract.getPastEvents(RELEASE_EVENT, {
-        fromBlock: 0,
-        toBlock: 'latest'
-    })
-
-    let data = {}
-
-    // Add Locks
-    for (const event of lockEvents) {
-        console.log(event)
-        const { _locker, _lockingId, _amount, _period } = event.returnValues
-
-        // We need to get locking time from actual locker
-        const lockingTime = await contract.lockers(_lockingId).call()
-        console.log(lockingTime)
-
-        data[_lockingId] = {
-            account: _locker,
-            lockId: _lockingId,
-            amount: _amount,
-            duration: _period,
-            released: false
-        }
-    }
-
-    // Incorporate Extensions
-    for (const event of extendEvents) {
-        const { _lockingId, _extendPeriod } = event.returnValues
-        data[_lockingId].duration = _extendPeriod
-    }
-
-    // Check Released Status
-    for (const event of releaseEvents) {
-        const { __lockingId } = event.returnValues
-        data[_lockingId].released = true
-    }
-
-    return data
-}
-
 export async function getNumLockingPeriods(provider, contractAddress) {
     const contract = await getContractInstance(provider, contractAddress)
     return contract.methods.batchesIndexCap().call()
@@ -81,6 +28,19 @@ export async function getLockingPeriodLength(provider, contractAddress) {
 export async function getStartTime(provider, contractAddress) {
     const contract = await getContractInstance(provider, contractAddress)
     return contract.methods.startTime().call()
+}
+
+function getLockingPeriodByTimestamp(startTime, batchTime, timestamp) {
+    const { BN } = Web3.utils
+
+    const startTimeBN = new BN(startTime)
+    const batchTimeBN = new BN(batchTime)
+    const timestampBN = new BN(timestamp)
+
+    const timeElapsedBN = timestampBN.sub(startTimeBN)
+    const lockingPeriodBN = timeElapsedBN.div(batchTimeBN)
+
+    return lockingPeriodBN.toString()
 }
 
 export async function getActiveLockingPeriod(provider, contractAddress) {
@@ -107,6 +67,72 @@ export async function getTimeElapsed(provider, contractAddress) {
     const timeElapsed = currentTime.sub(startTime)
 
     return timeElapsed.toString()
+}
+
+export async function getUserTokenLocks(provider, contractAddress, account) {
+    const contract = await getContractInstance(provider, contractAddress)
+    const { BN } = Web3.utils
+
+    console.log(contract)
+    const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    const extendEvents = await contract.getPastEvents(EXTEND_LOCKING_EVENT, {
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    const releaseEvents = await contract.getPastEvents(RELEASE_EVENT, {
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    let data = {}
+
+    const startTime = await getStartTime(provider, contractAddress)
+    const batchTime = await getLockingPeriodLength(provider, contractAddress)
+
+    // Add Locks
+    for (const event of lockEvents) {
+        // console.log(event)
+        const { _locker, _lockingId, _amount, _period } = event.returnValues
+
+        // We need to get locking time from actual locker
+        const result = await contract.methods.lockers(account, _lockingId).call()
+        console.log(result)
+
+        const lockingPeriod = getLockingPeriodByTimestamp(startTime, batchTime, result.lockingTime)
+
+        data[_lockingId] = {
+            account: _locker,
+            lockId: _lockingId,
+            amount: _amount,
+            duration: _period,
+            lockingPeriod,
+            released: false
+        }
+    }
+
+    console.log('extend events', extendEvents)
+
+    // Incorporate Extensions
+    for (const event of extendEvents) {
+        const { _lockingId, _extendPeriod } = event.returnValues
+        data[_lockingId].duration = ((new BN(_extendPeriod)).add(new BN(data[_lockingId].duration))).toString()
+
+        //TODO Add locking period
+    }
+
+    // Check Released Status
+    for (const event of releaseEvents) {
+        const { __lockingId } = event.returnValues
+        data[_lockingId].released = true
+    }
+
+    console.log(data)
+    return data
 }
 
 export async function getAuctionData(provider, contractAddress) {
