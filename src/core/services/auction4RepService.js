@@ -125,6 +125,7 @@ export async function getAllAuctionData(provider) {
     let totalBids = {}
     let statusData = {}
 
+
     for (const event of bidEvents) {
         const { _bidder, _auctionId, _amount } = event.returnValues
 
@@ -156,6 +157,8 @@ export async function getAllAuctionData(provider) {
             statusData[_auctionId] = 'Not Started'
         }
     }
+
+    console.log('auctionData', bids, totalBids, statusData)
 
     return {
         bids,

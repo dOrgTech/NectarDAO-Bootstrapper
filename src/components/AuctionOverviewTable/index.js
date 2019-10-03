@@ -28,7 +28,14 @@ export default function AuctionOverviewTable(props) {
 
   Object.keys(bids).forEach((key) => {
     const auction = key
-    const userBid = numberLib.toEther(bids[key][user])
+
+    let userBid
+    if (bids[key][user]) {
+      userBid = numberLib.toEther(bids[key][user])
+    } else {
+      userBid = '0'
+    }
+
     const totalBid = numberLib.toEther(totalBids[key])
     const status = statusData[key]
 
