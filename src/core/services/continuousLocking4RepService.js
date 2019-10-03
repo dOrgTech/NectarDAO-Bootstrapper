@@ -75,21 +75,17 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
 
     console.log(contract)
     const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
+        filter: { _locker: account },
         fromBlock: 0,
         toBlock: 'latest'
     })
 
-    const extendEvents = await contract.getPastEvents(EXTEND_LOCKING_EVENT, {
-        fromBlock: 0,
-        toBlock: 'latest'
-    })
+    console.log(lockEvents)
 
-    const releaseEvents = await contract.getPastEvents(RELEASE_EVENT, {
-        fromBlock: 0,
-        toBlock: 'latest'
-    })
+    // Filter these events by lockId's that belong to the user
 
     let data = {}
+    let userLockIds = []
 
     const startTime = await getStartTime(provider, contractAddress)
     const batchTime = await getLockingPeriodLength(provider, contractAddress)
@@ -107,6 +103,8 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
         const lockDuration = new BN(_period).mul(new BN(batchTime))
         const releasable = (new BN(result.lockingTime).add(lockDuration)).toString()
 
+        userLockIds.push(_lockingId)
+
         data[_lockingId] = {
             account: _locker,
             lockId: _lockingId,
@@ -118,7 +116,21 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
         }
     }
 
+    const extendEvents = await contract.getPastEvents(EXTEND_LOCKING_EVENT, {
+        filter: { _locker: account },
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    const releaseEvents = await contract.getPastEvents(RELEASE_EVENT, {
+        filter: { _lockingId: userLockIds },
+        fromBlock: 0,
+        toBlock: 'latest'
+    })
+
+    console.log('lock events', lockEvents)
     console.log('extend events', extendEvents)
+    console.log('release events', releaseEvents)
 
     // Incorporate Extensions
     for (const event of extendEvents) {
