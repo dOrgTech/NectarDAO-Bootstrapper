@@ -1,1 +1,0 @@
-// Table - Props { columnNames: string[], data: any[row][column] }
