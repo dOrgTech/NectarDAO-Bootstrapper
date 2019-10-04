@@ -4,10 +4,8 @@ import * as providerService from "core/services/providerService";
 import * as continuousLocking4RepService from "core/services/continuousLocking4RepService"
 import * as contractService from "core/services/contractService"
 import IconCard from 'components/IconCard'
-import AuctionOverviewTable from 'components/AuctionOverviewTable'
 import LocksTable from 'components/LocksTable'
 import * as erc20Service from "core/services/erc20Service"
-import { styles } from "./styles.scss";
 import * as numberLib from "core/libs/lib-number-helpers"
 
 class ContinuousLockingAuctionView extends Component {

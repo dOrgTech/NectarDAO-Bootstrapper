@@ -166,5 +166,3 @@ export async function getAllAuctionData(provider) {
         statusData
     }
 }
-
-

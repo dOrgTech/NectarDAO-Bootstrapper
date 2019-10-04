@@ -3,7 +3,6 @@ import { MuiThemeProvider } from '@material-ui/core/styles'
 import {
   HashRouter,
   Route,
-  Redirect,
   Switch
 } from 'react-router-dom'
 import theme from 'configs/theme/config-theme'

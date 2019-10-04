@@ -8,7 +8,7 @@ MVP dApp to demonstrate NectarDAO bootstrap interface
     ```
     yarn
     ```
-    
+
 ### Setup Environment
 - You'll need a metamask-enabled browser connected to rinkeby
 
