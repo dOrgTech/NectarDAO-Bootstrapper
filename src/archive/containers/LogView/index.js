@@ -40,7 +40,7 @@ class LogView extends Component {
         {logsLoaded ? (
           <LogTable logData={logData} />
         ) : (
-            <div />
+          <div />
           )}
         <br />
       </Container>

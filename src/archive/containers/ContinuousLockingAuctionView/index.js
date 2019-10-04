@@ -1,19 +1,19 @@
-import React, { Component } from "react";
-import { Container, Grid, Typography, TextField, Button } from "@material-ui/core";
-import * as providerService from "core/services/providerService";
-import * as continuousLocking4RepService from "core/services/continuousLocking4RepService"
-import * as contractService from "core/services/contractService"
+import React, { Component } from 'react'
+import { Container, Grid, Typography, TextField, Button } from '@material-ui/core'
+import * as providerService from 'core/services/providerService'
+import * as continuousLocking4RepService from 'core/services/continuousLocking4RepService'
+import * as contractService from 'core/services/contractService'
 import IconCard from 'components/IconCard'
 import LocksTable from 'components/LocksTable'
-import * as erc20Service from "core/services/erc20Service"
-import * as numberLib from "core/libs/lib-number-helpers"
+import * as erc20Service from 'core/services/erc20Service'
+import * as numberLib from 'core/libs/lib-number-helpers'
 
 class ContinuousLockingAuctionView extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      address: "",
+      address: '',
       lock: {
         userBalance: '',
         userLocks: {},
@@ -39,8 +39,8 @@ class ContinuousLockingAuctionView extends Component {
       releaseForm: {
         beneficiary: '',
         lockId: ''
-      },
-    };
+      }
+    }
   }
 
   async componentWillMount() {
@@ -331,7 +331,7 @@ class ContinuousLockingAuctionView extends Component {
   }
 
   render() {
-    const { lock } = this.state;
+    const { lock } = this.state
 
     if (!lock.isLoaded) {
       return <div />
@@ -395,10 +395,9 @@ class ContinuousLockingAuctionView extends Component {
           </Grid>
         </Grid >
       </Container >
-    );
+    )
   }
 }
-
 
 
 export default ContinuousLockingAuctionView

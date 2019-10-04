@@ -3,6 +3,7 @@
 import Web3 from 'web3'
 import Auction4Reputation from '../../../external-contracts/Auction4Reputation.json'
 import * as contractService from './contractService'
+
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 const BID_EVENT = 'Bid'
 
@@ -121,9 +122,9 @@ export async function getAllAuctionData(provider) {
     })
 
     console.log(bidEvents)
-    let bids = {}
-    let totalBids = {}
-    let statusData = {}
+    const bids = {}
+    const totalBids = {}
+    const statusData = {}
 
 
     for (const event of bidEvents) {

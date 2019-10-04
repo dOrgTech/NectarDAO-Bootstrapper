@@ -1,21 +1,21 @@
-import React, { Component } from "react";
-import { Container, Grid, Typography, TextField, Button } from "@material-ui/core";
-import * as providerService from "core/services/providerService";
-import * as auction4RepService from "core/services/auction4RepService"
-import * as contractService from "core/services/contractService"
+import React, { Component } from 'react'
+import { Container, Grid, Typography, TextField, Button } from '@material-ui/core'
+import * as providerService from 'core/services/providerService'
+import * as auction4RepService from 'core/services/auction4RepService'
+import * as contractService from 'core/services/contractService'
 import IconCard from 'components/IconCard'
 import AuctionOverviewTable from 'components/AuctionOverviewTable'
 import LocksTable from 'components/LocksTable'
-import * as erc20Service from "core/services/erc20Service"
-import { styles } from "./styles.scss";
-import * as numberLib from "core/libs/lib-number-helpers"
+import * as erc20Service from 'core/services/erc20Service'
+import { styles } from './styles.scss'
+import * as numberLib from 'core/libs/lib-number-helpers'
 
 class GenAuctionView extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      address: "",
+      address: '',
       provider: null,
       defaultAccount: null,
       auction: {
@@ -41,7 +41,7 @@ class GenAuctionView extends Component {
         beneficiary: '',
         auctionId: ''
       }
-    };
+    }
   }
 
   async componentWillMount() {
@@ -248,10 +248,10 @@ class GenAuctionView extends Component {
   }
 
   render() {
-    const { defaultAccount, auction } = this.state;
+    const { defaultAccount, auction } = this.state
 
     if (!auction.isLoaded) {
-      return <div />;
+      return <div />
     }
 
     return (
@@ -319,7 +319,7 @@ class GenAuctionView extends Component {
           </Grid>
         </Grid>
       </Container>
-    );
+    )
   }
 }
 

@@ -28,7 +28,9 @@ export default function AuctionOverviewTable(props) {
 
   console.log(data)
   Object.keys(data).forEach((key) => {
-    let { lockingPeriod, lockId, duration, releasable, released } = data[key]
+    let {
+ lockingPeriod, lockId, duration, releasable, released
+} = data[key]
     const amount = numberLib.toEther(data[key].amount)
 
     if (released) {

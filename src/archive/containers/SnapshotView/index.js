@@ -1,18 +1,18 @@
-import React, { Component } from "react";
-import { Container, Grid, TextField, Button } from "@material-ui/core";
+import React, { Component } from 'react'
+import { Container, Grid, TextField, Button } from '@material-ui/core'
 import IconCard from 'components/IconCard'
-import * as providerService from "core/services/providerService";
-import * as necRepAllocationService from "core/services/necRepAllocationService"
-import * as contractService from "core/services/contractService";
-import * as minimeTokenService from "core/services/minimeTokenService";
-import * as numberLib from "core/libs/lib-number-helpers";
+import * as providerService from 'core/services/providerService'
+import * as necRepAllocationService from 'core/services/necRepAllocationService'
+import * as contractService from 'core/services/contractService'
+import * as minimeTokenService from 'core/services/minimeTokenService'
+import * as numberLib from 'core/libs/lib-number-helpers'
 
 class SnapshotView extends Component {
   constructor(props) {
-    super(props);
+    super(props)
 
     this.state = {
-      address: "",
+      address: '',
       defaultAccount: null,
       provider: null,
       snapshot: {
@@ -27,7 +27,7 @@ class SnapshotView extends Component {
         totalSnapshotRep: '',
         isLoaded: false
       }
-    };
+    }
   }
 
   async componentWillMount() {
@@ -69,11 +69,10 @@ class SnapshotView extends Component {
         isLoaded: true
       }
     })
-
   }
 
   render() {
-    const { snapshot } = this.state;
+    const { snapshot } = this.state
 
     if (!snapshot.isLoaded) {
       return <div />
@@ -116,8 +115,8 @@ class SnapshotView extends Component {
           </Grid>
         </Grid>
       </Container>
-    );
+    )
   }
 }
 
-export default SnapshotView;
+export default SnapshotView
