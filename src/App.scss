@@ -1,0 +1,28 @@
+:root {
+  --background: #222A42;
+  --border: #4E5568;
+  --white-text: #FFFFFF;
+  --inactive-text: rgba(255, 255, 255, 0.6);
+  --active-border: #FFFFFF;
+  --inactive-border: #4D5474;
+}
+
+#root {
+  padding: 64px;
+}
+
+body {
+  background: var(--background);
+}
+
+h1 {
+  font-family: var(--pt-serif);
+}
+
+.green-text {
+  color: #54AE6F;
+}
+
+.blue-text {
+  color: #536DFE;
+}
