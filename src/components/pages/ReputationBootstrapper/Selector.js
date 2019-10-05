@@ -52,8 +52,8 @@ const Selector = ({ height }) => {
 
   const Button = withRouter(
     ({
- option, route, history, location, children
-}) => {
+      option, route, history, location, children
+    }) => {
       // Handle external route navigation
       if (location.pathname === route) {
         setSelected(option)
