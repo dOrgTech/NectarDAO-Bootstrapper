@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 
 const HeaderWrapper = styled.div`
@@ -49,7 +50,9 @@ const InactiveButton = styled(ActiveButton)`
 const Selector = ({ height }) => {
   const [selected, setSelected] = React.useState(0)
 
-  const Button = ({ option, children }) => {
+  const Button = withRouter(({
+ option, route, history, children
+}) => {
     if (option === selected) {
       return (
         <ActiveButton>
@@ -58,24 +61,28 @@ const Selector = ({ height }) => {
       )
     }
       return (
-        <InactiveButton onClick={() => setSelected(option)}>
+        <InactiveButton onClick={() => {
+          setSelected(option)
+          history.push(route)
+        }}
+        >
           {children}
         </InactiveButton>
       )
-  }
+  })
 
   return (
     <HeaderWrapper height={height}>
       <Title>How do you want to earn Reputation for the NectarDAO?</Title>
       <NavWrapper>
-        <Button option={0}>
-          <div>Lock NEC</div>
+        <Button option={0} route="/lock-nec">
+          Lock NEC
         </Button>
-        <Button option={1}>
-          <div>Airdrop</div>
+        <Button option={1} route="/airdrop">
+          Airdrop
         </Button>
-        <Button option={2}>
-          <div>Bid GEN</div>
+        <Button option={2} route="/bid-gen">
+          Bid GEN
         </Button>
       </NavWrapper>
     </HeaderWrapper>
