@@ -50,38 +50,47 @@ const InactiveButton = styled(ActiveButton)`
 const Selector = ({ height }) => {
   const [selected, setSelected] = React.useState(0)
 
-  const Button = withRouter(({
- option, route, history, children
+  const Button = withRouter(
+    ({
+ option, route, history, location, children
 }) => {
-    if (option === selected) {
-      return (
-        <ActiveButton>
-          {children}
-        </ActiveButton>
-      )
+      // Handle external route navigation
+      if (location.pathname === route) {
+        setSelected(option)
+      } else if (location.pathname === '/') {
+        setSelected(0)
+      }
+
+      if (option === selected) {
+        return (
+          <ActiveButton>
+            {children}
+          </ActiveButton>
+        )
+      }
+        return (
+          <InactiveButton onClick={() => {
+            setSelected(option)
+            history.push(route)
+          }}
+          >
+            {children}
+          </InactiveButton>
+        )
     }
-      return (
-        <InactiveButton onClick={() => {
-          setSelected(option)
-          history.push(route)
-        }}
-        >
-          {children}
-        </InactiveButton>
-      )
-  })
+  )
 
   return (
     <HeaderWrapper height={height}>
       <Title>How do you want to earn Reputation for the NectarDAO?</Title>
       <NavWrapper>
-        <Button option={0} route="/lock-nec">
+        <Button option={1} route="/lock-nec">
           Lock NEC
         </Button>
-        <Button option={1} route="/airdrop">
+        <Button option={2} route="/airdrop">
           Airdrop
         </Button>
-        <Button option={2} route="/bid-gen">
+        <Button option={3} route="/bid-gen">
           Bid GEN
         </Button>
       </NavWrapper>

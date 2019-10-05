@@ -27,3 +27,13 @@
   </div>
 </div>
 */
+
+import React from 'react'
+
+const BidGEN = () => (
+  <div>
+    BidGEN
+  </div>
+)
+
+export default BidGEN

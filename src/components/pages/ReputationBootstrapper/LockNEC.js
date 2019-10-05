@@ -29,3 +29,13 @@
   </div>
 </div>
 */
+
+import React from 'react'
+
+const LockNEC = () => (
+  <div>
+    LockNEC
+  </div>
+)
+
+export default LockNEC
