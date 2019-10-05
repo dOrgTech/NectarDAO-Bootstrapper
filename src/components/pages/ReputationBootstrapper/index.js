@@ -10,3 +10,14 @@
 //     <LockNEC />
 //   ...
 // }
+
+import React from 'react'
+import Selector from './Selector'
+
+const ReputationBoostrapper = () => {
+  return (
+    <Selector height="159px" />
+  )
+}
+
+export default ReputationBoostrapper

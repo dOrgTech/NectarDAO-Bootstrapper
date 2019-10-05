@@ -3,13 +3,13 @@ import {
   HashRouter
 } from 'react-router-dom'
 import '../App.scss'
-import Header from './shell/Header'
+import ReputationBoostrapper from './pages/ReputationBootstrapper'
 
 class App extends Component {
   render() {
     return (
       <HashRouter>
-        <Header />
+        <ReputationBoostrapper />
       </HashRouter>
     )
   }
