@@ -9,6 +9,8 @@ const CardWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: 1px solid var(--border);
+  border-top: none;
+  border-bottom: none;
   width: 450px;
 `
 
