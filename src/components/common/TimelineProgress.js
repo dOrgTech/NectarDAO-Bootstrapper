@@ -6,7 +6,6 @@ const TimelineWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  margin-top: 20px;
 `
 
 const TextWrapper = styled.div`
@@ -32,10 +31,10 @@ const Subtitle = styled(Title)`
 `
 
 const TimelineProgress = ({
- value, icon, title, subtitle
+ value, icon, title, subtitle, width, height
 }) => (
   <TimelineWrapper>
-    <ProgressCircle value={value} width="50px" height="50px" icon={icon} />
+    <ProgressCircle value={value} width={width} height={height} icon={icon} />
     <TextWrapper>
       <Title>{title}</Title>
       <Subtitle>{subtitle}</Subtitle>

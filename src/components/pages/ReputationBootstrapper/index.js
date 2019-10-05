@@ -8,7 +8,7 @@ import BidGEN from './BidGEN'
 
 const RootWrapper = styled.div`
   width:100%;
-  max-width: 700px;
+  max-width: 932px;
   min-width: 550px;
   margin: 0px auto;
 `
