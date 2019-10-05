@@ -46,28 +46,37 @@ const InactiveButton = styled(ActiveButton)`
   color: var(--inactive-text);
 `
 
-const InactiveButtonRight = styled(InactiveButton)`
-  border-left: none;
-`
-
-const InactiveButtonLeft = styled(InactiveButton)`
-  border-right: none;
-`
-
 const Selector = ({ height }) => {
+  const [selected, setSelected] = React.useState(0)
+
+  const Button = ({ option, children }) => {
+    if (option === selected) {
+      return (
+        <ActiveButton>
+          {children}
+        </ActiveButton>
+      )
+    }
+      return (
+        <InactiveButton onClick={() => setSelected(option)}>
+          {children}
+        </InactiveButton>
+      )
+  }
+
   return (
     <HeaderWrapper height={height}>
       <Title>How do you want to earn Reputation for the NectarDAO?</Title>
       <NavWrapper>
-        <ActiveButton>
+        <Button option={0}>
           <div>Lock NEC</div>
-        </ActiveButton>
-        <InactiveButtonRight>
+        </Button>
+        <Button option={1}>
           <div>Airdrop</div>
-        </InactiveButtonRight>
-        <InactiveButtonRight>
+        </Button>
+        <Button option={2}>
           <div>Bid GEN</div>
-        </InactiveButtonRight>
+        </Button>
       </NavWrapper>
     </HeaderWrapper>
   )
