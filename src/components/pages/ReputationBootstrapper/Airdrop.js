@@ -11,34 +11,26 @@
 */
 import React from 'react'
 import styled from 'styled-components'
-import ProgressCircle from '../../common/ProgressCircle'
+import TimelineProgress from '../../common/TimelineProgress'
+import Divider from '../../common/Divider'
+import logo from '../../../assets/svgs/ethfinex-logo.svg'
 
 const CardWrapper = styled.div`
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   border: 1px solid var(--border);
+  width: 450px;
 `
 
-const Title = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  margin: 20px 0px;
-  letter-spacing: 1px;
-`
+const title = 'NectarDAO Reputation Airdrop'
+const subtitle = 'In 12 days, 4 hours'
 
 const Airdrop = () => (
-  <div>
-    <ProgressCircle value={55} width="50px" height="50px" />
-    <CardWrapper>
-      <Title>NectarDAO Reputation Airdrop</Title>
-    </CardWrapper>
-  </div>
+  <CardWrapper>
+    <TimelineProgress value={12} icon={logo} title={title} subtitle={subtitle} />
+    <Divider width="80%" margin="20px 0px 20px 0px" />
+  </CardWrapper>
 )
 
 export default Airdrop

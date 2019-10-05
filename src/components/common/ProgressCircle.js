@@ -5,14 +5,15 @@ import {
   buildStyles
 } from 'react-circular-progressbar'
 import './ProgressCircle.scss'
-import logo from '../../assets/svgs/ethfinex-logo.svg'
 
 const Wrapper = styled.div`
   width: ${props => props.width};
   height: ${props => props.height};
 `
 
-const ProgressCircle = ({ value, width, height }) => {
+const ProgressCircle = ({
+ value, icon, width, height
+}) => {
   return (
     <Wrapper width={width} height={height}>
       <Circle
@@ -31,7 +32,7 @@ const ProgressCircle = ({ value, width, height }) => {
           trailColor: '#3a3867'
         })}// ting 9872fb back 3a3867
       >
-        <img style={{ width: '50%' }} src={logo} alt="ethfinex" />
+        <img style={{ width: '50%' }} src={icon} alt="ethfinex" />
       </Circle>
     </Wrapper>
   )
