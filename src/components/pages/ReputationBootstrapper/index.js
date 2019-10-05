@@ -6,6 +6,13 @@ import LockNEC from './LockNEC'
 import Airdrop from './Airdrop'
 import BidGEN from './BidGEN'
 
+const RootWrapper = styled.div`
+  width:100%;
+  max-width: 700px;
+  min-width: 550px;
+  margin: 0px auto;
+`
+
 const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,7 +23,7 @@ const SectionWrapper = styled.div`
 
 const ReputationBoostrapper = () => {
   return (
-    <React.Fragment>
+    <RootWrapper>
       <Selector height="159px" />
       <SectionWrapper>
         <Switch>
@@ -31,7 +38,7 @@ const ReputationBoostrapper = () => {
           </Route>
         </Switch>
       </SectionWrapper>
-    </React.Fragment>
+    </RootWrapper>
   )
 }
 

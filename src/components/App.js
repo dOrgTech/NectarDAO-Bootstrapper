@@ -10,18 +10,14 @@ import ReputationBoostrapper from './pages/ReputationBootstrapper'
 
 const history = createBrowserHistory()
 
-class App extends Component {
-  render() {
-    return (
-      <HashRouter history={history}>
-        <Switch>
-          <Route path="/">
-            <ReputationBoostrapper />
-          </Route>
-        </Switch>
-      </HashRouter>
-    )
-  }
-}
+const App = () => (
+  <HashRouter history={history}>
+    <Switch>
+      <Route path="/">
+        <ReputationBoostrapper />
+      </Route>
+    </Switch>
+  </HashRouter>
+)
 
 export default App
