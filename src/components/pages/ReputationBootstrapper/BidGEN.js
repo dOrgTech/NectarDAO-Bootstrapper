@@ -112,18 +112,10 @@ const BidGEN = () => {
         <Table
           highlightTopRow
           columns={[
-            {
- name: 'Auction #', key: 'id', width: '15%', align: 'left'
-},
-            {
- name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right'
-},
-            {
- name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right'
-},
-            {
- name: 'Status', key: 'status', width: '25%', align: 'right'
-}
+            { name: 'Auction #', key: 'id', width: '15%', align: 'left' },
+            { name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right' },
+            { name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right' },
+            { name: 'Status', key: 'status', width: '25%', align: 'right' }
           ]}
           data={auctionData}
         />
