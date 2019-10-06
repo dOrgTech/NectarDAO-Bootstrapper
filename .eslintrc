@@ -30,6 +30,7 @@
       2,
       "never"
     ],
+    "object-curly-newline": 0,
     "no-multi-spaces": [
       2,
       {
