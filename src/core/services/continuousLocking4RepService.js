@@ -73,19 +73,16 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
     const contract = await getContractInstance(provider, contractAddress)
     const { BN } = Web3.utils
 
-    console.log(contract)
     const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
         filter: { _locker: account },
         fromBlock: 0,
         toBlock: 'latest'
     })
 
-    console.log(lockEvents)
-
     // Filter these events by lockId's that belong to the user
 
-    let data = {}
-    let userLockIds = []
+    const data = {}
+    const userLockIds = []
 
     const startTime = await getStartTime(provider, contractAddress)
     const batchTime = await getLockingPeriodLength(provider, contractAddress)
@@ -93,7 +90,9 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
     // Add Locks
     for (const event of lockEvents) {
         // console.log(event)
-        const { _locker, _lockingId, _amount, _period } = event.returnValues
+        const {
+            _locker, _lockingId, _amount, _period
+        } = event.returnValues
 
         // We need to get locking time from actual locker
         const result = await contract.methods.lockers(account, _lockingId).call()
@@ -137,12 +136,12 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
         const { _lockingId, _extendPeriod } = event.returnValues
         data[_lockingId].duration = ((new BN(_extendPeriod)).add(new BN(data[_lockingId].duration))).toString()
 
-        //TODO Add locking period
+        // TODO Add locking period
     }
 
     // Check Released Status
     for (const event of releaseEvents) {
-        const { __lockingId } = event.returnValues
+        const { _lockingId } = event.returnValues
         data[_lockingId].released = true
     }
 
@@ -163,14 +162,12 @@ export async function getAuctionData(provider, contractAddress) {
         maxIndex = totalLockingPeriods
     }
 
-    let auctionData = []
+    const auctionData = []
 
     // Return the data for each auction
-    for (let i = 0; i < maxIndex; i++) {
+    for (let i = 0; i < maxIndex; i += 1) {
         // const batch = await contract.methods.batches(i).call()
-        console.log(batch)
     }
-
 }
 
 export async function getAgreementHash(provider, contractAddress) {

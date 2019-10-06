@@ -30,6 +30,7 @@
       2,
       "never"
     ],
+    "object-curly-newline": 0,
     "no-multi-spaces": [
       2,
       {
@@ -39,6 +40,8 @@
         }
       }
     ],
+    "no-underscore-dangle": 0,
+    "no-await-in-loop": 1,
     "comma-dangle": [
       2,
       "never"
