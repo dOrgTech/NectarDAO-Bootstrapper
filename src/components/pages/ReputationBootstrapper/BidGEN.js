@@ -1,33 +1,3 @@
-// TODO:
-/*
-<div flow horizontally>
-  <div 70% width flow vertically>
-    <div 200px height>
-      <TimelineProgress
-        topText={'Current Auction: ${getCurrentAuction()} of ${getTotalAuctions()}'}
-        bottomText={'Next starts in ${format(getAuctionTimeLeft())}'}
-      />
-    </div>
-    <Table
-      columns={[
-        'Auction #',
-        'You Have Bid',
-        'Total Bid',
-        'Status'
-      ]}
-      data={allAuctions()}
-    />
-  </div>
-  <div flow vertically>
-    <Icon svg={gen.svg} />
-    <Text>Gen Token</Text>
-    <Text>${genBalance} GEN</Text>
-    <divider />
-    ...
-  </div>
-</div>
-*/
-
 import React from 'react'
 import styled from 'styled-components'
 import TimelineProgress from 'components/common/TimelineProgress'
@@ -46,6 +16,7 @@ const BidGENWrapper = styled.div`
 
 const DetailsWrapper = styled.div`
   width: 80%;
+  border-right: 1px solid var(--border);
 `
 
 const TableHeaderWrapper = styled.div`
@@ -53,19 +24,13 @@ const TableHeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  border: 1px solid var(--border);
-  border-top: none;
-  border-left: none;
   padding: 0px 24px;
+  border-bottom: 1px solid var(--border);
 `
 
 const ActionsWrapper = styled.div`
   height: 100%;
   width: 425px;
-  border: 1px solid var(--border);
-  border-top: none;
-  border-right: none;
-  border-bottom: none;
 `
 
 const BidGEN = () => {
