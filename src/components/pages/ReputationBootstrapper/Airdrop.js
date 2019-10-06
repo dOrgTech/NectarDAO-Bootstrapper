@@ -17,6 +17,7 @@ const CardWrapper = styled.div`
   border-top: none;
   border-bottom: none;
   width: 450px;
+  padding-top: 20px;
 `
 
 const Button = styled.div`
@@ -135,6 +136,8 @@ const Airdrop = () => {
         icon={logo}
         title="NectarDAO Reputation Airdrop"
         subtitle={dropTimer}
+        width="50px"
+        height="50px"
       />
       <Divider width="80%" margin="20px 0px 20px 0px" />
       <InfoLine title="Nectar Balance" info={necBalance} />

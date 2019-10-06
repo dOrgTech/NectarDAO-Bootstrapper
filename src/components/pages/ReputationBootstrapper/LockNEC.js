@@ -1,3 +1,24 @@
+import React from 'react'
+import styled from 'styled-components'
+import LockTable from './LockTable'
+import LockPanel from './LockPanel'
+
+const LockNECWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+`
+
+const LockNEC = () => {
+  return (
+    <LockNECWrapper>
+      <LockTable />
+      <LockPanel />
+    </LockNECWrapper>
+  )
+}
+
+export default LockNEC
+
 // TODO:
 /*
 <div flow horizontally>
@@ -29,13 +50,3 @@
   </div>
 </div>
 */
-
-import React from 'react'
-
-const LockNEC = () => (
-  <div>
-    LockNEC
-  </div>
-)
-
-export default LockNEC
