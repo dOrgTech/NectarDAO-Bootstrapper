@@ -68,8 +68,13 @@ export async function getActiveAuction(provider) {
 
     const timeElapsed = currentTime.sub(startTime)
     const currentAuction = timeElapsed.div(auctionLength)
+    const maxAuctions = await getNumAuctions(provider)
 
-    return currentAuction.toString()
+    if (currentAuction.toNumber() > maxAuctions) {
+        return maxAuctions.toString()
+    } else {
+        return currentAuction.toString()
+    }
 }
 
 export async function getNextAuctionStartTime(provider) {
@@ -114,7 +119,9 @@ export async function getAllAuctionData(provider) {
     const contract = await getContractInstance(provider)
     console.log(contract)
 
-    const currentAuction = await getActiveAuction(provider)
+    const maxAuctions = Number(await getNumAuctions(provider))
+    const currentAuction = Number(await getActiveAuction(provider))
+    const nextAuctionStartTime = await getNextAuctionStartTime(provider)
 
     const bidEvents = await contract.getPastEvents(BID_EVENT, {
         fromBlock: 0,
@@ -122,48 +129,48 @@ export async function getAllAuctionData(provider) {
     })
 
     console.log(bidEvents)
-    const bids = {}
-    const totalBids = {}
-    const statusData = {}
+    const data = []
 
+    for (let auctionId = 0; auctionId <= maxAuctions; auctionId++) {
+        if (!data[auctionId]) {
+            data[auctionId] = {
+                totalBids: '0',
+                bids: []
+            }
+        }
+
+        if (auctionId < currentAuction) {
+            data[auctionId].status = 'Complete'
+        } else if (auctionId === currentAuction) {
+            if (Date.now() > nextAuctionStartTime) {
+                data[auctionId].status = 'Complete'
+            } else {
+                data[auctionId].status = 'In Progress'
+            }
+        } else {
+            data[auctionId].status = 'Not Started'
+        }
+    }
 
     for (const event of bidEvents) {
         const { _bidder, _auctionId, _amount } = event.returnValues
 
-        if (!bids[_auctionId]) {
-            bids[_auctionId] = {}
+        const auctionData = data[_auctionId]
+
+        if (!auctionData.bids[_bidder]) {
+            auctionData.bids[_bidder] = '0'
         }
 
-        if (!totalBids[_auctionId]) {
-            totalBids[_auctionId] = '0'
-        }
-
-        if (!bids[_auctionId][_bidder]) {
-            bids[_auctionId][_bidder] = '0'
-        }
-
-        const currentBid = new BN(bids[_auctionId][_bidder])
+        const currentBid = new BN(auctionData.bids[_bidder])
         const amountToAdd = new BN(_amount)
 
-        bids[_auctionId][_bidder] = (currentBid.add(amountToAdd)).toString()
+        auctionData.bids[_bidder] = (currentBid.add(amountToAdd)).toString()
 
-        const currentTotalBid = new BN(totalBids[_auctionId])
-        totalBids[_auctionId] = (currentTotalBid.add(amountToAdd)).toString()
-
-        if (Number(_auctionId) < Number(currentAuction)) {
-            statusData[_auctionId] = 'Complete'
-        } else if (Number(_auctionId) === Number(currentAuction)) {
-            statusData[_auctionId] = 'In Progress'
-        } else {
-            statusData[_auctionId] = 'Not Started'
-        }
+        const currentTotalBid = new BN(auctionData.totalBids)
+        auctionData.totalBids = (currentTotalBid.add(amountToAdd)).toString()
     }
 
-    console.log('auctionData', bids, totalBids, statusData)
+    console.log('auctionData', data)
 
-    return {
-        bids,
-        totalBids,
-        statusData
-    }
+    return data
 }

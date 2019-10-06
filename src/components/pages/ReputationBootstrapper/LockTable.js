@@ -65,11 +65,11 @@ const LockTable = () => {
     <TableWrapper>
       <TableHeaderWrapper>
         <TimelineProgress
-          value="30"
-          title="Current Period: 8 of 10"
-          subtitle="Next starts in 1 day, 6 hours"
-          width="28px"
-          height="28px"
+          value='30'
+          title='Current Period: 8 of 10'
+          subtitle='Next starts in 1 day, 6 hours'
+          width='28px'
+          height='28px'
         />
         <NavButtons>
           <InactiveButton>Your Lock</InactiveButton>

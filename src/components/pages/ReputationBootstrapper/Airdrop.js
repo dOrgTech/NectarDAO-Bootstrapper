@@ -9,7 +9,7 @@ import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
 import * as necRepService from 'core/services/necRepAllocationService'
 
-const CardWrapper = styled.div`
+const AirdropWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -114,7 +114,7 @@ const Airdrop = () => {
         setDropPercentage(100)
         setDropTimer('Has Concluded')
       } else {
-        let hours = ((seconds / 60) / 60)
+        let hours = (seconds / 60) / 60
         const days = Math.fround(hours / 24)
         hours -= days * 24
         hours = Math.fround(hours)
@@ -129,25 +129,25 @@ const Airdrop = () => {
   )
 
   return (
-    <CardWrapper>
+    <AirdropWrapper>
       <UpdateLoop />
       <TimelineProgress
         value={dropPercentage}
         icon={logo}
-        title="NectarDAO Reputation Airdrop"
+        title='NectarDAO Reputation Airdrop'
         subtitle={dropTimer}
-        width="50px"
-        height="50px"
+        width='50px'
+        height='50px'
       />
-      <Divider width="80%" margin="20px 0px 20px 0px" />
-      <InfoLine title="Nectar Balance" info={necBalance} />
-      <InfoLine title="Receive Voting Power" info={repBalance} />
-      <Divider width="80%" margin="20px 0px 20px 0px" />
-      <InfoLine title="Airdrop Blocknumber" info={dropBlock} />
-      <InfoLine title="Current Blocknumber" info={currentBlock} />
-      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <Divider width='80%' margin='20px 0px 20px 0px' />
+      <InfoLine title='Nectar Balance' info={necBalance} />
+      <InfoLine title='Receive Voting Power' info={repBalance} />
+      <Divider width='80%' margin='20px 0px 20px 0px' />
+      <InfoLine title='Airdrop Blocknumber' info={dropBlock} />
+      <InfoLine title='Current Blocknumber' info={currentBlock} />
+      <Divider width='80%' margin='20px 0px 20px 0px' />
       <Button>Buy NEC</Button>
-    </CardWrapper>
+    </AirdropWrapper>
   )
 }
 

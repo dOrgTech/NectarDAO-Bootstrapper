@@ -73,14 +73,11 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
     const contract = await getContractInstance(provider, contractAddress)
     const { BN } = Web3.utils
 
-    console.log(contract)
     const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
         filter: { _locker: account },
         fromBlock: 0,
         toBlock: 'latest'
     })
-
-    console.log(lockEvents)
 
     // Filter these events by lockId's that belong to the user
 

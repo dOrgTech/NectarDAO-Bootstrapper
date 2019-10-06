@@ -1,6 +1,7 @@
 :root {
   --background: #222A42;
   --border: #4E5568;
+  --faded-border: rgba(255, 255, 255, 0.08);
   --white-text: #FFFFFF;
   --inactive-text: rgba(255, 255, 255, 0.6);
   --active-border: #FFFFFF;
@@ -9,9 +10,6 @@
 }
 
 #root {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   padding: 64px;
 }
 

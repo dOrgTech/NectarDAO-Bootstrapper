@@ -30,10 +30,10 @@ const ProgressCircle = ({
           // Colors
           pathColor: '#9872fb',
           trailColor: '#3a3867'
-        })}// ting 9872fb back 3a3867
+        })}
       >
         {icon !== undefined ?
-          <img style={{ width: '50%' }} src={icon} alt="ethfinex" /> :
+          <img style={{ width: '50%' }} src={icon} alt='ethfinex' /> :
           <React.Fragment />
         }
       </Circle>
