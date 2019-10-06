@@ -1,8 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
-import TimelineProgress from '../../common/TimelineProgress'
-import Divider from '../../common/Divider'
-import logo from '../../../assets/svgs/ethfinex-logo.svg'
+import TimelineProgress from 'components/common/TimelineProgress'
+import Divider from 'components/common/Divider'
+import Updater from 'components/common/Updater'
+import logo from 'assets/svgs/ethfinex-logo.svg'
+import * as contractService from 'core/services/contractService'
+import * as providerService from 'core/services/providerService'
+import * as erc20Service from 'core/services/erc20Service'
+import * as necRepService from 'core/services/necRepAllocationService'
 
 const CardWrapper = styled.div`
   display: flex;
@@ -55,13 +60,6 @@ const Info = styled(InfoTitle)`
   text-align: right;
 `
 
-// TODO: make these dynamic values
-const airdropTimer = 'In 12 days, 4 hours'
-const nectarBalance = '100.00 NEC'
-const votingPower = '175,221.43 REP'
-const airdropBlock = '5232134'
-const currentBlock = '5235255'
-
 const InfoLine = ({ title, info }) => (
   <InfoWrapper>
     <InfoTitle>{title}</InfoTitle>
@@ -69,23 +67,85 @@ const InfoLine = ({ title, info }) => (
   </InfoWrapper>
 )
 
-const Airdrop = () => (
-  <CardWrapper>
-    <TimelineProgress
-      value={12}
-      icon={logo}
-      title="NectarDAO Reputation Airdrop"
-      subtitle={airdropTimer}
+const Airdrop = () => {
+  const [dropPercentage, setDropPercentage] = React.useState(0)
+  const [dropTimer, setDropTimer] = React.useState('...')
+  const [necBalance, setNecBalance] = React.useState('...')
+  const [repBalance, setRepBalance] = React.useState('...')
+  const [dropBlock, setDropBlock] = React.useState('...')
+  const [currentBlock, setCurrentBlock] = React.useState('...')
+
+  const UpdateLoop = () => (
+    <Updater
+      ms={3000}
+      fn={async () => {
+      const provider = await providerService.getProvider()
+      const defaultAccount = await providerService.getDefaultAccount(provider)
+      const necTokenInstance = await contractService.getNectarTokenAddress()
+      const necRepAllocationInstance = await contractService.getNectarRepAllocationAddress()
+
+      // NEC Balance
+      const currUserBalance = await erc20Service.balanceOf(provider, necTokenInstance, defaultAccount)
+      setNecBalance(`${currUserBalance} NEC`)
+
+      // REP Balance
+      const currRepBalance = await necRepService.getSnapshotRep(provider, necRepAllocationInstance, defaultAccount)
+      setRepBalance(`${currRepBalance} REP`)
+
+      // Drop Blocknumber
+      const currDropBlock = await necRepService.getSnapshotBlock(provider, necRepAllocationInstance)
+      setDropBlock(currDropBlock)
+
+      // Current Blocknumber
+      const currLatestBlock = await necRepService.getCurrentBlock(provider)
+      setCurrentBlock(currLatestBlock)
+
+      // Calculate the number of days and hours the dropBlock
+      // is from the current block
+      const blockDiff = dropBlock - currentBlock
+
+      let seconds = blockDiff * 13
+      if (seconds < 1) {
+        seconds = 0
+      }
+
+      if (seconds === 0) {
+        setDropPercentage(100)
+        setDropTimer('Has Concluded')
+      } else {
+        let hours = ((seconds / 60) / 60)
+        const days = Math.fround(hours / 24)
+        hours -= days * 24
+        hours = Math.fround(hours)
+        setDropTimer(`In ${days} days, ${hours} hours`)
+
+        // Using 30 days a duration length
+        const maxDays = 30
+        setDropPercentage(100 * (1 - (seconds / (maxDays * 24 * 60 * 60))))
+      }
+    }}
     />
-    <Divider width="80%" margin="20px 0px 20px 0px" />
-    <InfoLine title="Nectar Balance" info={nectarBalance} />
-    <InfoLine title="Receive Voting Power" info={votingPower} />
-    <Divider width="80%" margin="20px 0px 20px 0px" />
-    <InfoLine title="Airdrop Blocknumber" info={airdropBlock} />
-    <InfoLine title="Current Blocknumber" info={currentBlock} />
-    <Divider width="80%" margin="20px 0px 20px 0px" />
-    <Button>Buy NEC</Button>
-  </CardWrapper>
-)
+  )
+
+  return (
+    <CardWrapper>
+      <UpdateLoop />
+      <TimelineProgress
+        value={dropPercentage}
+        icon={logo}
+        title="NectarDAO Reputation Airdrop"
+        subtitle={dropTimer}
+      />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <InfoLine title="Nectar Balance" info={necBalance} />
+      <InfoLine title="Receive Voting Power" info={repBalance} />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <InfoLine title="Airdrop Blocknumber" info={dropBlock} />
+      <InfoLine title="Current Blocknumber" info={currentBlock} />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <Button>Buy NEC</Button>
+    </CardWrapper>
+  )
+}
 
 export default Airdrop

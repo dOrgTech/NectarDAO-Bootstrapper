@@ -1,17 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import {
   HashRouter,
   Switch,
   Route
 } from 'react-router-dom'
-import { createBrowserHistory } from 'history'
-import '../App.scss'
+import 'components/App.scss'
 import ReputationBoostrapper from './pages/ReputationBootstrapper'
 
-const history = createBrowserHistory()
-
 const App = () => (
-  <HashRouter history={history}>
+  <HashRouter>
     <Switch>
       <Route path="/">
         <ReputationBoostrapper />
