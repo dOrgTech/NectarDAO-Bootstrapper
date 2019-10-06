@@ -24,16 +24,16 @@ const SectionWrapper = styled.div`
 const ReputationBoostrapper = () => {
   return (
     <RootWrapper>
-      <Selector height='159px' />
+      <Selector height="159px" />
       <SectionWrapper>
         <Switch>
-          <Route exact path='/lock-nec'>
+          <Route exact path="/lock-nec">
             <LockNEC />
           </Route>
-          <Route exact path='/airdrop'>
+          <Route exact path="/airdrop">
             <Airdrop />
           </Route>
-          <Route exact path='/bid-gen'>
+          <Route exact path="/bid-gen">
             <BidGEN />
           </Route>
         </Switch>

@@ -134,18 +134,18 @@ const Airdrop = () => {
       <TimelineProgress
         value={dropPercentage}
         icon={logo}
-        title='NectarDAO Reputation Airdrop'
+        title="NectarDAO Reputation Airdrop"
         subtitle={dropTimer}
-        width='50px'
-        height='50px'
+        width="50px"
+        height="50px"
       />
-      <Divider width='80%' margin='20px 0px 20px 0px' />
-      <InfoLine title='Nectar Balance' info={necBalance} />
-      <InfoLine title='Receive Voting Power' info={repBalance} />
-      <Divider width='80%' margin='20px 0px 20px 0px' />
-      <InfoLine title='Airdrop Blocknumber' info={dropBlock} />
-      <InfoLine title='Current Blocknumber' info={currentBlock} />
-      <Divider width='80%' margin='20px 0px 20px 0px' />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <InfoLine title="Nectar Balance" info={necBalance} />
+      <InfoLine title="Receive Voting Power" info={repBalance} />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
+      <InfoLine title="Airdrop Blocknumber" info={dropBlock} />
+      <InfoLine title="Current Blocknumber" info={currentBlock} />
+      <Divider width="80%" margin="20px 0px 20px 0px" />
       <Button>Buy NEC</Button>
     </AirdropWrapper>
   )

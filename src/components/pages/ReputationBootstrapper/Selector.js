@@ -84,13 +84,13 @@ const Selector = ({ height }) => {
     <HeaderWrapper height={height}>
       <Title>How do you want to earn Reputation for the NectarDAO?</Title>
       <NavWrapper>
-        <Button option={1} route='/lock-nec'>
+        <Button option={1} route="/lock-nec">
           Lock NEC
         </Button>
-        <Button option={2} route='/airdrop'>
+        <Button option={2} route="/airdrop">
           Airdrop
         </Button>
-        <Button option={3} route='/bid-gen'>
+        <Button option={3} route="/bid-gen">
           Bid GEN
         </Button>
       </NavWrapper>

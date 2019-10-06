@@ -33,7 +33,7 @@ const ProgressCircle = ({
         })}
       >
         {icon !== undefined ?
-          <img style={{ width: '50%' }} src={icon} alt='ethfinex' /> :
+          <img style={{ width: '50%' }} src={icon} alt="ethfinex" /> :
           <React.Fragment />
         }
       </Circle>

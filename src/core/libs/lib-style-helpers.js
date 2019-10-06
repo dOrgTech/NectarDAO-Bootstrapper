@@ -1,6 +1,6 @@
 export function getStyles(key) {
   /* eslint-disable */
-  const variables = require('sass-extract-loader?{'plugins':['sass-extract-js']}!../../configs/theme/config-styles.scss')
+  const variables = require('sass-extract-loader?{"plugins":["sass-extract-js"]}!../../configs/theme/config-styles.scss')
 
   if (key instanceof Array) {
     const returnObj = {}

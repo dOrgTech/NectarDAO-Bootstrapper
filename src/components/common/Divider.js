@@ -10,7 +10,7 @@ border: 0 none;
 `
 
 const Divider = ({ width, margin, height }) => (
-  <StyledDivider width={width} margin={margin} height={height ? height : "2px"} />
+  <StyledDivider width={width} margin={margin} height={height || '2px'} />
 )
 
 export default Divider

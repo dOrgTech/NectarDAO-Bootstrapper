@@ -99,10 +99,9 @@ const BidGEN = () => {
           if (Date.now() > startTime) {
             setAuctionPercentage(100)
             setAuctionTimer('Auctions have ended')
-            return;
-          } else {
-            prefix = 'Last auction ends in'
+            return
           }
+            prefix = 'Last auction ends in'
         }
 
         setAuctionPercentage(((startTime - now) / auctionLength) * 100)
@@ -134,30 +133,38 @@ const BidGEN = () => {
 
   return (
     <BidGENWrapper>
-      <UpdateLoop/>
+      <UpdateLoop />
       <DetailsWrapper>
         <TableHeaderWrapper>
           <TimelineProgress
             value={auctionPercentage}
             title={`Current Auction: ${currentAuction} of ${maxAuction}`}
             subtitle={auctionTimer}
-            width='28px'
-            height='28px'
+            width="28px"
+            height="28px"
           />
         </TableHeaderWrapper>
         <Table
           highlightTopRow
           columns={[
-            { name: 'Auction #', key: 'id', width: '15%', align: 'left' },
-            { name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right' },
-            { name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right' },
-            { name: 'Status', key: 'status', width: '25%', align: 'right' }
+            {
+ name: 'Auction #', key: 'id', width: '15%', align: 'left'
+},
+            {
+ name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right'
+},
+            {
+ name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right'
+},
+            {
+ name: 'Status', key: 'status', width: '25%', align: 'right'
+}
           ]}
           data={auctionData}
         />
       </DetailsWrapper>
       <ActionsWrapper>
-          <div style={{height: "100%"}}>heyyyy</div>
+        <div style={{ height: '100%' }}>heyyyy</div>
       </ActionsWrapper>
     </BidGENWrapper>
   )

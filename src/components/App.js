@@ -10,7 +10,7 @@ import ReputationBoostrapper from './pages/ReputationBootstrapper'
 const App = () => (
   <HashRouter>
     <Switch>
-      <Route path='/'>
+      <Route path="/">
         <ReputationBoostrapper />
       </Route>
     </Switch>

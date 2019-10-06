@@ -72,9 +72,8 @@ export async function getActiveAuction(provider) {
 
     if (currentAuction.toNumber() > maxAuctions) {
         return maxAuctions.toString()
-    } else {
-        return currentAuction.toString()
     }
+        return currentAuction.toString()
 }
 
 export async function getNextAuctionStartTime(provider) {
@@ -131,7 +130,7 @@ export async function getAllAuctionData(provider) {
     console.log(bidEvents)
     const data = []
 
-    for (let auctionId = 0; auctionId <= maxAuctions; auctionId++) {
+    for (let auctionId = 0; auctionId <= maxAuctions; auctionId += 1) {
         if (!data[auctionId]) {
             data[auctionId] = {
                 totalBids: '0',

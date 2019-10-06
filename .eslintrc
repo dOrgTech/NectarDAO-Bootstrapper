@@ -39,6 +39,8 @@
         }
       }
     ],
+    "no-underscore-dangle": 0,
+    "no-await-in-loop": 1,
     "comma-dangle": [
       2,
       "never"
