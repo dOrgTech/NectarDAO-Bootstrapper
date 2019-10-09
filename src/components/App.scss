@@ -1,16 +1,21 @@
 :root {
+  --active-border: #FFFFFF;
+  --action-button: #4e0ffb;
   --background: #222A42;
   --border: #4E5568;
+  --enable-purple-border: rgba(153, 114, 251, 0.4);
+  --enable-purple-text: #9972FB;
   --faded-border: rgba(255, 255, 255, 0.08);
-  --white-text: #FFFFFF;
-  --inactive-text: rgba(255, 255, 255, 0.6);
-  --active-border: #FFFFFF;
   --inactive-border: #4D5474;
-  --action-button: #4e0ffb;
+  --inactive-header-text: rgba(255, 255, 255, 0.6);
+  --inactive-text: rgba(255, 255, 255, 0.4);
+  --logo-background: #191F32;
+  --pending-panel-gray: #9094A0;
+  --white-text: #FFFFFF;
 }
 
 #root {
-  padding: 64px;
+  
 }
 
 body {

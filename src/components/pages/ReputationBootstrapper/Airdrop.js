@@ -1,8 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import TimelineProgress from 'components/common/TimelineProgress'
 import Divider from 'components/common/Divider'
-import Updater from 'components/common/Updater'
+import TimelineProgress from 'components/common/TimelineProgress'
 import logo from 'assets/svgs/ethfinex-logo.svg'
 import * as contractService from 'core/services/contractService'
 import * as providerService from 'core/services/providerService'
@@ -20,20 +19,8 @@ const AirdropWrapper = styled.div`
   padding-top: 20px;
 `
 
-const Button = styled.div`
-  background: var(--action-button);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 15px;
-  line-height: 18px;
-  padding: 10px 0px;
-  width: 80%;
-  margin-bottom: 20px;
+const Logo = styled.img`
+  width: 50%;
 `
 
 const InfoWrapper = styled.div`
@@ -61,6 +48,22 @@ const Info = styled(InfoTitle)`
   text-align: right;
 `
 
+const Button = styled.div`
+  background: var(--action-button);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--white-text);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  padding: 10px 0px;
+  width: 80%;
+  margin-bottom: 20px;
+`
+
 const InfoLine = ({ title, info }) => (
   <InfoWrapper>
     <InfoTitle>{title}</InfoTitle>
@@ -76,10 +79,8 @@ const Airdrop = () => {
   const [dropBlock, setDropBlock] = React.useState('...')
   const [currentBlock, setCurrentBlock] = React.useState('...')
 
-  const UpdateLoop = () => (
-    <Updater
-      ms={3000}
-      fn={async () => {
+  React.useEffect(() => {
+    const fetch = async () => {
       const provider = await providerService.getProvider()
       const defaultAccount = await providerService.getDefaultAccount(provider)
       const necTokenInstance = await contractService.getNectarTokenAddress()
@@ -124,16 +125,15 @@ const Airdrop = () => {
         const maxDays = 30
         setDropPercentage(100 * (1 - (seconds / (maxDays * 24 * 60 * 60))))
       }
-    }}
-    />
-  )
+    }
+    fetch()
+  }, [])
 
   return (
     <AirdropWrapper>
-      <UpdateLoop />
       <TimelineProgress
         value={dropPercentage}
-        icon={logo}
+        icon={<Logo src={logo} alt="ethfinex" />}
         title="NectarDAO Reputation Airdrop"
         subtitle={dropTimer}
         width="50px"

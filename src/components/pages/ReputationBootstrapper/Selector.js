@@ -44,7 +44,7 @@ const ActiveButton = styled.div`
 
 const InactiveButton = styled(ActiveButton)`
   border: 1px solid var(--inactive-border);
-  color: var(--inactive-text);
+  color: var(--inactive-header-text);
 `
 
 const Selector = ({ height }) => {

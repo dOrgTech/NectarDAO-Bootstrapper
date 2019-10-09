@@ -1,12 +1,20 @@
 import React from 'react'
 import styled from 'styled-components'
-import TimelineProgress from 'components/common/TimelineProgress'
 import Table from 'components/common/Table'
+import LockPanel from 'components/common/panels/LockPanel'
+import EnableTokenPanel from 'components/common/panels/EnableTokenPanel'
+import TimelineProgress from 'components/common/TimelineProgress'
+import LogoAndText from 'components/common/LogoAndText'
+import icon from 'assets/svgs/ethfinex-logo.svg'
+import * as contractService from 'core/services/contractService'
+import * as providerService from 'core/services/providerService'
+import * as erc20Service from 'core/services/erc20Service'
 
 const LockNECWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
+  height: 100%;
   max-height: 500px;
 `
 
@@ -25,20 +33,39 @@ const TableHeaderWrapper = styled.div`
 `
 
 const ActionsWrapper = styled.div`
-  height: 100%;
   width: 425px;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+`
+
+const ActionsHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  height: 64px;
+  margin: 0px 24px;
+  color: var(--white-text);
+  border-bottom: 1px solid var(--border);
 `
 
 const LockNEC = () => {
   const [currentPeriod, setCurrentPeriod] = React.useState(0)
+  const [rangeStart, setRangeStart] = React.useState(0)
   const [maxPeriods, setMaxPeriods] = React.useState(0)
   const [periodPercentage, setPeriodPercentage] = React.useState(0)
   const [periodTimer, setPeriodTimer] = React.useState('...')
   const [periodData, setPeriodData] = React.useState([])
+  const [tokenApproved, setTokenApproved] = React.useState(false)
+  const [necBalance, setNecBalance] = React.useState('...')
 
+  // TODO: Remove Mock Data
   if (currentPeriod === 0) {
-    // TODO: Remove Mock Data
     setCurrentPeriod(8)
+    setRangeStart(7)
     setMaxPeriods(10)
     setPeriodPercentage(75)
     setPeriodTimer('Next starts in 1 day, 6 hours')
@@ -76,6 +103,49 @@ const LockNEC = () => {
     ])
   }
 
+  React.useEffect(() => {
+    const fetch = async () => {
+      const provider = await providerService.getProvider()
+      const defaultAccount = await providerService.getDefaultAccount(provider)
+      const necTokenInstance = await contractService.getNectarTokenAddress()
+
+      // NEC Balance
+      const currUserBalance = await erc20Service.balanceOf(provider, necTokenInstance, defaultAccount)
+      setNecBalance(`${currUserBalance} NEC`)
+    }
+    fetch()
+  }, [])
+
+  const SidePanel = () => (
+    <React.Fragment>
+      {tokenApproved === false ?
+        <EnableTokenPanel
+          instruction="Enable NEC for locking"
+          subinstruction="-"
+          buttonText="Enable NEC"
+          onEnable={() => setTokenApproved(true)}
+          getToken={() =>
+            contractService.getNectarTokenAddress()
+          }
+          getSpender={() =>
+            contractService.getContinuousLocking4ReputationAddress()
+          }
+        /> :
+        <div>
+          {/*
+            <LockPanel
+              currentPeriod={currentPeriod}
+              setCurrentPeriod={setCurrentPeriod}
+              rangeStart={rangeStart}
+              setRangeStart={setRangeStart}
+            />
+          */}
+          heyyyyyyyyyy
+        </div>
+      }
+    </React.Fragment>
+  )
+
   return (
     <LockNECWrapper>
       <DetailsWrapper>
@@ -100,7 +170,11 @@ const LockNEC = () => {
         />
       </DetailsWrapper>
       <ActionsWrapper>
-        <div style={{ height: '100%' }}>heyyyy</div>
+        <ActionsHeader>
+          <LogoAndText icon={icon} text="Nectar" />
+          <div>{necBalance}</div>
+        </ActionsHeader>
+        <SidePanel />
       </ActionsWrapper>
     </LockNECWrapper>
   )

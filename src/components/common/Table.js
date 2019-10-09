@@ -23,6 +23,7 @@ const Row = styled.div`
   margin-left: 10px;
   display: flex;
   flex-direction: row;
+  height: 39px;
 `
 
 const CellWrapper = styled.div`
@@ -33,8 +34,7 @@ const CellWrapper = styled.div`
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
-  line-height: 20px;
-  padding: 5px 0px 5px 0px;
+  line-height: 39px;
 `
 
 const GreyCell = styled(CellWrapper)`

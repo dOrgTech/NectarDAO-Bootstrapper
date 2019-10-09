@@ -11,6 +11,7 @@ const RootWrapper = styled.div`
   max-width: 932px;
   min-width: 932px;
   margin: 0px auto;
+  padding: 64px;
 `
 
 const SectionWrapper = styled.div`

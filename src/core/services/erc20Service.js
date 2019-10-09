@@ -18,5 +18,13 @@ export async function balanceOf(provider, contractAddress, account) {
 
 export async function grantMaxApproval(provider, contractAddress, spender) {
     const contract = await getContractInstance(provider, contractAddress)
-    contract.methods.approve(spender, MAX_UINT).send()
+    return contract.methods.approve(spender, MAX_UINT).send()
+}
+
+export async function hasMaxApproval(provider, contractAddress, owner, spender) {
+    const { BN } = Web3.utils
+    const contract = await getContractInstance(provider, contractAddress)
+    const amount = new BN(await contract.methods.allowance(owner, spender).call())
+    const max = new BN(MAX_UINT)
+    return amount.gte(max.div(new BN(2)))
 }

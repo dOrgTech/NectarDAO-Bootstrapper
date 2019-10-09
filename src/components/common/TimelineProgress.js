@@ -27,7 +27,7 @@ const Title = styled.div`
 `
 
 const Subtitle = styled(Title)`
-  color: var(--inactive-text);
+  color: var(--inactive-header-text);
 `
 
 const TimelineProgress = ({
