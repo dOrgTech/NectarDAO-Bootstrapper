@@ -104,10 +104,10 @@ const Airdrop = () => {
 
       // Calculate the number of days and hours the dropBlock
       // is from the current block
-      const blockDiff = dropBlock - currentBlock
+      const blockDiff = currDropBlock - currLatestBlock
 
       let seconds = blockDiff * 13
-      if (seconds < 1) {
+      if (seconds < 13) {
         seconds = 0
       }
 

@@ -79,24 +79,28 @@ const BidGEN = () => {
       const now = Date.now()
 
       let prefix = 'Next starts in'
+      let ended = false
 
       if (maxAuction === currentAuction) {
         if (Date.now() > startTime) {
           setAuctionPercentage(100)
           setAuctionTimer('Auctions have ended')
-          return
-        }
+          ended = true
+        } else {
           prefix = 'Last auction ends in'
+        }
       }
 
-      setAuctionPercentage(((startTime - now) / auctionLength) * 100)
+      if (!ended) {
+        setAuctionPercentage(((startTime - now) / auctionLength) * 100)
 
-      const seconds = (startTime - now) / 1000
-      let hours = (seconds / 60) / 60
-      const days = Math.fround(hours / 24)
-      hours -= days * 24
-      hours = Math.fround(hours)
-      setAuctionTimer(`${prefix} ${days} days, ${hours} hours`)
+        const seconds = (startTime - now) / 1000
+        let hours = (seconds / 60) / 60
+        const days = Math.fround(hours / 24)
+        hours -= days * 24
+        hours = Math.fround(hours)
+        setAuctionTimer(`${prefix} ${days} days, ${hours} hours`)
+      }
 
       // Auction Data
       const data = await auctionService.getAllAuctionData(provider)

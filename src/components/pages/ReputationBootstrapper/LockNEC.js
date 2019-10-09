@@ -132,15 +132,12 @@ const LockNEC = () => {
           }
         /> :
         <div>
-          {/*
-            <LockPanel
-              currentPeriod={currentPeriod}
-              setCurrentPeriod={setCurrentPeriod}
-              rangeStart={rangeStart}
-              setRangeStart={setRangeStart}
-            />
-          */}
-          heyyyyyyyyyy
+          <LockPanel
+            currentPeriod={currentPeriod}
+            setCurrentPeriod={setCurrentPeriod}
+            rangeStart={rangeStart}
+            setRangeStart={setRangeStart}
+          />
         </div>
       }
     </React.Fragment>
