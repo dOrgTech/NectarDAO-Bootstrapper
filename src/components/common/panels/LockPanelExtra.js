@@ -145,26 +145,26 @@ const LockPanelExtra = ({
           <div>PeriodsToExtend</div>
           <input type="text" name="name" value={periodsToExtend} onChange={changePeriodsToExtend} />
         </LockAmountForm>
-      </
+      </LockAmountWrapper>
       <Button
         onClick={async () => {
-        setPending(true)
-        const provider = await providerService.getProvider()
+          setPending(true)
+          const provider = await providerService.getProvider()
 
-        try {
-          await lockingService.extendLock(
-            provider, lockId, periodsToExtend, currentPeriod
-          )
-        } catch (e) {
-          console.log(e)
-        }
+          try {
+            await lockingService.extendLock(
+              provider, lockId, periodsToExtend, currentPeriod
+            )
+          } catch (e) {
+            console.log(e)
+          }
 
-        setPending(false)
-      }}
+          setPending(false)
+        }}
       >
         {buttonText}
       </Button>
-    </PanelWrapper >
+    </PanelWrapper>
   )
 }
 
