@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import Table from 'components/common/Table'
 import TimelineProgress from 'components/common/TimelineProgress'
 import EnableTokenPanel from 'components/common/panels/EnableTokenPanel'
+import BidPanel from 'components/common/panels/BidPanel'
 import LogoAndText from 'components/common/LogoAndText'
 import { toEther } from 'core/libs/lib-number-helpers'
 // TODO: change to GEN
@@ -33,7 +34,6 @@ const TableHeaderWrapper = styled.div`
   padding: 0px 24px;
   border-bottom: 1px solid var(--border);
 `
-
 const ActionsWrapper = styled.div`
   width: 425px;
   font-family: Montserrat;
@@ -42,7 +42,6 @@ const ActionsWrapper = styled.div`
   font-size: 15px;
   line-height: 18px;
 `
-
 const ActionsHeader = styled.div`
   display: flex;
   flex-direction: row;
@@ -144,6 +143,20 @@ const BidGEN = () => {
           }
         /> :
         <div>
+          <BidPanel
+            currentAuction={currentAuction}
+            setCurrentAuction={setCurrentAuction}
+            instruction="Enable NEC for locking"
+            subinstruction="-"
+            buttonText="Bid GEN"
+            onEnable={() => setTokenApproved(true)}
+            getToken={() =>
+              contractService.getGenTokenAddress()
+            }
+            getSpender={() =>
+              contractService.getAuction4ReputationAddress()
+            }
+          />
         </div>
       }
     </React.Fragment>

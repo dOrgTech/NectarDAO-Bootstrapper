@@ -73,7 +73,7 @@ export async function getActiveAuction(provider) {
     if (currentAuction.toNumber() > maxAuctions) {
         return maxAuctions.toString()
     }
-        return currentAuction.toString()
+    return currentAuction.toString()
 }
 
 export async function getNextAuctionStartTime(provider) {
