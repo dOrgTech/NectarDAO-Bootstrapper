@@ -5,7 +5,7 @@ import * as contractService from 'core/services/contractService'
 import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
 import * as auctionService from 'core/services/auction4RepService'
-import * as numberUtils from 'core/libs/lib-number-helpers'
+import * as numberLib from 'core/libs/lib-number-helpers'
 
 const PanelWrapper = styled.div`
 `
@@ -127,17 +127,6 @@ const BidPanel = ({
         setBidAmount(event.target.value)
     }
 
-    React.useEffect(() => {
-        const fetch = async () => {
-            // Token Locking Approval
-            const provider = await providerService.getProvider()
-            const owner = await providerService.getDefaultAccount(provider)
-            const token = getToken()
-            const spender = getSpender()
-        }
-        fetch()
-    }, [])
-
     // Fetch Initial State
     React.useEffect(() => {
         const fetch = async () => {
@@ -170,11 +159,14 @@ const BidPanel = ({
                     setPending(true)
                     const provider = await providerService.getProvider()
 
-                    console.log('bid', provider, bidAmount, currentAuction)
+
+
+                    const weiValue = numberLib.toWei(bidAmount)
+                    console.log('bid', provider, weiValue, currentAuction)
 
                     try {
                         await auctionService.bid(
-                            provider, bidAmount, currentAuction
+                            provider, weiValue, currentAuction
                         )
                     } catch (e) {
                         console.log(e)
