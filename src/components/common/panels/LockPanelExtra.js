@@ -109,7 +109,7 @@ const DisableButton = styled(Button)`
   background: none;
 `
 
-const LockPanel = ({
+const LockPanelExtra = ({
   currentPeriod,
   setCurrentPeriod,
   rangeStart,
@@ -121,81 +121,39 @@ const LockPanel = ({
 
   const [enabled, setEnabled] = React.useState(undefined)
   const [pending, setPending] = React.useState(false)
-  const [lockDuration, setLockDuration] = React.useState(1)
-  const [lockAmount, setLockAmount] = React.useState(0)
-  const [releaseableTime, setReleaseableTime] = React.useState(0)
-  const [releaseableDate, setReleaseableDate] = React.useState('12.04.2019')
+  const [lockId, setLockId] = React.useState(1)
+  const [periodsToExtend, setPeriodsToExtend] = React.useState(0)
 
-  const changeLockDuration = (value) => {
-    console.log('new lock duration', value)
-    setLockDuration(value)
+  const changeLockId = (event) => {
+    console.log('new lock Id', event.target.value)
+    setLockId(event.target.value)
   }
 
-  const changeLockAmount = (event) => {
-    console.log('new lock amount', event.target.value)
-    setLockAmount(event.target.value)
-  }
-
-  const LockingPeriod = () => {
-    const cells = []
-    for (let i = rangeStart; i < rangeStart + 5; i += 1) {
-      if (i === lockDuration) {
-        cells.push(<ActiveLockingPeriodCell>{i}</ActiveLockingPeriodCell>)
-      } else {
-        cells.push(
-          <LockingPeriodCell onClick={() => { changeLockDuration(i) }}>
-            {i}
-          </LockingPeriodCell>
-        )
-      }
-    }
-
-    return (
-      <LockingPeriodSelectorWrapper>
-        <div>Lock Duration</div>
-        <LockingPeriodSelector>
-          <LockingPeriodStartCell onClick={() => {
-            setRangeStart(rangeStart > 0 ? rangeStart - 1 : 0)
-          }}
-          >
-            {'<'}
-          </LockingPeriodStartCell>
-          {cells}
-          <LockingPeriodEndCell
-            onClick={() => { setRangeStart(rangeStart + 1) }}
-          >
-            {'>'}
-          </LockingPeriodEndCell>
-        </LockingPeriodSelector>
-      </LockingPeriodSelectorWrapper>
-    )
+  const changePeriodsToExtend = (event) => {
+    console.log('new extension length', event.target.value)
+    setPeriodsToExtend(event.target.value)
   }
 
   return (
     <PanelWrapper>
-      <LockingPeriod />
       <LockAmountWrapper>
-        <div>Lock Amount</div>
+        <div>Extend Lock</div>
         <LockAmountForm>
-          <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
-          <div>NEC</div>
+          <div>LockId</div>
+          <input type="text" name="name" value={lockId} onChange={changeLockId} />
+
+          <div>PeriodsToExtend</div>
+          <input type="text" name="name" value={periodsToExtend} onChange={changePeriodsToExtend} />
         </LockAmountForm>
       </LockAmountWrapper>
-      <ReleaseableDateWrapper>
-        <div>Releasable</div>
-        <ReleaseableDate>{releaseableDate}</ReleaseableDate>
-      </ReleaseableDateWrapper>
       <Button
         onClick={async () => {
           setPending(true)
           const provider = await providerService.getProvider()
 
-          const weiValue = numberLib.toWei(lockAmount)
-          console.log('lock', provider, weiValue, lockDuration, currentPeriod)
-
           try {
-            await lockingService.lock(
-              provider, weiValue, lockDuration, currentPeriod
+            await lockingService.extendLock(
+              provider, lockId, periodsToExtend, currentPeriod
             )
           } catch (e) {
             console.log(e)
@@ -206,14 +164,8 @@ const LockPanel = ({
       >
         {buttonText}
       </Button>
-      {/* <div>Extend Lock</div>
-      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
-      <Button>Extend Lock</Button>
-      <div>Release Lock</div>
-      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
-      <Button>Release Lock</Button> */}
     </PanelWrapper>
   )
 }
 
-export default LockPanel
+export default LockPanelExtra

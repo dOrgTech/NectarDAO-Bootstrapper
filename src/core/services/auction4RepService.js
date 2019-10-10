@@ -17,13 +17,6 @@ async function getContractInstance(provider) {
     return new web3.eth.Contract(Auction4Reputation, auctionInstance, { from: defaultAccount })
 }
 
-export async function getUserBids(provider) {
-    const contract = await getContractInstance(provider)
-}
-
-export async function getUserRedemptions(provider) {
-}
-
 export async function getAuctionsStartTime(provider) {
     const contract = await getContractInstance(provider)
     return contract.methods.auctionsStartTime().call()
@@ -73,7 +66,7 @@ export async function getActiveAuction(provider) {
     if (currentAuction.toNumber() > maxAuctions) {
         return maxAuctions.toString()
     }
-        return currentAuction.toString()
+    return currentAuction.toString()
 }
 
 export async function getNextAuctionStartTime(provider) {
@@ -130,7 +123,7 @@ export async function getAllAuctionData(provider) {
     console.log(bidEvents)
     const data = []
 
-    for (let auctionId = 0; auctionId <= maxAuctions; auctionId += 1) {
+    for (let auctionId = 0; auctionId < maxAuctions; auctionId += 1) {
         if (!data[auctionId]) {
             data[auctionId] = {
                 totalBids: '0',
@@ -141,11 +134,7 @@ export async function getAllAuctionData(provider) {
         if (auctionId < currentAuction) {
             data[auctionId].status = 'Complete'
         } else if (auctionId === currentAuction) {
-            if (Date.now() > nextAuctionStartTime) {
-                data[auctionId].status = 'Complete'
-            } else {
-                data[auctionId].status = 'In Progress'
-            }
+            data[auctionId].status = 'In Progress'
         } else {
             data[auctionId].status = 'Not Started'
         }

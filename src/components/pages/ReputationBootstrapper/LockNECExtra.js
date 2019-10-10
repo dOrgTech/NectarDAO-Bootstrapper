@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Table from 'components/common/Table'
-import LockPanel from 'components/common/panels/LockPanel'
+import LockPanelExtra from 'components/common/panels/LockPanelExtra'
 import EnableTokenPanel from 'components/common/panels/EnableTokenPanel'
 import TimelineProgress from 'components/common/TimelineProgress'
 import LogoAndText from 'components/common/LogoAndText'
@@ -54,7 +54,7 @@ const ActionsHeader = styled.div`
   border-bottom: 1px solid var(--border);
 `
 
-const LockNEC = () => {
+const LockNECExtra = () => {
   const [currentPeriod, setCurrentPeriod] = React.useState(0)
   const [rangeStart, setRangeStart] = React.useState(0)
   const [maxPeriods, setMaxPeriods] = React.useState(0)
@@ -170,7 +170,7 @@ const LockNEC = () => {
           }
         /> :
         <div>
-          <LockPanel
+          <LockPanelExtra
             currentPeriod={currentPeriod}
             setCurrentPeriod={setCurrentPeriod}
             rangeStart={rangeStart}
@@ -218,4 +218,4 @@ const LockNEC = () => {
   )
 }
 
-export default LockNEC
+export default LockNECExtra

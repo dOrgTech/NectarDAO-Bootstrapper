@@ -1,32 +1,35 @@
 /* eslint-disable no-restricted-syntax */
 import Web3 from 'web3'
 import ContinuousLocking4Reputation from '../../../external-contracts/ContinuousLocking4Reputation.json'
+import * as contractService from './contractService'
 
 const LOCK_EVENT = 'LockToken'
 const RELEASE_EVENT = 'Release'
 const EXTEND_LOCKING_EVENT = 'ExtendLocking'
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
-async function getContractInstance(provider, contractAddress) {
+async function getContractInstance(provider) {
     const { web3Provider } = provider
     const web3 = new Web3(web3Provider)
     const { defaultAccount } = web3Provider.eth
 
-    return new web3.eth.Contract(ContinuousLocking4Reputation.abi, contractAddress, { from: defaultAccount })
+    const lockingAddress = await contractService.getContinuousLocking4ReputationAddress()
+
+    return new web3.eth.Contract(ContinuousLocking4Reputation.abi, lockingAddress, { from: defaultAccount })
 }
 
-export async function getNumLockingPeriods(provider, contractAddress) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getNumLockingPeriods(provider) {
+    const contract = await getContractInstance(provider)
     return contract.methods.batchesIndexCap().call()
 }
 
-export async function getLockingPeriodLength(provider, contractAddress) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getLockingPeriodLength(provider) {
+    const contract = await getContractInstance(provider)
     return contract.methods.batchTime().call()
 }
 
-export async function getStartTime(provider, contractAddress) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getStartTime(provider) {
+    const contract = await getContractInstance(provider)
     return contract.methods.startTime().call()
 }
 
@@ -43,11 +46,11 @@ function getLockingPeriodByTimestamp(startTime, batchTime, timestamp) {
     return lockingPeriodBN.toString()
 }
 
-export async function getActiveLockingPeriod(provider, contractAddress) {
+export async function getActiveLockingPeriod(provider) {
     const { BN } = Web3.utils
 
-    const startTime = new BN(await getStartTime(provider, contractAddress))
-    const batchTime = new BN(await getLockingPeriodLength(provider, contractAddress))
+    const startTime = new BN(await getStartTime(provider))
+    const batchTime = new BN(await getLockingPeriodLength(provider))
     const currentTime = new BN(Math.round((new Date()).getTime() / 1000))
 
     console.log(startTime.toString(), batchTime.toString(), currentTime.toString())
@@ -58,10 +61,10 @@ export async function getActiveLockingPeriod(provider, contractAddress) {
     return currentLockingPeriod.toString()
 }
 
-export async function getTimeElapsed(provider, contractAddress) {
+export async function getTimeElapsed(provider) {
     const { BN } = Web3.utils
 
-    const startTime = new BN(await getStartTime(provider, contractAddress))
+    const startTime = new BN(await getStartTime(provider))
     const currentTime = new BN(Math.round((new Date()).getTime() / 1000))
 
     const timeElapsed = currentTime.sub(startTime)
@@ -69,8 +72,8 @@ export async function getTimeElapsed(provider, contractAddress) {
     return timeElapsed.toString()
 }
 
-export async function getUserTokenLocks(provider, contractAddress, account) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getUserTokenLocks(provider, account) {
+    const contract = await getContractInstance(provider)
     const { BN } = Web3.utils
 
     const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
@@ -84,8 +87,8 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
     const data = {}
     const userLockIds = []
 
-    const startTime = await getStartTime(provider, contractAddress)
-    const batchTime = await getLockingPeriodLength(provider, contractAddress)
+    const startTime = await getStartTime(provider)
+    const batchTime = await getLockingPeriodLength(provider)
 
     // Add Locks
     for (const event of lockEvents) {
@@ -149,12 +152,12 @@ export async function getUserTokenLocks(provider, contractAddress, account) {
     return data
 }
 
-export async function getAuctionData(provider, contractAddress) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getAuctionData(provider) {
+    const contract = await getContractInstance(provider)
 
     // Get the active period
-    const currentLockingPeriod = await getActiveLockingPeriod(provider, contractAddress)
-    const totalLockingPeriods = await getNumLockingPeriods(provider, contractAddress)
+    const currentLockingPeriod = await getActiveLockingPeriod(provider)
+    const totalLockingPeriods = await getNumLockingPeriods(provider)
 
     let maxIndex = currentLockingPeriod
 
@@ -170,23 +173,23 @@ export async function getAuctionData(provider, contractAddress) {
     }
 }
 
-export async function getAgreementHash(provider, contractAddress) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function getAgreementHash(provider) {
+    const contract = await getContractInstance(provider)
     return contract.methods.getAgreementHash().call()
 }
 
-export async function lock(provider, contractAddress, amount, duration, batchId) {
-    const contract = await getContractInstance(provider, contractAddress)
-    console.log('lock', contractAddress, amount, duration, batchId, AGREEMENT_HASH)
+export async function lock(provider, amount, duration, batchId) {
+    const contract = await getContractInstance(provider)
+    console.log('lock', amount, duration, batchId, AGREEMENT_HASH)
     await contract.methods.lock(amount, duration, batchId, AGREEMENT_HASH).send()
 }
 
-export async function extendLock(provider, contractAddress, lockId, periodsToExtend, batchId) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function extendLock(provider, lockId, periodsToExtend, batchId) {
+    const contract = await getContractInstance(provider)
     await contract.methods.extendLocking(periodsToExtend, batchId, lockId, AGREEMENT_HASH).send()
 }
 
-export async function release(provider, contractAddress, beneficiary, lockId) {
-    const contract = await getContractInstance(provider, contractAddress)
+export async function release(provider, beneficiary, lockId) {
+    const contract = await getContractInstance(provider)
     await contract.methods.release(beneficiary, lockId).send()
 }
