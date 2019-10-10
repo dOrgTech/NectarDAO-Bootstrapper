@@ -67,7 +67,7 @@ const LockNEC = () => {
   // TODO: Remove Mock Data
   if (currentPeriod === 0) {
     setCurrentPeriod(8)
-    setRangeStart(7)
+    setRangeStart(0)
     setMaxPeriods(10)
     setPeriodPercentage(75)
     setPeriodTimer('Next starts in 1 day, 6 hours')
@@ -140,6 +140,7 @@ const LockNEC = () => {
             setCurrentPeriod={setCurrentPeriod}
             rangeStart={rangeStart}
             setRangeStart={setRangeStart}
+            buttonText="Lock NEC"
           />
         </div>
       }
@@ -165,6 +166,15 @@ const LockNEC = () => {
             { name: 'You Locked', key: 'userLocked', width: '25%', align: 'right' },
             { name: 'Total Locked', key: 'totalLocked', width: '30%', align: 'right' },
             { name: 'You Received', key: 'repReceived', width: '25%', align: 'right' }
+          ]}
+          data={periodData}
+        />
+        <Table
+          highlightTopRow
+          columns={[
+            { name: 'Period #', key: 'id', width: '15%', align: 'left' },
+            { name: 'Amount', key: 'amount', width: '25%', align: 'right' },
+            { name: 'Redeemed?', key: 'isRedeemed', width: '30%', align: 'right' },
           ]}
           data={periodData}
         />

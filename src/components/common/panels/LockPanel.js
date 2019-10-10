@@ -1,6 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import * as contractService from 'core/services/contractService'
+import * as providerService from 'core/services/providerService'
+import * as erc20Service from 'core/services/erc20Service'
+import * as lockingService from 'core/services/continuousLocking4RepService'
+import * as numberLib from 'core/libs/lib-number-helpers'
+
 const PanelWrapper = styled.div`
 `
 
@@ -81,15 +87,63 @@ const LockNECButton = styled.div`
   border: 1px solid var(--border);
 `
 
-const LockPanel = ({ currentPeriod, setCurrentPeriod, rangeStart, setRangeStart }) => {
+const Button = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 34px;
+  margin: 0px 24px;
+  background: var(--action-button);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--white-text);
+`
+
+const DisableButton = styled(Button)`
+  border: 1px solid var(--inactive-border);
+  color: var(--inactive-header-text);
+  background: none;
+`
+
+const LockPanel = ({
+  currentPeriod,
+  setCurrentPeriod,
+  rangeStart,
+  setRangeStart,
+  buttonText,
+  getToken,
+  getSpender,
+  onEnable }) => {
+
+  const [enabled, setEnabled] = React.useState(undefined)
+  const [pending, setPending] = React.useState(false)
+  const [lockDuration, setLockDuration] = React.useState(1)
+  const [lockAmount, setLockAmount] = React.useState(0)
+  const [releaseableTime, setReleaseableTime] = React.useState(0)
+  const [releaseableDate, setReleaseableDate] = React.useState('12.04.2019')
+
+  const changeLockDuration = (value) => {
+    console.log('new lock duration', value)
+    setLockDuration(value)
+  }
+
+  const changeLockAmount = (event) => {
+    console.log('new lock amount', event.target.value)
+    setLockAmount(event.target.value)
+  }
+
   const LockingPeriod = () => {
     const cells = []
     for (let i = rangeStart; i < rangeStart + 5; i += 1) {
-      if (i === currentPeriod) {
+      if (i === lockDuration) {
         cells.push(<ActiveLockingPeriodCell>{i}</ActiveLockingPeriodCell>)
       } else {
         cells.push(
-          <LockingPeriodCell onClick={() => { setCurrentPeriod(i) }}>
+          <LockingPeriodCell onClick={() => { changeLockDuration(i) }}>
             {i}
           </LockingPeriodCell>
         )
@@ -98,15 +152,15 @@ const LockPanel = ({ currentPeriod, setCurrentPeriod, rangeStart, setRangeStart 
 
     return (
       <LockingPeriodSelectorWrapper>
-        <div>Locking Period</div>
+        <div>Lock Duration</div>
         <LockingPeriodSelector>
           <LockingPeriodStartCell onClick={() => {
-              setRangeStart(rangeStart > 0 ? rangeStart - 1 : 0)
-            }}
+            setRangeStart(rangeStart > 0 ? rangeStart - 1 : 0)
+          }}
           >
             {'<'}
           </LockingPeriodStartCell>
-          { cells }
+          {cells}
           <LockingPeriodEndCell
             onClick={() => { setRangeStart(rangeStart + 1) }}
           >
@@ -123,15 +177,35 @@ const LockPanel = ({ currentPeriod, setCurrentPeriod, rangeStart, setRangeStart 
       <LockAmountWrapper>
         <div>Lock Amount</div>
         <LockAmountForm>
-          <div>0</div>
+          <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
           <div>NEC</div>
         </LockAmountForm>
       </LockAmountWrapper>
       <ReleaseableDateWrapper>
         <div>Releasable</div>
-        <ReleaseableDate>12.04.2019</ReleaseableDate>
+        <ReleaseableDate>{releaseableDate}</ReleaseableDate>
       </ReleaseableDateWrapper>
-      <LockNECButton>Lock NEC</LockNECButton>
+      <Button
+        onClick={async () => {
+          setPending(true)
+          const provider = await providerService.getProvider()
+
+          const weiValue = numberLib.toWei(lockAmount)
+          console.log('lock', provider, lockAmount, currentPeriod)
+
+          try {
+            await lockingService.lock(
+              provider, weiValue, lockDuration, currentPeriod
+            )
+          } catch (e) {
+            console.log(e)
+          }
+
+          setPending(false)
+        }}
+      >
+        {buttonText}
+      </Button>
     </PanelWrapper>
   )
 }

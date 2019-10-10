@@ -17,13 +17,6 @@ async function getContractInstance(provider) {
     return new web3.eth.Contract(Auction4Reputation, auctionInstance, { from: defaultAccount })
 }
 
-export async function getUserBids(provider) {
-    const contract = await getContractInstance(provider)
-}
-
-export async function getUserRedemptions(provider) {
-}
-
 export async function getAuctionsStartTime(provider) {
     const contract = await getContractInstance(provider)
     return contract.methods.auctionsStartTime().call()

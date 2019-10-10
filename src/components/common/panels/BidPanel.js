@@ -159,8 +159,6 @@ const BidPanel = ({
                     setPending(true)
                     const provider = await providerService.getProvider()
 
-
-
                     const weiValue = numberLib.toWei(bidAmount)
                     console.log('bid', provider, weiValue, currentAuction)
 
