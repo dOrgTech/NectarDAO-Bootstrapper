@@ -11,6 +11,7 @@ import * as contractService from 'core/services/contractService'
 import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
 import * as auctionService from 'core/services/auction4RepService'
+import * as numberUtils from 'core/libs/lib-number-helpers'
 
 const BidGENWrapper = styled.div`
   display: flex;
@@ -61,6 +62,7 @@ const BidGEN = () => {
   const [auctionData, setAuctionData] = React.useState([])
   const [tokenApproved, setTokenApproved] = React.useState(false)
   const [genBalance, setGenBalance] = React.useState('...')
+  const [genBalanceDisplay, setGenBalanceDisplay] = React.useState('...')
 
   React.useEffect(() => {
     const fetch = async () => {
@@ -121,6 +123,7 @@ const BidGEN = () => {
       const genTokenInstance = await contractService.getGenTokenAddress()
       const currUserBalance = await erc20Service.balanceOf(provider, genTokenInstance, defaultAccount)
       setGenBalance(`${currUserBalance} GEN`)
+      setGenBalanceDisplay(`${numberUtils.toEther(currUserBalance)} GEN`)
     }
     fetch()
   }, [])
@@ -141,7 +144,6 @@ const BidGEN = () => {
           }
         /> :
         <div>
-          lkjsdflkjsldkfjaslk;dfj;lkasjflk;ajsdfljkasdf
         </div>
       }
     </React.Fragment>
@@ -173,7 +175,7 @@ const BidGEN = () => {
       <ActionsWrapper>
         <ActionsHeader>
           <LogoAndText icon={icon} text="GEN" />
-          <div>{genBalance}</div>
+          <div>{genBalanceDisplay}</div>
         </ActionsHeader>
         <SidePanel />
       </ActionsWrapper>

@@ -9,6 +9,7 @@ import icon from 'assets/svgs/ethfinex-logo.svg'
 import * as contractService from 'core/services/contractService'
 import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
+import * as numberutils from 'core/libs/lib-number-helpers'
 
 const LockNECWrapper = styled.div`
   display: flex;
@@ -61,6 +62,7 @@ const LockNEC = () => {
   const [periodData, setPeriodData] = React.useState([])
   const [tokenApproved, setTokenApproved] = React.useState(false)
   const [necBalance, setNecBalance] = React.useState('...')
+  const [necBalanceDisplay, setNecBalanceDisplay] = React.useState('...')
 
   // TODO: Remove Mock Data
   if (currentPeriod === 0) {
@@ -112,6 +114,7 @@ const LockNEC = () => {
       // NEC Balance
       const currUserBalance = await erc20Service.balanceOf(provider, necTokenInstance, defaultAccount)
       setNecBalance(`${currUserBalance} NEC`)
+      setNecBalanceDisplay(`${numberutils.toEther(currUserBalance)} NEC`)
     }
     fetch()
   }, [])
@@ -169,7 +172,7 @@ const LockNEC = () => {
       <ActionsWrapper>
         <ActionsHeader>
           <LogoAndText icon={icon} text="Nectar" />
-          <div>{necBalance}</div>
+          <div>{necBalanceDisplay}</div>
         </ActionsHeader>
         <SidePanel />
       </ActionsWrapper>
