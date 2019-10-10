@@ -108,7 +108,7 @@ const BidGEN = () => {
 
       setAuctionData(data.map((auction, index) => {
         const userBid = auction.bids[defaultAccount] ? auction.bids[defaultAccount] : '0'
-        const totalBid = auction.totalBid ? auction.totalBid : '0'
+        const totalBid = auction.totalBids ? auction.totalBids : '0'
 
         return {
           id: index,
