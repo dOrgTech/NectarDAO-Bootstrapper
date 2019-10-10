@@ -116,7 +116,7 @@ const BidGEN = () => {
         const totalBid = auction.totalBids ? auction.totalBids : '0'
 
         return {
-          id: index,
+          id: Number(index) + 1,
           userBid: `${toEther(userBid)} GEN`,
           totalBid: `${toEther(totalBid)} GEN`,
           status: auction.status

@@ -3,6 +3,7 @@ import { Switch, Route } from 'react-router-dom'
 import styled from 'styled-components'
 import Selector from './Selector'
 import LockNEC from './LockNEC'
+import LockNECExtra from './LockNECExtra'
 import Airdrop from './Airdrop'
 import BidGEN from './BidGEN'
 
@@ -28,6 +29,9 @@ const ReputationBoostrapper = () => {
       <Selector height="159px" />
       <SectionWrapper>
         <Switch>
+          <Route exact path="/lock-nec-extra">
+            <LockNECExtra />
+          </Route>
           <Route exact path="/lock-nec">
             <LockNEC />
           </Route>
