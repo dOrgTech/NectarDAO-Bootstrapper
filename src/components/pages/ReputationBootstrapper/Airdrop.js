@@ -7,6 +7,7 @@ import * as contractService from 'core/services/contractService'
 import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
 import * as necRepService from 'core/services/necRepAllocationService'
+import * as numberLib from 'core/libs/lib-number-helpers'
 
 const AirdropWrapper = styled.div`
   display: flex;
@@ -75,6 +76,7 @@ const Airdrop = () => {
   const [dropPercentage, setDropPercentage] = React.useState(0)
   const [dropTimer, setDropTimer] = React.useState('...')
   const [necBalance, setNecBalance] = React.useState('...')
+  const [necBalanceDisplay, setNecBalanceDisplay] = React.useState('...')
   const [repBalance, setRepBalance] = React.useState('...')
   const [dropBlock, setDropBlock] = React.useState('...')
   const [currentBlock, setCurrentBlock] = React.useState('...')
@@ -89,6 +91,7 @@ const Airdrop = () => {
       // NEC Balance
       const currUserBalance = await erc20Service.balanceOf(provider, necTokenInstance, defaultAccount)
       setNecBalance(`${currUserBalance} NEC`)
+      setNecBalanceDisplay(`${numberLib.toEther(currUserBalance)} NEC`)
 
       // REP Balance
       const currRepBalance = await necRepService.getSnapshotRep(provider, necRepAllocationInstance, defaultAccount)
@@ -140,7 +143,7 @@ const Airdrop = () => {
         height="50px"
       />
       <Divider width="80%" margin="20px 0px 20px 0px" />
-      <InfoLine title="Nectar Balance" info={necBalance} />
+      <InfoLine title="Nectar Balance" info={necBalanceDisplay} />
       <InfoLine title="Receive Voting Power" info={repBalance} />
       <Divider width="80%" margin="20px 0px 20px 0px" />
       <InfoLine title="Airdrop Blocknumber" info={dropBlock} />
