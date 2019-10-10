@@ -13,6 +13,7 @@ import * as providerService from 'core/services/providerService'
 import * as erc20Service from 'core/services/erc20Service'
 import * as auctionService from 'core/services/auction4RepService'
 import * as numberUtils from 'core/libs/lib-number-helpers'
+import { max } from 'date-fns'
 
 const BidGENWrapper = styled.div`
   display: flex;
@@ -69,21 +70,25 @@ const BidGEN = () => {
       const defaultAccount = await providerService.getDefaultAccount(provider)
 
       // Max Auctions
-      setMaxAuction(await auctionService.getNumAuctions(provider))
+      const maxAuction = await auctionService.getNumAuctions(provider)
+      setMaxAuction(maxAuction)
 
       // Current Auction
-      setCurrentAuction(await auctionService.getActiveAuction(provider))
+      const currentAuction = await auctionService.getActiveAuction(provider)
+      setCurrentAuction(currentAuction)
 
       // Auction Percentage & Auction Timer
       const auctionLength = await auctionService.getAuctionLength(provider)
-      const startTime = await auctionService.getNextAuctionStartTime(provider)
+      const nextStartTime = await auctionService.getNextAuctionStartTime(provider)
+      const timeTillNextAuction = await auctionService.getTimeUntilNextAuction(provider)
+
       const now = Date.now()
 
       let prefix = 'Next starts in'
       let ended = false
 
-      if (maxAuction === currentAuction) {
-        if (Date.now() > startTime) {
+      if (currentAuction === maxAuction) {
+        if (Date.now() > nextStartTime) {
           setAuctionPercentage(100)
           setAuctionTimer('Auctions have ended')
           ended = true
@@ -93,14 +98,14 @@ const BidGEN = () => {
       }
 
       if (!ended) {
-        setAuctionPercentage(((startTime - now) / auctionLength) * 100)
+        setAuctionPercentage((timeTillNextAuction / auctionLength) * 100)
 
-        const seconds = (startTime - now) / 1000
+        const seconds = timeTillNextAuction / 1000
         let hours = (seconds / 60) / 60
-        const days = Math.fround(hours / 24)
-        hours -= days * 24
-        hours = Math.fround(hours)
-        setAuctionTimer(`${prefix} ${days} days, ${hours} hours`)
+        // const days = Math.fround(hours / 24)
+        // hours -= days * 24
+        // hours = Math.fround(hours)
+        setAuctionTimer(`${prefix}, ${timeTillNextAuction} time units`)
       }
 
       // Auction Data

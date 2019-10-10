@@ -191,7 +191,7 @@ const LockPanel = ({
           const provider = await providerService.getProvider()
 
           const weiValue = numberLib.toWei(lockAmount)
-          console.log('lock', provider, lockAmount, currentPeriod)
+          console.log('lock', provider, weiValue, lockDuration, currentPeriod)
 
           try {
             await lockingService.lock(
@@ -206,6 +206,12 @@ const LockPanel = ({
       >
         {buttonText}
       </Button>
+      {/* <div>Extend Lock</div>
+      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
+      <Button>Extend Lock</Button>
+      <div>Release Lock</div>
+      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
+      <Button>Release Lock</Button> */}
     </PanelWrapper>
   )
 }

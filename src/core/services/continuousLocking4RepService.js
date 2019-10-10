@@ -18,7 +18,7 @@ async function getContractInstance(provider) {
     return new web3.eth.Contract(ContinuousLocking4Reputation.abi, lockingAddress, { from: defaultAccount })
 }
 
-export async function getNumLockingPeriods(provider, ) {
+export async function getNumLockingPeriods(provider) {
     const contract = await getContractInstance(provider)
     return contract.methods.batchesIndexCap().call()
 }
