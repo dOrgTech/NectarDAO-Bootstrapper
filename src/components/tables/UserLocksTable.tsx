@@ -10,7 +10,7 @@ import Popup from "reactjs-popup";
 import ExtendLockPopup from '../common/panels/ExtendLockPopup';
 import 'components/common/Modal.scss'
 
-import BigNumber from "bignumber.js"
+import BigNumber from "utils/bignumber"
 import { Lock, LockStaticParams } from 'types'
 import { RootStore } from 'stores/Root';
 type Scores = Map<number, BigNumber>

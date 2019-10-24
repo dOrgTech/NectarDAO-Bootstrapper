@@ -4,6 +4,14 @@ import { TableWrapper, RowWrapper, InactiveRowWrapper, Row, CellWrapper, GreyCel
 import 'components/common/Table.scss'
 import * as helpers from 'utils/helpers'
 import { RootStore } from 'stores/Root';
+import { AuctionStatus } from 'types';
+
+const columns = [
+    { name: 'Auction #', key: 'id', width: '15%', align: 'left' },
+    { name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right' },
+    { name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right' },
+    { name: 'You Recieved', key: 'status', width: '25%', align: 'right' }
+]
 
 @inject('root')
 @observer
@@ -17,16 +25,25 @@ class GenAuctionTable extends React.Component<any, any>{
         for (let i = 0; i < auctionCount; i++) {
             const userBid = bidGENStore.getUserBid(userAddress, i)
             const totalBid = bidGENStore.getTotalBid(i)
+            const userRep = bidGENStore.getUserRep(userAddress, i)
             const status = bidGENStore.getAuctionStatus(i)
 
+            // We need to handle very SMALL VALUES too: basically, we should NEVER use exponential for this stringify
+            // We'll keep it in RAW format, and then do formatters later like with round Value.
+            // We can also from WEI ourselves by mul/div 10^18
             const userBidDisplay = `${helpers.roundValue(helpers.fromWei(userBid.toString()))} GEN`
             const totalBidDisplay = `${helpers.roundValue(helpers.fromWei(totalBid.toString()))} GEN`
+
+            let statusDisplay = status.toString()
+            if (status === AuctionStatus.COMPLETE) {
+                statusDisplay = `${helpers.roundValue(helpers.fromWei(userRep.toString()))} REP`
+            }
 
             rows.push({
                 id: i,
                 userBid: userBidDisplay,
                 totalBid: totalBidDisplay,
-                status: status
+                status: statusDisplay
             })
         }
         return rows.reverse()
@@ -50,13 +67,6 @@ class GenAuctionTable extends React.Component<any, any>{
         const userAddress = providerStore.getDefaultAccount()
         const auctionDataLoaded = bidGENStore.isAuctionDataLoaded()
         const auctionsStarted = bidGENStore.haveAuctionsStarted()
-
-        const columns = [
-            { name: 'Auction #', key: 'id', width: '15%', align: 'left' },
-            { name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right' },
-            { name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right' },
-            { name: 'Status', key: 'status', width: '25%', align: 'right' }
-        ]
 
         let data
         if (auctionDataLoaded && auctionsStarted) {

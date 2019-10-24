@@ -6,7 +6,7 @@ import jazzicon from "jazzicon";
 import web3 from "./web3";
 
 // Settings
-import BigNumber from "bignumber.js"
+import BigNumber from "utils/bignumber"
 
 
 export const timeConstants = {

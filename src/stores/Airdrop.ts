@@ -6,7 +6,7 @@ import * as blockchain from "utils/blockchain"
 import * as log from 'loglevel'
 import { AirdropStaticParams, SnapshotInfo } from 'types'
 import { RootStore } from './Root';
-import BigNumber from "bignumber.js"
+import BigNumber from "utils/bignumber"
 
 const objectPath = require("object-path")
 

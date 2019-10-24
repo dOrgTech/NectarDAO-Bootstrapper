@@ -13,11 +13,6 @@ import Tooltip from 'components/common/Tooltip'
 import { RootStore } from 'stores/Root'
 import { SnapshotInfo } from 'types'
 
-const propertyNames = {
-  STATIC_PARAMS: 'staticParams',
-  USER_DATA: 'userData'
-}
-
 const snapshotStatus = {
   NOT_STARTED: 0,
   SNAPSHOT_CONCLUDED: 1,

@@ -5,7 +5,7 @@ import * as blockchain from "utils/blockchain"
 import * as helpers from "utils/helpers"
 import * as log from 'loglevel'
 import * as deployed from 'deployed.json'
-import BigNumber from "bignumber.js"
+import BigNumber from "utils/bignumber"
 
 import { Lock, LockStaticParams } from 'types'
 type Scores = Map<number, BigNumber>
@@ -152,7 +152,7 @@ export default class LockNECStore {
         return (now >= endTime)
     }
 
-    calcReleaseableTimestamp(lockingTime: number, duration): number {
+    calcReleaseableTimestamp(lockingTime: number, duration: number): number {
         const batchLength = this.staticParams.batchTime
         const numBatches = Number(duration)
 

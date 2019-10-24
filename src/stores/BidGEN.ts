@@ -82,7 +82,7 @@ export default class BidGENStore {
         return this.auctionCount
     }
 
-    getUserBid(userAddress: string, auctionId: number) {
+    getUserBid(userAddress: string, auctionId: number): BigNumber {
         if (!this.auctionData.has(auctionId)) {
             throw new Error(`Attempting to access non-existent user data for ${userAddress} in auction ${auctionId}`);
         }
@@ -90,6 +90,15 @@ export default class BidGENStore {
         const auction = this.auctionData.get(auctionId) as Auction
         const userBid = auction.bids[userAddress] || new BigNumber(0)
         return userBid
+    }
+
+    getUserRep(userAddress: string, auctionId: number): BigNumber {
+        if (!this.auctionData.has(auctionId)) {
+            throw new Error(`Attempting to access non-existent user data for ${userAddress} in auction ${auctionId}`);
+        }
+
+        const auction = this.auctionData.get(auctionId) as Auction
+        return auction.rep[userAddress] || new BigNumber(0)
     }
 
     getTotalBid(auctionId) {
@@ -245,7 +254,12 @@ export default class BidGENStore {
     }
 
     newAuction(): Auction {
-        return new Auction(new BigNumber(0), new Map<string, BigNumber>(), AuctionStatus.NOT_STARTED)
+        return new Auction(
+            new BigNumber(0),
+            new Map<string, BigNumber>(),
+            AuctionStatus.NOT_STARTED,
+            new Map<string, BigNumber>()
+        )
     }
 
     parseBidEvent(event): BidEvent {
@@ -258,12 +272,23 @@ export default class BidGENStore {
         }
     }
 
+    calcAuctionReward(auction: Auction, user: string): BigNumber {
+        const userBid = auction.bids[user] as BigNumber
+        const totalBid = auction.totalBid
+        const totalReward = this.staticParams.auctionRepReward
+
+        const repRelation = userBid.times(totalReward)
+        const reward = repRelation.div(totalBid)
+        return reward
+    }
+
     @action fetchAuctionData = async () => {
         if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
         const contract = this.loadContract()
+        const userAddress = this.rootStore.providerStore.getDefaultAccount()
 
         try {
             const finalAuction = this.getFinalAuctionIndex()
@@ -325,6 +350,14 @@ export default class BidGENStore {
 
                 auctions.set(bid.auctionId, auction)
             }
+
+            auctions.forEach((auction, key, map) => {
+                if (auction.status === AuctionStatus.COMPLETE && auction.bids[userAddress]) {
+                    const repReward = this.calcAuctionReward(auction, userAddress)
+                    auction.rep[userAddress] = repReward
+                    auctions.set(key, auction)
+                }
+            })
 
             this.auctionData = auctions
             this.auctionCount = Number(currentAuction) + 1

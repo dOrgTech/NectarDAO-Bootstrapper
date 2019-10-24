@@ -1,4 +1,4 @@
-import BigNumber from "bignumber.js"
+import BigNumber from "utils/bignumber"
 
 export class Lock {
     constructor(
@@ -25,7 +25,8 @@ export class Auction {
     constructor(
         public totalBid: BigNumber,
         public bids: Map<string, BigNumber>,
-        public status: AuctionStatus
+        public status: AuctionStatus,
+        public rep: Map<string, BigNumber>
     ) { };
 }
 
