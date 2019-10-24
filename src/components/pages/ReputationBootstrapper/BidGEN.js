@@ -1,19 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import Table from 'components/common/Table'
+import { observer, inject } from 'mobx-react'
+import GenAuctionTable from 'components/tables/GenAuctionTable'
 import TimelineProgress from 'components/common/TimelineProgress'
 import EnableTokenPanel from 'components/common/panels/EnableTokenPanel'
 import BidPanel from 'components/common/panels/BidPanel'
 import LogoAndText from 'components/common/LogoAndText'
-import { toEther } from 'core/libs/lib-number-helpers'
 // TODO: change to GEN
-import icon from 'assets/svgs/ethfinex-logo.svg'
-import * as contractService from 'core/services/contractService'
-import * as providerService from 'core/services/providerService'
-import * as erc20Service from 'core/services/erc20Service'
-import * as auctionService from 'core/services/auction4RepService'
-import * as numberUtils from 'core/libs/lib-number-helpers'
-import { max } from 'date-fns'
+import GENLogo from 'assets/svgs/GEN-logo.svg'
+import * as helpers from 'utils/helpers'
+import * as deployed from 'deployed.json'
+import LoadingCircle from '../../common/LoadingCircle'
 
 const BidGENWrapper = styled.div`
   display: flex;
@@ -54,151 +51,188 @@ const ActionsHeader = styled.div`
   border-bottom: 1px solid var(--border);
 `
 
-const BidGEN = () => {
-  const [currentAuction, setCurrentAuction] = React.useState(0)
-  const [maxAuction, setMaxAuction] = React.useState(0)
-  const [auctionPercentage, setAuctionPercentage] = React.useState(0)
-  const [auctionTimer, setAuctionTimer] = React.useState('...')
-  const [auctionData, setAuctionData] = React.useState([])
-  const [tokenApproved, setTokenApproved] = React.useState(false)
-  const [genBalance, setGenBalance] = React.useState('...')
-  const [genBalanceDisplay, setGenBalanceDisplay] = React.useState('...')
+const propertyNames = {
+  STATIC_PARAMS: 'staticParams',
+  USER_LOCKS: 'userLocks',
+  AUCTION_DATA: 'auctionData'
+}
 
-  React.useEffect(() => {
-    const fetch = async () => {
-      const provider = await providerService.getProvider()
-      const defaultAccount = await providerService.getDefaultAccount(provider)
+@inject('root')
+@observer
+class BidGEN extends React.Component {
+  async componentDidMount() {
+    const { bidGENStore, tokenStore, providerStore } = this.props.root
+    const userAddress = providerStore.getDefaultAccount()
+    const genTokenAddress = deployed.GenToken
+    const schemeAddress = deployed.Auction4Reputation
 
-      // Max Auctions
-      const maxAuction = await auctionService.getNumAuctions(provider)
-      setMaxAuction(maxAuction)
-
-      // Current Auction
-      const currentAuction = await auctionService.getActiveAuction(provider)
-      setCurrentAuction(currentAuction)
-
-      // Auction Percentage & Auction Timer
-      const auctionLength = await auctionService.getAuctionLength(provider)
-      const nextStartTime = await auctionService.getNextAuctionStartTime(provider)
-      const timeTillNextAuction = await auctionService.getTimeUntilNextAuction(provider)
-
-      const now = Date.now()
-
-      let prefix = 'Next starts in'
-      let ended = false
-
-      if (currentAuction === maxAuction) {
-        if (Date.now() > nextStartTime) {
-          setAuctionPercentage(100)
-          setAuctionTimer('Auctions have ended')
-          ended = true
-        } else {
-          prefix = 'Last auction ends in'
-        }
-      }
-
-      if (!ended) {
-        setAuctionPercentage((timeTillNextAuction / auctionLength) * 100)
-
-        const seconds = timeTillNextAuction / 1000
-        let hours = (seconds / 60) / 60
-        // const days = Math.fround(hours / 24)
-        // hours -= days * 24
-        // hours = Math.fround(hours)
-        setAuctionTimer(`${prefix}, ${timeTillNextAuction} time units`)
-      }
-
-      // Auction Data
-      const data = await auctionService.getAllAuctionData(provider)
-
-      setAuctionData(data.map((auction, index) => {
-        const userBid = auction.bids[defaultAccount] ? auction.bids[defaultAccount] : '0'
-        const totalBid = auction.totalBids ? auction.totalBids : '0'
-
-        return {
-          id: Number(index) + 1,
-          userBid: `${toEther(userBid)} GEN`,
-          totalBid: `${toEther(totalBid)} GEN`,
-          status: auction.status
-        }
-      }).reverse())
-
-      // GEN Balance
-      const genTokenInstance = await contractService.getGenTokenAddress()
-      const currUserBalance = await erc20Service.balanceOf(provider, genTokenInstance, defaultAccount)
-      setGenBalance(`${currUserBalance} GEN`)
-      setGenBalanceDisplay(`${numberUtils.toEther(currUserBalance)} GEN`)
+    if (!bidGENStore.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+      await bidGENStore.fetchStaticParams()
     }
-    fetch()
-  }, [])
 
-  const SidePanel = () => (
-    <React.Fragment>
-      {tokenApproved === false ?
-        <EnableTokenPanel
-          instruction="Enable GEN to bid on Auctions"
-          subinstructions="-"
-          buttonText="Enable GEN"
-          onEnable={() => setTokenApproved(true)}
-          getToken={() =>
-            contractService.getGenTokenAddress()
-          }
-          getSpender={() =>
-            contractService.getAuction4ReputationAddress()
-          }
-        /> :
-        <div>
-          <BidPanel
-            currentAuction={currentAuction}
-            setCurrentAuction={setCurrentAuction}
-            instruction="Enable NEC for locking"
-            subinstruction="-"
-            buttonText="Bid GEN"
-            onEnable={() => setTokenApproved(true)}
-            getToken={() =>
-              contractService.getGenTokenAddress()
-            }
-            getSpender={() =>
-              contractService.getAuction4ReputationAddress()
-            }
-          />
-        </div>
-      }
-    </React.Fragment>
-  )
+    await tokenStore.fetchBalanceOf(genTokenAddress, userAddress)
+    await tokenStore.fetchAllowance(genTokenAddress, userAddress, schemeAddress)
+    await bidGENStore.fetchAuctionData()
+  }
 
-  return (
-    <BidGENWrapper>
-      <DetailsWrapper>
-        <TableHeaderWrapper>
-          <TimelineProgress
-            value={auctionPercentage}
-            title={`Current Auction: ${currentAuction} of ${maxAuction}`}
-            subtitle={auctionTimer}
-            width="28px"
-            height="28px"
+  SidePanel = () => {
+    const { bidGENStore, tokenStore, providerStore } = this.props.root
+    const userAddress = providerStore.getDefaultAccount()
+    const genTokenAddress = deployed.GenToken
+    const spenderAddress = deployed.Auction4Reputation
+
+    const tokenApproved = tokenStore.getMaxApprovalFlag(genTokenAddress, userAddress, spenderAddress)
+
+    const approvePending = tokenStore.isApprovePending(genTokenAddress, userAddress, spenderAddress)
+    const bidPending = bidGENStore.isBidActionPending()
+
+    return (
+      <React.Fragment>
+        {tokenApproved === false ?
+          <EnableTokenPanel
+            instruction="Enable GEN to bid on Auctions"
+            subinstructions="-"
+            buttonText="Enable GEN"
+            tokenAddress={genTokenAddress}
+            spenderAddress={spenderAddress}
+            enabled={tokenApproved}
+            pending={approvePending}
+          /> :
+          <div>
+            <BidPanel
+              instruction="Enable NEC for locking"
+              subinstruction="-"
+              buttonText="Bid GEN"
+              userAddress={userAddress}
+              tokenAddress={genTokenAddress}
+              spenderAddress={spenderAddress}
+              pending={bidPending}
+            />
+          </div>
+        }
+      </React.Fragment >
+    )
+  }
+
+  /*
+    If we're before the last auction:
+    'Next auction starts in + time'
+
+    If we're in the last auction:
+    'Last auction ends in + time'
+
+    If we're after the last auction conclusion:
+    'Auctions have ended'
+  */
+  getAuctionPercentageAndTimer() {
+    const { bidGENStore, timeStore } = this.props.root
+
+    const now = timeStore.currentTime
+    const currentAuction = bidGENStore.getActiveAuction()
+
+    const finalAuction = bidGENStore.getFinalAuctionIndex()
+    const timeUntilNextAuction = bidGENStore.getTimeUntilNextAuction()
+    const auctionLength = bidGENStore.staticParams.auctionLength
+
+    const auctionsStarted = bidGENStore.haveAuctionsStarted()
+    const auctionsEnded = bidGENStore.areAuctionsOver()
+
+    let auctionPercentage = 0
+    let auctionTimer = '...'
+
+    const currentAuctionDisplay = (currentAuction >= finalAuction ? finalAuction : currentAuction)
+
+    let prefix = 'Next auction starts in'
+    let auctionTitle = `Current Auction: ${currentAuctionDisplay} of ${finalAuction}`
+
+    if (!auctionsStarted) {
+      auctionPercentage = 0
+      prefix = 'First auction starts in'
+      auctionTitle = "Auctions have not started"
+    }
+
+    if (currentAuction === finalAuction) {
+      prefix = 'Last auction ends in'
+    }
+
+    if (auctionsEnded) {
+      auctionPercentage = 100
+      auctionTitle = 'Auctions have ended'
+      auctionTimer = ''
+    }
+
+    if (!auctionsEnded) {
+      auctionPercentage = (timeUntilNextAuction / auctionLength) * 100
+
+      const seconds = timeUntilNextAuction
+      let hours = (seconds / 60) / 60
+      const days = Math.fround(hours / 24)
+      hours -= days * 24
+      hours = Math.fround(hours)
+      auctionTimer = `${prefix} ${seconds} seconds`
+    }
+
+    return {
+      auctionPercentage,
+      auctionTimer,
+      auctionTitle
+    }
+  }
+
+  render() {
+    const { bidGENStore, tokenStore, providerStore, timeStore } = this.props.root
+
+    const userAddress = providerStore.getDefaultAccount()
+    const genTokenAddress = deployed.GenToken
+    const schemeAddress = deployed.Auction4Reputation
+
+    // Loading Status
+    const staticParamsLoaded = bidGENStore.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)
+    const auctionDataLoaded = bidGENStore.isPropertyInitialLoadComplete(propertyNames.AUCTION_DATA)
+    const hasBalance = tokenStore.hasBalance(genTokenAddress, userAddress)
+    const hasAllowance = tokenStore.hasAllowance(genTokenAddress, userAddress, schemeAddress)
+    const tokenApproved = tokenStore.getMaxApprovalFlag(genTokenAddress, userAddress, schemeAddress)
+
+    if (!staticParamsLoaded || !hasBalance || !hasAllowance) {
+      return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
+    }
+
+    const auctionData = bidGENStore.auctionData
+    const genBalance = tokenStore.getBalance(genTokenAddress, userAddress)
+    const genBalanceDisplay = helpers.roundValue(helpers.fromWei(genBalance))
+    const now = timeStore.currentTime
+
+    const auctionDisplayInfo = this.getAuctionPercentageAndTimer()
+    const { auctionPercentage, auctionTimer, auctionTitle } = auctionDisplayInfo
+
+    return (
+      <BidGENWrapper>
+        <DetailsWrapper>
+          <TableHeaderWrapper>
+            <TimelineProgress
+              value={auctionPercentage}
+              title={auctionTitle}
+              subtitle={auctionTimer}
+              width="28px"
+              height="28px"
+            />
+          </TableHeaderWrapper>
+          <GenAuctionTable
+            highlightTopRow
+            data={auctionData}
+            dataLoaded={auctionDataLoaded}
           />
-        </TableHeaderWrapper>
-        <Table
-          highlightTopRow
-          columns={[
-            { name: 'Auction #', key: 'id', width: '15%', align: 'left' },
-            { name: 'You Have Bid', key: 'userBid', width: '25%', align: 'right' },
-            { name: 'Total Bid', key: 'totalBid', width: '30%', align: 'right' },
-            { name: 'Status', key: 'status', width: '25%', align: 'right' }
-          ]}
-          data={auctionData}
-        />
-      </DetailsWrapper>
-      <ActionsWrapper>
-        <ActionsHeader>
-          <LogoAndText icon={icon} text="GEN" />
-          <div>{genBalanceDisplay}</div>
-        </ActionsHeader>
-        <SidePanel />
-      </ActionsWrapper>
-    </BidGENWrapper>
-  )
+        </DetailsWrapper>
+        <ActionsWrapper>
+          <ActionsHeader>
+            <LogoAndText icon={GENLogo} text="GEN" />
+            <div>{genBalanceDisplay} GEN</div>
+          </ActionsHeader>
+          {this.SidePanel()}
+        </ActionsWrapper>
+      </BidGENWrapper >
+    )
+  }
 }
 
 export default BidGEN

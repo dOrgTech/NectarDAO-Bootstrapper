@@ -1,184 +1,136 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import * as contractService from 'core/services/contractService'
-import * as providerService from 'core/services/providerService'
-import * as erc20Service from 'core/services/erc20Service'
-import * as auctionService from 'core/services/auction4RepService'
-import * as numberLib from 'core/libs/lib-number-helpers'
+import { inject, observer } from "mobx-react";
+import * as helpers from 'utils/helpers'
+import { MaxTokensText } from './LockPanel'
+import InactiveButton from 'components/common/buttons/InactiveButton'
+import ActiveButton from 'components/common/buttons/ActiveButton'
+import LoadingCircle from '../LoadingCircle';
+import * as deployed from 'deployed'
 
 const PanelWrapper = styled.div`
 `
 
-const LockingPeriodSelectorWrapper = styled.div`
+const BidWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin: 0px 24px 42px;
+  font-weight: 500;
   color: var(--inactive-text);
-  margin: 24px;
 `
 
-const LockingPeriodSelector = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: var(--inactive-header-text);
-  margin-top: 12px;
-`
-
-const LockingPeriodCell = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 34px;
-  border: 1px solid var(--inactive-border);
-`
-
-const ActiveLockingPeriodCell = styled(LockingPeriodCell)`
-  color: var(--white-text);
-  border: 1px solid var(--active-border);
-`
-
-const LockingPeriodStartCell = styled(LockingPeriodCell)`
-  border-radius: 4px 0px 0px 4px;
-`
-
-const LockingPeriodEndCell = styled(LockingPeriodCell)`
-  border-radius: 0px 4px 4px 0px;
-`
-
-const LockAmountWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  margin: 0px 24px;
-  font-weight: 600;
-  color: var(--inactive-text);
-  height: 87px;
-`
-
-const LockAmountForm = styled.div`
+const BidForm = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 18px;
   padding: 0px 20px 6px 20px;
   border-bottom: 1px solid var(--inactive-border);
+  input {
+    font-size: 15px;
+    line-height: 18px;
+    color: var(--white-text);
+    background: var(--background);
+    border: none;
+  }
 `
 
-const ReleaseableDateWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  margin: 24px;
-  color: var(--inactive-text);
-`
-
-const ReleaseableDate = styled.div`
-  color: var(--white-text);  
-`
-
-const LockNECButton = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  margin: 0px 24px;
-  color: var(--inactive-text);
-  border: 1px solid var(--border);
-`
-
-const Button = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  margin: 0px 24px;
-  background: var(--action-button);
+const PanelText = styled.div`
   font-family: Montserrat;
   font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
+  font-weight: 500;
+  font-size: 14px;
   line-height: 18px;
-  color: var(--white-text);
+  display: flex;
+  align-items: center;
+  text-align: center;
+  letter-spacing: 0.4px;
+  padding: 24px 0px;
+  margin-bottom: 32px;
+  border-bottom: 1px solid var(--faint-divider);
 `
 
-const DisableButton = styled(Button)`
-  border: 1px solid var(--inactive-border);
-  color: var(--inactive-header-text);
-  background: none;
-`
+@inject('root')
+@observer
+class BidPanel extends React.Component {
+  setBidAmount(value) {
+    const { bidFormStore } = this.props.root
+    bidFormStore.setBidAmount(value)
+  }
 
-const BidPanel = ({
-    currentAuction,
-    setCurrentAuction,
-    instruction,
-    subinstruction,
-    buttonText,
-    getToken,
-    getSpender,
-    onEnable }) => {
-    const [enabled, setEnabled] = React.useState(undefined)
-    const [pending, setPending] = React.useState(false)
-    const [bidAmount, setBidAmount] = React.useState(0)
-
-    const changeBidAmount = (event) => {
-        console.log('new bid amount', event.target.value)
-        setBidAmount(event.target.value)
+  async bid() {
+    const { bidFormStore, bidGENStore } = this.props.root
+    if (!bidFormStore.bidAmount) {
+      return
     }
+    const weiValue = helpers.toWei(bidFormStore.bidAmount)
+    const currentAuction = bidGENStore.getActiveAuction()
 
-    // Fetch Initial State
-    React.useEffect(() => {
-        const fetch = async () => {
-            // Token Locking Approval
-            const provider = await providerService.getProvider()
-            const owner = await providerService.getDefaultAccount(provider)
-            const token = getToken()
-            const spender = getSpender()
-            const approved = await erc20Service.hasMaxApproval(provider, token, owner, spender)
-            setEnabled(approved)
+    await bidGENStore.bid(weiValue, currentAuction)
+    bidFormStore.resetForm()
+  }
 
-            if (approved) {
-                onEnable()
-            }
-        }
-        fetch()
-    }, [])
+  Pending() {
+    const { bidGENStore, bidFormStore } = this.props.root
+    const currentAuction = bidGENStore.getActiveAuction()
+    const timeUntilNextAuction = bidGENStore.getTimeUntilNextAuction()
+    const timeText = helpers.getSecondsText(timeUntilNextAuction)
+    const amount = bidFormStore.bidAmount
 
     return (
-        <PanelWrapper>
-            <LockAmountWrapper>
-                <div>Bid Amount</div>
-                <LockAmountForm>
-                    <input type="text" name="name" value={bidAmount} onChange={changeBidAmount} />
-                    <div>GEN</div>
-                </LockAmountForm>
-            </LockAmountWrapper>
-            <Button
-                onClick={async () => {
-                    setPending(true)
-                    const provider = await providerService.getProvider()
-
-                    const weiValue = numberLib.toWei(bidAmount)
-                    const currentAuctionIndex = Number(currentAuction) + Number(1)
-
-                    console.log('bid', provider, weiValue, currentAuctionIndex)
-
-                    try {
-                        await auctionService.bid(
-                            provider, weiValue, currentAuction
-                        )
-                    } catch (e) {
-                        console.log(e)
-                    }
-
-                    setPending(false)
-                }}
-            >
-                {buttonText}
-            </Button>
-        </PanelWrapper>
+      <React.Fragment>
+        <LoadingCircle instruction={`Bid ${amount} GEN`} subinstruction={`Auction ${currentAuction} - Ends in ${timeText}`} />
+      </React.Fragment >
     )
+  }
+
+  BidForm(bidAmount, buttonText, auctionsEnded, auctionsStarted, userBalance) {
+    const actionEnabled = auctionsStarted && !auctionsEnded
+    return (
+      <React.Fragment>
+        <BidWrapper>
+          <PanelText>
+            GEN is the native DAOstack token, primarily used for prediction markets and boosting proposals.
+          </PanelText>
+          <div>Bid Amount</div>
+          <BidForm>
+            <input type="text" name="name" placeholder="0" value={bidAmount} onChange={e => this.setBidAmount(e.target.value)} />
+            <MaxTokensText onClick={e => this.setBidAmount(userBalance)}>Max</MaxTokensText>
+            <div>GEN</div>
+          </BidForm>
+        </BidWrapper>
+        {actionEnabled ?
+          (<ActiveButton
+            onClick={() => { this.bid() }}>
+            {buttonText}
+          </ActiveButton>)
+          :
+          (<InactiveButton>
+            {buttonText}
+          </InactiveButton>)
+        }
+
+      </React.Fragment>
+    )
+  }
+
+  render() {
+    const { bidGENStore, bidFormStore, tokenStore } = this.props.root
+    const { buttonText, userAddress } = this.props
+    const auctionsEnded = bidGENStore.areAuctionsOver()
+    const auctionsStarted = bidGENStore.haveAuctionsStarted()
+    const userBalance = helpers.fromWei(tokenStore.getBalance(deployed.GenToken, userAddress))
+    const pending = bidGENStore.isBidActionPending()
+    return (
+      <PanelWrapper>
+        {
+          pending ?
+            this.Pending() :
+            this.BidForm(bidFormStore.bidAmount, buttonText, auctionsEnded, auctionsStarted, userBalance)
+        }
+      </PanelWrapper>
+    )
+  }
 }
 
 export default BidPanel

@@ -1,67 +1,47 @@
 import React from 'react'
 import styled from 'styled-components'
-
-import * as contractService from 'core/services/contractService'
-import * as providerService from 'core/services/providerService'
-import * as erc20Service from 'core/services/erc20Service'
-import * as lockingService from 'core/services/continuousLocking4RepService'
-import * as numberLib from 'core/libs/lib-number-helpers'
+import { observer, inject } from 'mobx-react'
+import ActiveButton from 'components/common/buttons/ActiveButton'
+import InactiveButton from 'components/common/buttons/InactiveButton'
+import { NumberInput } from 'components/common'
+import * as helpers from 'utils/helpers'
+import LoadingCircle from '../LoadingCircle'
+import * as deployed from 'deployed'
+import { ActiveLockingPeriodCell, LockingPeriodCell, LockingPeriodSelectorWrapper, LockingPeriodSelector, LockingPeriodStartCell, LockingPeriodEndCell } from 'components/common/LockingPeriodForm'
 
 const PanelWrapper = styled.div`
 `
 
-const LockingPeriodSelectorWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  color: var(--inactive-text);
-  margin: 24px;
+export const MaxTokensText = styled.div`
+display: flex;
+font-weight: 600;
+color: var(--action-button);
 `
 
-const LockingPeriodSelector = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: var(--inactive-header-text);
-  margin-top: 12px;
-`
-
-const LockingPeriodCell = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 40px;
-  height: 34px;
-  border: 1px solid var(--inactive-border);
-`
-
-const ActiveLockingPeriodCell = styled(LockingPeriodCell)`
-  color: var(--white-text);
-  border: 1px solid var(--active-border);
-`
-
-const LockingPeriodStartCell = styled(LockingPeriodCell)`
-  border-radius: 4px 0px 0px 4px;
-`
-
-const LockingPeriodEndCell = styled(LockingPeriodCell)`
-  border-radius: 0px 4px 4px 0px;
-`
-
-const LockAmountWrapper = styled.div`
+export const LockAmountWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0px 24px;
   font-weight: 600;
   color: var(--inactive-text);
-  height: 87px;
+  height: 64px;
 `
 
-const LockAmountForm = styled.div`
+export const LockAmountForm = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  margin-top: 30px;
+  margin-top: 18px;
   padding: 0px 20px 6px 20px;
   border-bottom: 1px solid var(--inactive-border);
+  input {
+    border: ${props => props.border || '1px solid #ccc'};
+    font-size: 15px;
+    line-height: 18px;
+    color: var(--white-text);
+    background: var(--background);
+    border: none;
+  }
 `
 
 const ReleaseableDateWrapper = styled.div`
@@ -76,74 +56,57 @@ const ReleaseableDate = styled.div`
   color: var(--white-text);  
 `
 
-const LockNECButton = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  margin: 0px 24px;
-  color: var(--inactive-text);
-  border: 1px solid var(--border);
-`
+@inject('root')
+@observer
+class LockPanel extends React.Component {
+  constructor(props) {
+    super(props)
 
-const Button = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  margin: 0px 24px;
-  background: var(--action-button);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 18px;
-  color: var(--white-text);
-`
-
-const DisableButton = styled(Button)`
-  border: 1px solid var(--inactive-border);
-  color: var(--inactive-header-text);
-  background: none;
-`
-
-const LockPanel = ({
-  currentPeriod,
-  setCurrentPeriod,
-  rangeStart,
-  setRangeStart,
-  buttonText,
-  getToken,
-  getSpender,
-  onEnable }) => {
-
-  const [enabled, setEnabled] = React.useState(undefined)
-  const [pending, setPending] = React.useState(false)
-  const [lockDuration, setLockDuration] = React.useState(1)
-  const [lockAmount, setLockAmount] = React.useState(0)
-  const [releaseableTime, setReleaseableTime] = React.useState(0)
-  const [releaseableDate, setReleaseableDate] = React.useState('12.04.2019')
-
-  const changeLockDuration = (value) => {
-    console.log('new lock duration', value)
-    setLockDuration(value)
+    this.state = {
+      rangeStart: props.rangeStart,
+      releaseableDate: '12.04.2019'
+    }
   }
 
-  const changeLockAmount = (event) => {
-    console.log('new lock amount', event.target.value)
-    setLockAmount(event.target.value)
+  setRangeStart(value) {
+    this.setState({ rangeStart: value })
   }
 
-  const LockingPeriod = () => {
+  setLockAmount(value) {
+    const { lockFormStore } = this.props.root
+    lockFormStore.amount = value
+  }
+
+  changeLockDuration(i) {
+    const { lockFormStore } = this.props.root
+    lockFormStore.duration = i
+  }
+
+  LockingPeriod = () => {
+    const { lockNECStore, lockFormStore } = this.props.root
+    const { rangeStart } = this.state
+
+    const periodsRemaining = lockNECStore.getPeriodsRemaining()
+    const lockDuration = lockFormStore.duration
+
+    let maxLockDuration = lockNECStore.staticParams.maxLockingBatches
+    let numCells = 4
+
+    if (periodsRemaining < 4) {
+      numCells = periodsRemaining
+    }
+
+    if (periodsRemaining < maxLockDuration) {
+      maxLockDuration = periodsRemaining
+    }
+
     const cells = []
-    for (let i = rangeStart; i < rangeStart + 5; i += 1) {
+    for (let i = rangeStart; i <= rangeStart + numCells; i += 1) {
       if (i === lockDuration) {
-        cells.push(<ActiveLockingPeriodCell>{i}</ActiveLockingPeriodCell>)
+        cells.push(<ActiveLockingPeriodCell key={`cell-${i}`}>{i}</ActiveLockingPeriodCell>)
       } else {
         cells.push(
-          <LockingPeriodCell onClick={() => { changeLockDuration(i) }}>
+          <LockingPeriodCell key={`cell-${i}`} onClick={() => { this.changeLockDuration(i) }}>
             {i}
           </LockingPeriodCell>
         )
@@ -152,17 +115,17 @@ const LockPanel = ({
 
     return (
       <LockingPeriodSelectorWrapper>
-        <div>Lock Duration</div>
+        <div>Lock Duration (Periods)</div>
         <LockingPeriodSelector>
           <LockingPeriodStartCell onClick={() => {
-            setRangeStart(rangeStart > 0 ? rangeStart - 1 : 0)
+            this.setRangeStart(rangeStart > 1 ? rangeStart - 1 : 1)
           }}
           >
             {'<'}
           </LockingPeriodStartCell>
           {cells}
           <LockingPeriodEndCell
-            onClick={() => { setRangeStart(rangeStart + 1) }}
+            onClick={() => { this.setRangeStart(rangeStart + numCells < maxLockDuration ? rangeStart + 1 : rangeStart) }}
           >
             {'>'}
           </LockingPeriodEndCell>
@@ -171,13 +134,23 @@ const LockPanel = ({
     )
   }
 
-  return (
-    <PanelWrapper>
-      <LockingPeriod />
+  Pending(values) {
+    const { amount, releaseableDate, duration } = values
+    const periodText = helpers.getPeriodText(duration)
+    return (
+      <LoadingCircle instruction={`Lock ${amount} NEC`} subinstruction={`${duration} ${periodText} - Unlock on ${releaseableDate}`} />
+    )
+  }
+
+  LockForm(values) {
+    const { amount, releaseableDate, buttonText, enabled, userBalance } = values
+    return (<React.Fragment>
+      {this.LockingPeriod()}
       <LockAmountWrapper>
         <div>Lock Amount</div>
         <LockAmountForm>
-          <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
+          <input type="text" name="name" placeholder="0" value={amount} onChange={e => this.setLockAmount(e.target.value)} />
+          <MaxTokensText onClick={e => this.setLockAmount(userBalance)}>Max</MaxTokensText>
           <div>NEC</div>
         </LockAmountForm>
       </LockAmountWrapper>
@@ -185,35 +158,52 @@ const LockPanel = ({
         <div>Releasable</div>
         <ReleaseableDate>{releaseableDate}</ReleaseableDate>
       </ReleaseableDateWrapper>
-      <Button
-        onClick={async () => {
-          setPending(true)
-          const provider = await providerService.getProvider()
+      {
+        enabled ? <ActiveButton onClick={() => { this.lockHandler() }}>{buttonText}</ActiveButton> :
+          <InactiveButton>{buttonText}</InactiveButton>
+      }
 
-          const weiValue = numberLib.toWei(lockAmount)
-          console.log('lock', provider, weiValue, lockDuration, currentPeriod)
+    </React.Fragment >)
+  }
 
-          try {
-            await lockingService.lock(
-              provider, weiValue, lockDuration, currentPeriod
-            )
-          } catch (e) {
-            console.log(e)
-          }
+  async lockHandler() {
+    const { lockNECStore, lockFormStore } = this.props.root
 
-          setPending(false)
-        }}
-      >
-        {buttonText}
-      </Button>
-      {/* <div>Extend Lock</div>
-      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
-      <Button>Extend Lock</Button>
-      <div>Release Lock</div>
-      <input type="text" name="name" value={lockAmount} onChange={changeLockAmount} />
-      <Button>Release Lock</Button> */}
-    </PanelWrapper>
-  )
+    const amount = helpers.toWei(lockFormStore.amount)
+    const duration = lockFormStore.duration
+    const batchId = lockNECStore.getActiveLockingPeriod()
+
+    await lockNECStore.lock(amount, duration, batchId)
+    lockFormStore.resetForm()
+  }
+
+  render() {
+    const { lockNECStore, lockFormStore, timeStore, tokenStore } = this.props.root
+    const { buttonText, pending, enabled, userAddress } = this.props
+    const necTokanAddress = deployed.NectarToken
+
+    // The release period is now + (lockingPeriodLength * duration)
+    const now = timeStore.currentTime
+    const duration = lockFormStore.duration
+    const amount = lockFormStore.amount
+
+    const userBalance = helpers.fromWei(tokenStore.getBalance(necTokanAddress, userAddress))
+    const releaseableTimestamp = lockNECStore.calcReleaseableTimestamp(now, duration)
+    const releaseableDate = helpers.timestampToDate(releaseableTimestamp)
+
+    const values = {
+      amount, releaseableDate, buttonText, enabled, userBalance, duration
+    }
+
+    return (
+      <PanelWrapper>
+        {pending ?
+          this.Pending(values) :
+          this.LockForm(values)
+        }
+      </PanelWrapper >
+    )
+  }
 }
 
 export default LockPanel

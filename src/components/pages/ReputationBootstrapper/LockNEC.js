@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import Table from 'components/common/Table'
+import { observer, inject } from 'mobx-react'
 import LockPanel from 'components/common/panels/LockPanel'
 import EnableTokenPanel from 'components/common/panels/EnableTokenPanel'
 import TimelineProgress from 'components/common/TimelineProgress'
 import LogoAndText from 'components/common/LogoAndText'
+import TokenValue from 'components/common/TokenValue'
 import icon from 'assets/svgs/ethfinex-logo.svg'
-import * as contractService from 'core/services/contractService'
-import * as providerService from 'core/services/providerService'
-import * as erc20Service from 'core/services/erc20Service'
-import * as lockingService from 'core/services/continuousLocking4RepService'
-import * as numberutils from 'core/libs/lib-number-helpers'
+import * as deployed from 'deployed'
+import BatchesTable from 'components/tables/BatchesTable'
+import UserLocksTable from 'components/tables/UserLocksTable'
+import LoadingCircle from '../../common/LoadingCircle'
 
 const LockNECWrapper = styled.div`
   display: flex;
@@ -22,6 +22,7 @@ const LockNECWrapper = styled.div`
 
 const DetailsWrapper = styled.div`
   width: 80%;
+  height: 364px;
   border-right: 1px solid var(--border);
 `
 
@@ -32,6 +33,36 @@ const TableHeaderWrapper = styled.div`
   justify-content: space-between;
   padding: 0px 24px;
   border-bottom: 1px solid var(--border);
+`
+
+const TableTabsWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 103px
+`
+
+const TableTabButton = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 7.5px 14px;
+  margin-left: 12px;
+  background: var(--background);
+  border: 1px solid var(--active-border);
+  cursor: pointer;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 18px;
+  color: var(--white-text);
+`
+
+const InactiveTableTabButton = styled(TableTabButton)`
+  color: var(--inactive-header-text);
+  border: 1px solid var(--inactive-border);
 `
 
 const ActionsWrapper = styled.div`
@@ -54,168 +85,228 @@ const ActionsHeader = styled.div`
   border-bottom: 1px solid var(--border);
 `
 
-const LockNEC = () => {
-  const [currentPeriod, setCurrentPeriod] = React.useState(0)
-  const [rangeStart, setRangeStart] = React.useState(0)
-  const [maxPeriods, setMaxPeriods] = React.useState(0)
-  const [periodPercentage, setPeriodPercentage] = React.useState(0)
-  const [periodTimer, setPeriodTimer] = React.useState('...')
-  const [periodData, setPeriodData] = React.useState([])
-  const [tokenApproved, setTokenApproved] = React.useState(false)
-  const [necBalance, setNecBalance] = React.useState('...')
-  const [necBalanceDisplay, setNecBalanceDisplay] = React.useState('...')
+const tabs = {
+  YOUR_LOCKS: 0,
+  ALL_PERIODS: 1
+}
 
-  // TODO: Remove Mock Data
-  if (currentPeriod === 0) {
+const status = {
+  NOT_STARTED: 0
+}
+
+@inject('root')
+@observer
+class LockNEC extends React.Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      currentTab: tabs.YOUR_LOCKS
+    }
   }
 
-  React.useEffect(() => {
-    const fetch = async () => {
-      const { BN } = numberutils.BN
-      const provider = await providerService.getProvider()
-      const defaultAccount = await providerService.getDefaultAccount(provider)
-      const necTokenInstance = await contractService.getNectarTokenAddress()
+  setCurrentTab(value) {
+    this.setState({ currentTab: value })
+  }
 
-      // Get Auction Staus Data
-      const currentPeriod = await lockingService.getActiveLockingPeriod(provider)
-      const lockingStart = await lockingService.getStartTime(provider)
-      const numPeriods = await lockingService.getNumLockingPeriods(provider)
-      const periodLength = await lockingService.getLockingPeriodLength(provider)
+  async componentDidMount() {
+    const { lockNECStore, providerStore, tokenStore } = this.props.root
+    const userAddress = providerStore.getDefaultAccount()
+    const necTokenAddress = deployed.NectarToken
+    const schemeAddress = deployed.ContinuousLocking4Reputation
 
-      setCurrentPeriod(currentPeriod)
-      setMaxPeriods(numPeriods)
-
-
-      const now = Math.round((new Date()).getTime() / 1000)
-
-      let prefix = 'Next starts in'
-      let ended = false
-
-      // Locking Ended
-      if (currentPeriod >= numPeriods) {
-        if (Date.now() > startTime) {
-          setPeriodPercentage(100)
-          setPeriodTimer('Locking has ended')
-          ended = true
-        } else {
-          prefix = 'Last auction ends in'
-        }
-      }
-
-      // Locking In Progress
-      if (!ended) {
-
-        const batchTime = new BN(periodLength)
-        const currentBatch = new BN(currentPeriod)
-        const startTime = new BN(lockingStart)
-        const currentBatchEndTime = batchTime.mul(currentBatch.add(new BN(1))).add(startTime)
-        const nowTime = new BN(now)
-
-
-        console.log('batchTime', batchTime.toString())
-        console.log('startTime', startTime.toString())
-        console.log('nowTime', nowTime.toString())
-        console.log('currentBatch', currentBatch.toString())
-        console.log('currentBatchEndTime', currentBatchEndTime.toString())
-        const timeUntilNextBatch = currentBatchEndTime.sub(nowTime)
-
-        console.log('timeUntilNextBatch', timeUntilNextBatch.toString())
-
-        // setAuctionPercentage((timeUntilNextBatch.toNumber() / auctionLength) * 100)
-        setPeriodTimer(`${prefix}, ${timeUntilNextBatch} time units`)
-      }
-
-
-
-      // NEC Balance
-      const currUserBalance = await erc20Service.balanceOf(provider, necTokenInstance, defaultAccount)
-      setNecBalance(`${currUserBalance} NEC`)
-      setNecBalanceDisplay(`${numberutils.toEther(currUserBalance)} NEC`)
-
-      // User Lock Data
-      const data = await lockingService.getUserTokenLocks(provider, defaultAccount)
-      const tableData = []
-
-      Object.keys(data).forEach(function (key, index) {
-
-        const row = {
-          id: data[key].lockId,
-          startPeriod: data[key].lockingPeriod,
-          duration: `${data[key].duration} Months`,
-          amount: `${numberutils.toEther(data[key].amount)} NEC`
-        }
-
-        tableData.push(row)
-      })
-
-      tableData.reverse()
-      setPeriodData(tableData)
+    if (!lockNECStore.isStaticParamsInitialLoadComplete()) {
+      await lockNECStore.fetchStaticParams()
     }
-    fetch()
-  }, [])
 
-  const SidePanel = () => (
-    <React.Fragment>
-      {tokenApproved === false ?
-        <EnableTokenPanel
-          instruction="Enable NEC for locking"
-          subinstruction="-"
-          buttonText="Enable NEC"
-          onEnable={() => setTokenApproved(true)}
-          getToken={() =>
-            contractService.getNectarTokenAddress()
-          }
-          getSpender={() =>
-            contractService.getContinuousLocking4ReputationAddress()
-          }
-        /> :
-        <div>
-          <LockPanel
-            currentPeriod={currentPeriod}
-            setCurrentPeriod={setCurrentPeriod}
-            rangeStart={rangeStart}
-            setRangeStart={setRangeStart}
-            buttonText="Lock NEC"
+    await tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
+    await tokenStore.fetchAllowance(necTokenAddress, userAddress, schemeAddress)
+    await lockNECStore.fetchUserLocks(userAddress)
+  }
+
+  SidePanel = () => {
+    const { lockNECStore, tokenStore, providerStore } = this.props.root
+    const userAddress = providerStore.getDefaultAccount()
+    const necTokenAddress = deployed.NectarToken
+    const spenderAddress = deployed.ContinuousLocking4Reputation
+
+    const tokenApproved = tokenStore.getMaxApprovalFlag(necTokenAddress, userAddress, spenderAddress)
+    const approvePending = tokenStore.isApprovePending(necTokenAddress, userAddress, spenderAddress)
+    const lockPending = lockNECStore.isLockActionPending()
+
+    const isLockingStarted = lockNECStore.isLockingStarted()
+    const isLockingEnded = lockNECStore.isLockingEnded()
+
+    return (
+      < React.Fragment >
+        {tokenApproved === false ?
+          <EnableTokenPanel
+            instruction="Enable NEC for locking"
+            subinstruction="-"
+            buttonText="Enable NEC"
+            userAddress={userAddress}
+            tokenAddress={necTokenAddress}
+            spenderAddress={spenderAddress}
+            enabled={tokenApproved}
+            pending={approvePending}
           />
-        </div>
-      }
-    </React.Fragment>
-  )
+          :
+          <div>
+            <LockPanel
+              rangeStart={1}
+              buttonText="Lock NEC"
+              userAddress={userAddress}
+              enabled={isLockingStarted && !isLockingEnded}
+              pending={lockPending}
+            />
+          </div>
+        }
+      </React.Fragment >
+    )
+  }
 
-  return (
-    <LockNECWrapper>
-      <DetailsWrapper>
-        <TableHeaderWrapper>
-          <TimelineProgress
-            value={periodPercentage}
-            title={`Current Period: ${currentPeriod} of ${maxPeriods}`}
-            subtitle={periodTimer}
-            width="28px"
-            height="28px"
-          />
-        </TableHeaderWrapper>
-        <Table
-          highlightTopRow
-          columns={[
-            { name: 'Period #', key: 'startPeriod', width: '15%', align: 'left' },
-            { name: 'Amount', key: 'amount', width: '35%', align: 'right' },
-            { name: 'Duration', key: 'duration', width: '25%', align: 'right' },
-            { name: 'lockId', key: 'id', width: '20%', align: 'right' }
-          ]}
-          data={periodData}
-        />
-      </DetailsWrapper>
-      <ActionsWrapper>
-        <ActionsHeader>
-          <LogoAndText icon={icon} text="Nectar" />
-          <div>{necBalanceDisplay}</div>
-        </ActionsHeader>
-        <SidePanel />
-      </ActionsWrapper>
-    </LockNECWrapper>
+  /*
+  Remaining Time
+  IF > 1 day
+    x days, y hours
+  IF < 1 day && > 1 hour
+    y hours, z minutes
+  IF < 1 hour && > 1 min
+    y minutes, z minutes
+  IF < 1 min && > 0 seconds
+  */
+  getTimerVisuals() {
+    const { lockNECStore, timeStore } = this.props.root
+
+    const currentPeriod = Number(lockNECStore.getActiveLockingPeriod())
+    const finalPeriod = lockNECStore.getFinalPeriodIndex()
+    const periodLength = Number(lockNECStore.staticParams.lockingPeriodLength)
+    const isLockingStarted = lockNECStore.isLockingStarted()
+    const isLockingEnded = lockNECStore.isLockingEnded()
+    const numPeriods = lockNECStore.staticParams.numLockingPeriods
+    const finalPeriodIndex = lockNECStore.getFinalPeriodIndex()
+
+    let periodPercentage = 0
+    let periodTimer = '...'
+    let periodStatus = 0
+    let periodTitle = `Current Period: ${currentPeriod} of ${finalPeriodIndex}`
+
+    let prefix = 'Next starts in'
+
+    if (!isLockingStarted) {
+      prefix = 'First period starts in'
+      periodTitle = "Locking has not started"
+    }
 
 
-  )
+    if (currentPeriod === finalPeriod && !isLockingEnded) {
+      prefix = 'Last period ends in'
+    }
+
+    // Locking In Progress
+    if (!isLockingEnded) {
+      const timeUntilNextBatch = Number(lockNECStore.getTimeUntilNextPeriod())
+      periodPercentage = (timeUntilNextBatch / periodLength) * 100
+      periodTimer = `${prefix}, ${timeUntilNextBatch} seconds`
+    }
+
+    // Locking Ended
+    if (isLockingEnded) {
+      periodPercentage = 100
+      periodTimer = ''
+      periodTitle = 'Locking has ended'
+    }
+
+    return {
+      periodPercentage,
+      periodTimer,
+      periodStatus,
+      periodTitle
+    }
+  }
+
+  renderTable(currentTab) {
+    if (currentTab === tabs.YOUR_LOCKS) {
+      return (
+        <UserLocksTable />
+      )
+    } else if (currentTab === tabs.ALL_PERIODS) {
+      return (
+        < BatchesTable highlightTopRow />
+      )
+    }
+  }
+
+  TabButton = (currentTab, tabType, tabText) => {
+    if (currentTab === tabType) {
+      return (
+        <TableTabButton onClick={() => this.setCurrentTab(tabType)}>
+          {tabText}
+        </TableTabButton>
+      )
+    } else {
+      return (
+        <InactiveTableTabButton onClick={() => this.setCurrentTab(tabType)}>
+          {tabText}
+        </InactiveTableTabButton>
+      )
+    }
+  }
+
+  render() {
+    const { lockNECStore, providerStore, tokenStore, timeStore } = this.props.root
+    const { currentTab } = this.state
+    const userAddress = providerStore.getDefaultAccount()
+    const necTokenAddress = deployed.NectarToken
+    const schemeAddress = deployed.ContinuousLocking4Reputation
+
+    // Check Loading Conditions
+    const staticParamsLoaded = lockNECStore.isStaticParamsInitialLoadComplete()
+    const hasBalance = tokenStore.hasBalance(necTokenAddress, userAddress)
+    const hasAllowance = tokenStore.hasAllowance(necTokenAddress, userAddress, schemeAddress)
+    const userLocksLoaded = lockNECStore.isUserLockInitialLoadComplete(userAddress)
+    const auctionDataLoaded = lockNECStore.isOverviewLoadComplete(userAddress)
+
+    if (!staticParamsLoaded || !hasBalance || !hasAllowance) {
+      return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
+    }
+
+    const necBalance = tokenStore.getBalance(necTokenAddress, userAddress)
+    const now = timeStore.currentTime
+
+    const timerVisuals = this.getTimerVisuals()
+
+    const { periodPercentage, periodTimer, periodTitle } = timerVisuals
+
+    return (
+      <LockNECWrapper>
+        <DetailsWrapper>
+          <TableHeaderWrapper>
+            <TimelineProgress
+              value={periodPercentage}
+              title={periodTitle}
+              subtitle={periodTimer}
+              width="28px"
+              height="28px"
+              displayTooltip={true}
+            />
+            <TableTabsWrapper>
+              {this.TabButton(currentTab, tabs.YOUR_LOCKS, "Your Locks")}
+              {this.TabButton(currentTab, tabs.ALL_PERIODS, "All Periods")}
+            </TableTabsWrapper>
+          </TableHeaderWrapper>
+          {this.renderTable(currentTab)}
+        </DetailsWrapper>
+        <ActionsWrapper>
+          <ActionsHeader>
+            <LogoAndText icon={icon} text="Nectar" />
+            <TokenValue weiValue={necBalance} />
+          </ActionsHeader>
+          {this.SidePanel()}
+        </ActionsWrapper>
+      </LockNECWrapper >
+    )
+  }
 }
 
 export default LockNEC
