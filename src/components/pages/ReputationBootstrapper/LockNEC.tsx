@@ -7,10 +7,11 @@ import TimelineProgress from 'components/common/TimelineProgress'
 import LogoAndText from 'components/common/LogoAndText'
 import TokenValue from 'components/common/TokenValue'
 import icon from 'assets/svgs/ethfinex-logo.svg'
-import * as deployed from 'deployed'
+import * as deployed from 'deployed.json'
 import BatchesTable from 'components/tables/BatchesTable'
 import UserLocksTable from 'components/tables/UserLocksTable'
 import LoadingCircle from '../../common/LoadingCircle'
+import { RootStore } from 'stores/Root'
 
 const LockNECWrapper = styled.div`
   display: flex;
@@ -35,7 +36,7 @@ const TableHeaderWrapper = styled.div`
   border-bottom: 1px solid var(--border);
 `
 
-const TableTabsWrapper = styled.div`
+const TableTabEnumWrapper = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -85,23 +86,31 @@ const ActionsHeader = styled.div`
   border-bottom: 1px solid var(--border);
 `
 
-const tabs = {
-  YOUR_LOCKS: 0,
-  ALL_PERIODS: 1
+enum TabEnum {
+  YOUR_LOCKS,
+  ALL_PERIODS
 }
 
 const status = {
   NOT_STARTED: 0
 }
 
+type Props = {
+  root: RootStore
+}
+
+type State = {
+  currentTab: TabEnum
+}
+
 @inject('root')
 @observer
-class LockNEC extends React.Component {
+class LockNEC extends React.Component<any, State> {
   constructor(props) {
     super(props)
 
     this.state = {
-      currentTab: tabs.YOUR_LOCKS
+      currentTab: TabEnum.YOUR_LOCKS
     }
   }
 
@@ -110,12 +119,12 @@ class LockNEC extends React.Component {
   }
 
   async componentDidMount() {
-    const { lockNECStore, providerStore, tokenStore } = this.props.root
+    const { lockNECStore, providerStore, tokenStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const necTokenAddress = deployed.NectarToken
     const schemeAddress = deployed.ContinuousLocking4Reputation
 
-    if (!lockNECStore.isStaticParamsInitialLoadComplete()) {
+    if (!lockNECStore.areStaticParamsLoaded()) {
       await lockNECStore.fetchStaticParams()
     }
 
@@ -125,7 +134,7 @@ class LockNEC extends React.Component {
   }
 
   SidePanel = () => {
-    const { lockNECStore, tokenStore, providerStore } = this.props.root
+    const { lockNECStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const necTokenAddress = deployed.NectarToken
     const spenderAddress = deployed.ContinuousLocking4Reputation
@@ -176,15 +185,17 @@ class LockNEC extends React.Component {
   IF < 1 min && > 0 seconds
   */
   getTimerVisuals() {
-    const { lockNECStore, timeStore } = this.props.root
+    const { lockNECStore, timeStore } = this.props.root as RootStore
 
-    const currentPeriod = Number(lockNECStore.getActiveLockingPeriod())
+    const currentPeriod = lockNECStore.getActiveLockingPeriod()
     const finalPeriod = lockNECStore.getFinalPeriodIndex()
-    const periodLength = Number(lockNECStore.staticParams.lockingPeriodLength)
+    const periodLength = lockNECStore.staticParams.batchTime
     const isLockingStarted = lockNECStore.isLockingStarted()
     const isLockingEnded = lockNECStore.isLockingEnded()
     const numPeriods = lockNECStore.staticParams.numLockingPeriods
     const finalPeriodIndex = lockNECStore.getFinalPeriodIndex()
+
+
 
     let periodPercentage = 0
     let periodTimer = '...'
@@ -226,11 +237,11 @@ class LockNEC extends React.Component {
   }
 
   renderTable(currentTab) {
-    if (currentTab === tabs.YOUR_LOCKS) {
+    if (currentTab === TabEnum.YOUR_LOCKS) {
       return (
         <UserLocksTable />
       )
-    } else if (currentTab === tabs.ALL_PERIODS) {
+    } else if (currentTab === TabEnum.ALL_PERIODS) {
       return (
         < BatchesTable highlightTopRow />
       )
@@ -254,18 +265,18 @@ class LockNEC extends React.Component {
   }
 
   render() {
-    const { lockNECStore, providerStore, tokenStore, timeStore } = this.props.root
+    const { lockNECStore, providerStore, tokenStore, timeStore } = this.props.root as RootStore
     const { currentTab } = this.state
     const userAddress = providerStore.getDefaultAccount()
     const necTokenAddress = deployed.NectarToken
     const schemeAddress = deployed.ContinuousLocking4Reputation
 
     // Check Loading Conditions
-    const staticParamsLoaded = lockNECStore.isStaticParamsInitialLoadComplete()
+    const staticParamsLoaded = lockNECStore.areStaticParamsLoaded()
     const hasBalance = tokenStore.hasBalance(necTokenAddress, userAddress)
     const hasAllowance = tokenStore.hasAllowance(necTokenAddress, userAddress, schemeAddress)
     const userLocksLoaded = lockNECStore.isUserLockInitialLoadComplete(userAddress)
-    const auctionDataLoaded = lockNECStore.isOverviewLoadComplete(userAddress)
+    const userBatchesLoaded = lockNECStore.areBatchesLoaded(userAddress)
 
     if (!staticParamsLoaded || !hasBalance || !hasAllowance) {
       return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
@@ -290,10 +301,10 @@ class LockNEC extends React.Component {
               height="28px"
               displayTooltip={true}
             />
-            <TableTabsWrapper>
-              {this.TabButton(currentTab, tabs.YOUR_LOCKS, "Your Locks")}
-              {this.TabButton(currentTab, tabs.ALL_PERIODS, "All Periods")}
-            </TableTabsWrapper>
+            <TableTabEnumWrapper>
+              {this.TabButton(currentTab, TabEnum.YOUR_LOCKS, "Your Locks")}
+              {this.TabButton(currentTab, TabEnum.ALL_PERIODS, "All Periods")}
+            </TableTabEnumWrapper>
           </TableHeaderWrapper>
           {this.renderTable(currentTab)}
         </DetailsWrapper>

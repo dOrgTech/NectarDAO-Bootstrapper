@@ -7,6 +7,7 @@ import Selector from './Selector'
 import LockNEC from './LockNEC'
 import Airdrop from './Airdrop'
 import BidGEN from './BidGEN'
+import { RootStore } from 'stores/Root';
 
 const check = {
   defaultAccount: '[Check] Default Account'
@@ -30,9 +31,9 @@ const SectionWrapper = styled.div`
 
 @inject('root')
 @observer
-class ReputationBoostrapper extends React.Component {
-  async componentDidlMount() {
-    const { providerStore } = this.props.root
+class ReputationBoostrapper extends React.Component<any, any> {
+  async componentDidMount() {
+    const { providerStore } = this.props.root as RootStore
     log.info(check.defaultAccount, providerStore.getDefaultAccount())
     if (!providerStore.getDefaultAccount()) {
       await providerStore.setWeb3WebClient()
@@ -41,7 +42,7 @@ class ReputationBoostrapper extends React.Component {
   }
 
   render() {
-    const { providerStore } = this.props.root
+    const { providerStore } = this.props.root as RootStore
 
     if (!providerStore.defaultAccount) {
       return <div>Loading Provider...</div>

@@ -11,6 +11,7 @@ import GENLogo from 'assets/svgs/GEN-logo.svg'
 import * as helpers from 'utils/helpers'
 import * as deployed from 'deployed.json'
 import LoadingCircle from '../../common/LoadingCircle'
+import { RootStore } from 'stores/Root'
 
 const BidGENWrapper = styled.div`
   display: flex;
@@ -59,14 +60,14 @@ const propertyNames = {
 
 @inject('root')
 @observer
-class BidGEN extends React.Component {
+class BidGEN extends React.Component<any, any>{
   async componentDidMount() {
-    const { bidGENStore, tokenStore, providerStore } = this.props.root
+    const { bidGENStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const genTokenAddress = deployed.GenToken
     const schemeAddress = deployed.Auction4Reputation
 
-    if (!bidGENStore.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    if (!bidGENStore.areStaticParamsLoaded()) {
       await bidGENStore.fetchStaticParams()
     }
 
@@ -76,7 +77,7 @@ class BidGEN extends React.Component {
   }
 
   SidePanel = () => {
-    const { bidGENStore, tokenStore, providerStore } = this.props.root
+    const { bidGENStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const genTokenAddress = deployed.GenToken
     const spenderAddress = deployed.Auction4Reputation
@@ -125,7 +126,7 @@ class BidGEN extends React.Component {
     'Auctions have ended'
   */
   getAuctionPercentageAndTimer() {
-    const { bidGENStore, timeStore } = this.props.root
+    const { bidGENStore, timeStore } = this.props.root as RootStore
 
     const now = timeStore.currentTime
     const currentAuction = bidGENStore.getActiveAuction()
@@ -180,15 +181,15 @@ class BidGEN extends React.Component {
   }
 
   render() {
-    const { bidGENStore, tokenStore, providerStore, timeStore } = this.props.root
+    const { bidGENStore, tokenStore, providerStore, timeStore } = this.props.root as RootStore
 
     const userAddress = providerStore.getDefaultAccount()
     const genTokenAddress = deployed.GenToken
     const schemeAddress = deployed.Auction4Reputation
 
     // Loading Status
-    const staticParamsLoaded = bidGENStore.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)
-    const auctionDataLoaded = bidGENStore.isPropertyInitialLoadComplete(propertyNames.AUCTION_DATA)
+    const staticParamsLoaded = bidGENStore.areStaticParamsLoaded()
+    const auctionDataLoaded = bidGENStore.isAuctionDataLoaded()
     const hasBalance = tokenStore.hasBalance(genTokenAddress, userAddress)
     const hasAllowance = tokenStore.hasAllowance(genTokenAddress, userAddress, schemeAddress)
     const tokenApproved = tokenStore.getMaxApprovalFlag(genTokenAddress, userAddress, schemeAddress)
@@ -215,6 +216,7 @@ class BidGEN extends React.Component {
               subtitle={auctionTimer}
               width="28px"
               height="28px"
+              displayTooltip={false}
             />
           </TableHeaderWrapper>
           <GenAuctionTable

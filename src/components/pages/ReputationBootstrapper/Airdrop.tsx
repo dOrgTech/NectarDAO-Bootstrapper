@@ -10,6 +10,8 @@ import ActiveButton from 'components/common/buttons/ActiveButton'
 import InactiveButton from 'components/common/buttons/InactiveButton'
 import LoadingCircle from '../../common/LoadingCircle'
 import Tooltip from 'components/common/Tooltip'
+import { RootStore } from 'stores/Root'
+import { SnapshotInfo } from 'types'
 
 const propertyNames = {
   STATIC_PARAMS: 'staticParams',
@@ -71,11 +73,11 @@ const Info = styled(InfoTitle)`
   text-align: right;
 `
 
-const InfoLine = ({ title, info, tooltipText }) => (
+const InfoLine = (title, info, tooltipText?) => (
   <InfoWrapper>
     <InfoTitle>
       {title}
-      {tooltipText ? <Tooltip content="This is placeholder text describing the Airdrop Blocknumber." position="right top" /> : <div />}
+      {tooltipText ? <Tooltip title="" content="This is placeholder text describing the Airdrop Blocknumber." position="right top" /> : <div />}
     </InfoTitle>
     <Info>{info}</Info>
   </InfoWrapper>
@@ -83,10 +85,10 @@ const InfoLine = ({ title, info, tooltipText }) => (
 
 @inject('root')
 @observer
-class Airdrop extends React.Component {
+class Airdrop extends React.Component<any, any>{
 
   async componentDidMount() {
-    const { airdropStore, tokenStore, providerStore } = this.props.root
+    const { airdropStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const necTokenAddress = deployed.NectarToken
 
@@ -138,7 +140,7 @@ class Airdrop extends React.Component {
       - No button
   */
   calcDropVisuals() {
-    const { airdropStore, timeStore } = this.props.root
+    const { airdropStore, timeStore } = this.props.root as RootStore
 
     let dropPercentage = 0
     let dropTimer = '...'
@@ -189,7 +191,7 @@ class Airdrop extends React.Component {
   }
 
   redeem() {
-    const { airdropStore, providerStore } = this.props.root
+    const { airdropStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     airdropStore.redeem(userAddress)
   }
@@ -207,7 +209,7 @@ class Airdrop extends React.Component {
     }
 
     if (pending) {
-      return (<LoadingCircle title="Claiming REP..." />)
+      return (<LoadingCircle instruction="Claiming REP..." />)
     }
 
     if (status === snapshotStatus.CLAIM_STARTED && userBalance !== "0" && !hasRedeemed) {
@@ -224,27 +226,27 @@ class Airdrop extends React.Component {
   }
 
   render() {
-    const { airdropStore, providerStore, tokenStore, timeStore } = this.props.root
+    const { airdropStore, providerStore, tokenStore, timeStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()
     const necTokenAddress = deployed.NectarToken
     const staticParamsLoaded = airdropStore.areStaticParamsLoaded()
     const userDataLoaded = airdropStore.isUserDataLoaded(userAddress)
 
     const redeemPending = airdropStore.isRedeemPending()
-
-    const data = airdropStore.userData[userAddress]
+    const data = airdropStore.userData.get(userAddress)
 
     if (!staticParamsLoaded || !userDataLoaded) {
       return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
     }
 
+    const userData = airdropStore.getUserData(userAddress) as SnapshotInfo
     const repBalance = helpers.fromWei(airdropStore.getSnapshotRep(userAddress))
     const snapshotBlock = airdropStore.getSnapshotBlock()
     const currentBlock = timeStore.currentBlock
     const dropVisuals = this.calcDropVisuals()
-    const userData = airdropStore.getUserData(userAddress)
+
     const { dropPercentage, dropTimer, dropStatus } = dropVisuals
-    const hasRedeemed = data.hasRedeemed
+
 
     /* Before the snapshot, well get the users' CURRENT balance
        After the snapshot, we'll get the users SNAPSHOT balance
@@ -268,6 +270,7 @@ class Airdrop extends React.Component {
           subtitle={dropTimer}
           width="50px"
           height="50px"
+          displayTooltip={false}
         />
         <Divider width="80%" margin="20px 0px 20px 0px" />
         <InfoLine title="Nectar Balance" info={necBalanceDisplay} />

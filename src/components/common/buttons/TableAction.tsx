@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { observer, inject } from 'mobx-react'
+import { RootStore } from 'stores/Root'
 
 const Button = styled.div`
   display: flex;
@@ -25,15 +26,15 @@ export const actions = {
 
 @inject('root')
 @observer
-class TableAction extends React.Component {
+class TableAction extends React.Component<any, any>{
 
     extendLock(lockId, periodsToExtend, batchId) {
-        const { lockNECStore } = this.props.root
+        const { lockNECStore } = this.props.root as RootStore
         lockNECStore.extendLock(lockId, periodsToExtend, batchId)
     }
 
     release(beneficiary, lockId) {
-        const { lockNECStore } = this.props.root
+        const { lockNECStore } = this.props.root as RootStore
         lockNECStore.release(beneficiary, lockId)
     }
 

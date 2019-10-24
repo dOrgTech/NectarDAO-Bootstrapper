@@ -3,6 +3,7 @@ import { inject, observer } from "mobx-react";
 import { TableWrapper, RowWrapper, InactiveRowWrapper, Row, CellWrapper, GreyCell } from 'components/common/Table'
 import 'components/common/Table.scss'
 import * as helpers from 'utils/helpers'
+import { RootStore } from 'stores/Root';
 
 const columns = [
     { name: 'Period #', key: 'batchId', width: '15%', align: 'left' },
@@ -13,9 +14,9 @@ const columns = [
 
 @inject('root')
 @observer
-class BatchesTable extends React.Component {
+class BatchesTable extends React.Component<any, any>{
     generateTableRows(data) {
-        const tableData = []
+        const tableData: any[] = []
 
         Object.keys(data).forEach(key => {
 
@@ -48,7 +49,7 @@ class BatchesTable extends React.Component {
 
     render() {
         const { highlightTopRow } = this.props
-        const { lockNECStore, providerStore } = this.props.root
+        const { lockNECStore, providerStore } = this.props.root as RootStore
 
         const userAddress = providerStore.getDefaultAccount()
         const lockDataLoaded = lockNECStore.areBatchesLoaded(userAddress)

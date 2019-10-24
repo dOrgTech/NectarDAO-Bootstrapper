@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import ProgressCircle from 'components/common/ProgressCircle'
-import { Instruction, SubInstruction, Subtitle } from 'components/common'
+import { Instruction, Subtitle } from 'components/common'
 
 const CircleAndTextContainer = styled.div`
   display: flex;
@@ -11,7 +11,12 @@ const CircleAndTextContainer = styled.div`
   margin-bottom: 16px;
 `
 
-class LoadingCircle extends React.Component {
+type Props = {
+  instruction: string;
+  subinstruction?: string;
+}
+
+class LoadingCircle extends React.Component<Props, any>{
   render() {
     const { instruction, subinstruction } = this.props
 
@@ -23,7 +28,7 @@ class LoadingCircle extends React.Component {
             rotate
           />
           <Instruction>{instruction}</Instruction>
-          <Subtitle>{subinstruction}</Subtitle>
+          {subinstruction ? <Subtitle>{subinstruction}</Subtitle> : <React.Fragment></React.Fragment>}
         </CircleAndTextContainer>
       </React.Fragment>
     )

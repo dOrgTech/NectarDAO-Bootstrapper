@@ -37,9 +37,16 @@ const NoRotateWrapper = styled(RotateWrapper)`
   -ms-animation-direction: reverse;
 `
 
-const ProgressCircle = ({
- value, icon, width, height, rotate
-}) => {
+type Props = {
+  value;
+  icon?;
+  width;
+  height;
+  rotate?;
+}
+
+const ProgressCircle = (props: Props) => {
+  const { value, icon, width, height, rotate } = props
   const style = buildStyles({
     // Rotation of path and trail, in number of turns (0-1)
     rotation: 0.75,

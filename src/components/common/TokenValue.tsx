@@ -1,8 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
 import * as helpers from 'utils/helpers'
 
-class TokenValue extends React.Component {
+type Props = {
+    weiValue: any
+}
+
+class TokenValue extends React.Component<Props, any>{
     render() {
         const { weiValue } = this.props
         const displayValue = helpers.roundValue(helpers.fromWei(weiValue))

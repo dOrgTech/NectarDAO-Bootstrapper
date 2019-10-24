@@ -1,15 +1,15 @@
 import React from 'react'
-import styled from 'styled-components'
 import ProgressCircle from 'components/common/ProgressCircle'
 import { PanelWrapper, Instruction, SubInstruction, CircleAndTextContainer, Icon, Button, DisableButton } from 'components/common'
 import checkboxIcon from 'assets/svgs/checkbox.svg'
 import { observer, inject } from 'mobx-react'
+import { RootStore } from 'stores/Root'
 
 @inject('root')
 @observer
-class EnableTokenPanel extends React.Component {
+class EnableTokenPanel extends React.Component<any, any>{
   Enable = () => {
-    const { tokenStore } = this.props.root
+    const { tokenStore } = this.props.root as RootStore
     const { instruction, subinstruction, buttonText, spenderAddress, tokenAddress } = this.props
 
     return (

@@ -6,9 +6,8 @@ import jazzicon from "jazzicon";
 import web3 from "./web3";
 
 // Settings
-import settings from "../settings.json";
-import Big from 'big.js/big.mjs';
-Big.PE = 200
+import BigNumber from "bignumber.js"
+
 
 export const timeConstants = {
   inSeconds: {
@@ -25,8 +24,6 @@ export const MAX_GAS = 0xffffffff;
 export const MAX_UINT = web3.utils.toTwosComplement('-1');
 
 const TEN18 = new BN('1000000000000000000');
-const TEN15 = new BN('1000000000000000');
-const TEN9 = new BN('1000000000');
 
 export const WAD = TEN18
 
@@ -137,7 +134,7 @@ export function getDurationTimeText(value) {
 }
 
 export function pow10(value) {
-  const ten = new Big(10)
+  const ten = new BigNumber(10)
   return ten.pow(value)
 }
 
@@ -146,13 +143,13 @@ export function toAmount(value) {
 }
 
 export function toFixed(value) {
-  const numValue = new Big(value)
+  const numValue = new BigNumber(value)
   const fixed = numValue.toPrecision(4)
   return fixed.toString()
 }
 
 export function fromRep(value) {
-  const numValue = new Big(value)
+  const numValue = new BigNumber(value)
   const repValue = numValue.div(pow10(18))
   return roundValue(repValue.toString())
 }
@@ -344,39 +341,4 @@ export const getGasPriceFromETHGasStation = () => {
       reject(e);
     });
   })
-};
-
-//TODO: eventually find a better solution
-export const quotation = (from, to) => {
-  if (to === "dai" || from === "dai") {
-    const quote = "dai";
-    const base = to === "dai" ? from : to;
-    const isCounter = from !== "dai";
-
-    return { base, quote, isCounter };
-  }
-
-  if (to === "eth" || from === "eth") {
-    const quote = "eth";
-    const base = to === "eth" ? from : to;
-    const isCounter = from !== "eth";
-
-    return { base, quote, isCounter };
-  }
-};
-
-export const calculateTradePrice = (tokenSell, amountSell, tokenBuy, amountBuy) => {
-  return (tokenSell === "dai" || (tokenSell === "eth" && tokenBuy !== "dai"))
-    ?
-    { price: amountSell.div(amountBuy), priceUnit: `${tokenBuy}/${tokenSell}` }
-    :
-    { price: amountBuy.div(amountSell), priceUnit: `${tokenSell}/${tokenBuy}` };
-}
-
-export const threshold = (network, from, to) => {
-  return settings.chain[network].threshold[[from, to].sort((a, b) => {
-    if (a > b) return 1;
-    if (a < b) return -1;
-    return 0;
-  }).join("")];
 };

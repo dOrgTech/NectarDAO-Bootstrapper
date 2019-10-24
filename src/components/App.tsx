@@ -6,7 +6,7 @@ import {
 } from 'react-router-dom'
 import { inject, observer } from 'mobx-react'
 import 'components/App.scss'
-import ReputationBoostrapper from './pages/ReputationBootstrapper'
+import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
 
 // window.ethereum.on('accountsChanged', async (accounts) => {
 //   window.location.reload()
@@ -14,7 +14,7 @@ import ReputationBoostrapper from './pages/ReputationBootstrapper'
 
 @inject('root')
 @observer
-class App extends React.Component {
+class App extends React.Component<any, any>{
   render() {
     return (
       <HashRouter>

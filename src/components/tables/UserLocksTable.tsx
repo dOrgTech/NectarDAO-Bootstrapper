@@ -10,39 +10,62 @@ import Popup from "reactjs-popup";
 import ExtendLockPopup from '../common/panels/ExtendLockPopup';
 import 'components/common/Modal.scss'
 
+import BigNumber from "bignumber.js"
+import { Lock, LockStaticParams } from 'types'
+import { RootStore } from 'stores/Root';
+type Scores = Map<number, BigNumber>
+type Locks = Map<string, Lock>
+
+interface ExtendData {
+    lockId: string
+}
+
+interface ReleaseData {
+    beneficiary: string,
+    lockId: string,
+    releasable: number,
+    released: boolean,
+    releasableDisplay: string
+}
+
+class TableRow {
+    constructor(
+        public startPeriod: number,
+        public amount: string,
+        public duration: string,
+        public extendData: ExtendData,
+        public releaseData: ReleaseData
+    ) { }
+}
+
 @inject('root')
 @observer
-class UserLocksTable extends React.Component {
-    generateTableRows(inputData, userAddress) {
-        const tableData = []
+class UserLocksTable extends React.Component<any, any> {
+    generateTableRows(inputData: Locks, userAddress) {
+        const tableData: TableRow[] = [] as TableRow[]
 
-        Object.keys(inputData).forEach(function (key, index) {
-            const lockId = inputData[key].lockId
+        inputData.forEach((lock, key, map) => {
+            console.log(key, lock);
 
-            const duration = inputData[key].duration
-            const durationDisplay = `${duration} ${helpers.getMonthsSuffix(duration)}`
+            const durationDisplay = `${lock.periodDuration} ${helpers.getMonthsSuffix(lock.periodDuration)}`
 
-            const weiAmount = inputData[key].amount
+            const weiAmount = lock.amount.toString()
             const displayAmount = `${helpers.roundValue(helpers.fromWei(weiAmount))} NEC`
 
-            const startPeriod = inputData[key].lockingPeriod
+            const releasableDisplay = helpers.timestampToDate(lock.releasable)
 
-            const releasable = inputData[key].releasable
-            const released = inputData[key].released
-            const releasableDisplay = helpers.timestampToDate(releasable)
-
-            const row = {
-                startPeriod,
+            const row: TableRow = {
+                startPeriod: lock.lockingPeriod,
                 amount: displayAmount,
                 duration: durationDisplay,
                 extendData: {
-                    lockId: lockId
+                    lockId: lock.id
                 },
                 releaseData: {
                     beneficiary: userAddress,
-                    lockId: lockId,
-                    releasable,
-                    released,
+                    lockId: lock.id,
+                    releasable: lock.releasable,
+                    released: lock.released,
                     releasableDisplay
                 },
             }
@@ -55,12 +78,12 @@ class UserLocksTable extends React.Component {
     }
 
     release(beneficiary, lockId) {
-        const { lockNECStore } = this.props.root
+        const { lockNECStore } = this.props.root as RootStore as RootStore
         lockNECStore.release(beneficiary, lockId)
     }
 
     extend(lockId, periodsToExtend, batchId) {
-        const { lockNECStore } = this.props.root
+        const { lockNECStore } = this.props.root as RootStore as RootStore
         lockNECStore.extendLock(lockId, periodsToExtend, batchId)
     }
 
@@ -69,7 +92,6 @@ class UserLocksTable extends React.Component {
             <TableWrapper>
                 <InactiveRowWrapper>
                     <Row>
-                        <LoadingCircle instruction="Loading..." />
                     </Row>
                 </InactiveRowWrapper>
             </TableWrapper>
@@ -77,7 +99,7 @@ class UserLocksTable extends React.Component {
     }
 
     generateCell(key, value) {
-        const { timeStore, lockNECStore, extendLockFormStore, providerStore } = this.props.root
+        const { timeStore, lockNECStore, extendLockFormStore, providerStore } = this.props.root as RootStore
         const now = timeStore.currentTime
 
         const userAddress = providerStore.getDefaultAccount()
@@ -160,16 +182,22 @@ class UserLocksTable extends React.Component {
 
     render() {
         const { highlightTopRow } = this.props
-        const { lockNECStore, providerStore } = this.props.root
+        const { lockNECStore, providerStore } = this.props.root as RootStore as RootStore
 
         const userAddress = providerStore.getDefaultAccount()
         const userLocksLoaded = lockNECStore.isUserLockInitialLoadComplete(userAddress)
-        const userLocks = lockNECStore.getUserTokenLocks(userAddress)
+
 
         let rows
+        let hasLocks = false
 
         if (userLocksLoaded) {
-            rows = this.generateTableRows(userLocks.data, userAddress)
+            const userLocks = lockNECStore.getUserTokenLocks(userAddress)
+
+            userLocks.size > 0 ? hasLocks = true : hasLocks = false
+            if (hasLocks) {
+                rows = this.generateTableRows(userLocks, userAddress)
+            }
         }
 
         const columns = [
@@ -191,7 +219,7 @@ class UserLocksTable extends React.Component {
                         ))}
                     </Row>
                 </RowWrapper>
-                {userLocksLoaded ?
+                {userLocksLoaded && hasLocks ?
                     <TableWrapper>
                         {rows.map((row, index) => {
                             const highlight = !highlightTopRow || index === 0

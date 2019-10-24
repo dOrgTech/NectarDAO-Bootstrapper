@@ -9,8 +9,8 @@ background-color: var(--inactive-border);
 border: 0 none;
 `
 
-const Divider = ({ width, margin, height }) => (
-  <StyledDivider width={width} margin={margin} height={height || '2px'} />
-)
+const Divider = (width, margin, height?) => {
+  return <StyledDivider width={width} margin={margin} height={height || '2px'} />
+}
 
 export default Divider

@@ -1,11 +1,13 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { observable, action, computed } from 'mobx'
-import * as deployed from "../deployed"
+import * as deployed from "deployed.json"
 import * as blockchain from "utils/blockchain"
 import * as helpers from "utils/helpers"
-import Big from 'big.js/big.mjs'
+import BigNumber from 'bignumber.js'
 import * as log from 'loglevel'
+import { BidStaticParams, Auction, AuctionStatus } from 'types'
+import { RootStore } from './Root'
 
 const objectPath = require("object-path")
 
@@ -13,6 +15,12 @@ const BID_EVENT = 'Bid'
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const { BN } = helpers
+
+interface BidEvent {
+    bidder: string;
+    auctionId: number,
+    amount: BigNumber
+}
 
 export const statusCodes = {
     NOT_LOADED: 0,
@@ -40,20 +48,19 @@ const defaultAsyncActions = {
     bid: false,
     redeem: {}
 }
+
+type Bids = Map<string, BigNumber>
+type AuctionData = Map<number, Auction>
+
 export default class BidGENStore {
     // Static Parameters
-    @observable staticParams = {
-        auctionsStartTime: '',
-        auctionsEndTime: '',
-        auctionLength: '',
-        numAuctions: '',
-        redeemEnableTime: '',
-        auctionRepReward: ''
-    }
+    @observable staticParams!: BidStaticParams
+    @observable staticParamsLoaded = false
 
     // Dynamic Data
-    @observable repRewardLeft = ''
-    @observable auctionData = {}
+    @observable repRewardLeft: BigNumber = new BigNumber(0)
+    @observable auctionData: AuctionData = new Map<number, Auction>()
+    @observable auctionDataLoaded = false
     @observable auctionCount = 0
 
     // Status
@@ -65,6 +72,8 @@ export default class BidGENStore {
 
     @observable asyncActions = defaultAsyncActions
 
+    private rootStore: RootStore
+
     constructor(rootStore) {
         this.rootStore = rootStore;
     }
@@ -73,21 +82,24 @@ export default class BidGENStore {
         return this.auctionCount
     }
 
-    getUserBid(userAddress, auctionId) {
-        const userBid = this.auctionData[auctionId].bids[userAddress]
-        if (userBid) {
-            return userBid
-        } else {
-            return 0
+    getUserBid(userAddress: string, auctionId: number) {
+        if (!this.auctionData.has(auctionId)) {
+            throw new Error(`Attempting to access non-existent user data for ${userAddress} in auction ${auctionId}`);
         }
+
+        const auction = this.auctionData.get(auctionId) as Auction
+        const userBid = auction.bids[userAddress] || new BigNumber(0)
+        return userBid
     }
 
     getTotalBid(auctionId) {
-        return this.auctionData[auctionId].totalBids
+        const auction = this.auctionData.get(auctionId) as Auction
+        return auction.totalBid
     }
 
     getAuctionStatus(auctionId) {
-        return this.auctionData[auctionId].status
+        const auction = this.auctionData.get(auctionId) as Auction
+        return auction.status
     }
 
     resetAsyncActions() {
@@ -98,8 +110,8 @@ export default class BidGENStore {
         objectPath.set(this.asyncActions, `bid`, flag)
     }
 
-    setRedeemActionPending(userAddress, beneficiary, auctionId, flag) {
-        objectPath.set(this.asyncActions, `redeem.${userAddress}.${auctionId}`, flag)
+    setRedeemActionPending(beneficiary, auctionId, flag) {
+        objectPath.set(this.asyncActions, `redeem.${beneficiary}.${auctionId}`, flag)
     }
 
     isBidActionPending() {
@@ -112,24 +124,24 @@ export default class BidGENStore {
         return flag
     }
 
-    setLoadingStatus(propertyName, status) {
-        objectPath.set(this.loadingStatus, `${propertyName}.status`, status)
+    areStaticParamsLoaded(): boolean {
+        return this.staticParamsLoaded
     }
 
-    setInitialLoad(propertyName, initialLoad) {
-        objectPath.set(this.loadingStatus, `${propertyName}.initialLoad`, initialLoad)
+    isAuctionDataLoaded(): boolean {
+        return this.auctionDataLoaded
     }
 
-    getFinalAuctionIndex() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    getFinalAuctionIndex(): number {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
         return Number(this.staticParams.numAuctions) - 1
     }
 
-    haveAuctionsStarted() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    haveAuctionsStarted(): boolean {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
@@ -142,8 +154,8 @@ export default class BidGENStore {
         return false
     }
 
-    areAuctionsOver() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    areAuctionsOver(): boolean {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
@@ -156,24 +168,12 @@ export default class BidGENStore {
         return false
     }
 
-    isPropertyInitialLoadComplete(propertyName) {
-        if (objectPath.get(this.loadingStatus, `${propertyName}.initialLoad`)) {
-            return true
-        }
-
-        return false
-    }
-
-    getLoadStatus(propertyName, userAddress = null) {
-        return objectPath.get(this.loadingStatus, `${propertyName}.${userAddress}.initialLoad`) || statusCodes.NOT_LOADED
-    }
-
     loadContract() {
         return blockchain.loadObject('Auction4Reputation', deployed.Auction4Reputation, 'Auction4Reputation')
     }
 
-    getActiveAuction() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    getActiveAuction(): number {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
@@ -191,8 +191,8 @@ export default class BidGENStore {
         return Math.trunc(currentAuction)
     }
 
-    getNextAuctionStartTime() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    getNextAuctionStartTime(): number {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
@@ -206,8 +206,8 @@ export default class BidGENStore {
         return nextAuctionStartTime
     }
 
-    getTimeUntilNextAuction() {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+    getTimeUntilNextAuction(): number {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
@@ -219,8 +219,6 @@ export default class BidGENStore {
 
     fetchStaticParams = async () => {
         const contract = this.loadContract()
-
-        this.setLoadingStatus(propertyNames.STATIC_PARAMS, statusCodes.PENDING)
 
         try {
             const auctionsStartTime = await contract.methods.auctionsStartTime().call()
@@ -236,30 +234,40 @@ export default class BidGENStore {
                 auctionLength: Number(auctionLength),
                 numAuctions: Number(numAuctions),
                 redeemEnableTime: Number(redeemEnableTime),
-                auctionRepReward: Number(auctionRepReward)
+                auctionRepReward: new BigNumber(auctionRepReward)
             }
 
-            this.setLoadingStatus(propertyNames.STATIC_PARAMS, statusCodes.SUCCESS)
-            this.setInitialLoad(propertyNames.STATIC_PARAMS, true)
+            this.staticParamsLoaded = true
 
         } catch (e) {
             log.error(e)
-            this.setLoadingStatus(propertyNames.STATIC_PARAMS, statusCodes.ERROR)
+        }
+    }
+
+    newAuction(): Auction {
+        return new Auction(new BigNumber(0), new Map<string, BigNumber>(), AuctionStatus.NOT_STARTED)
+    }
+
+    parseBidEvent(event): BidEvent {
+        const { _bidder, _auctionId, _amount } = event.returnValues
+
+        return {
+            bidder: _bidder,
+            auctionId: Number(_auctionId),
+            amount: new BigNumber(_amount)
         }
     }
 
     @action fetchAuctionData = async () => {
-        if (!this.isPropertyInitialLoadComplete(propertyNames.STATIC_PARAMS)) {
+        if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
 
         const contract = this.loadContract()
 
-        this.setLoadingStatus(propertyNames.AUCTION_DATA, statusCodes.PENDING)
-
         try {
-            const finalAuction = Number(this.getFinalAuctionIndex())
-            let currentAuction = Number(this.getActiveAuction())
+            const finalAuction = this.getFinalAuctionIndex()
+            let currentAuction = this.getActiveAuction()
             const auctionsEnded = this.areAuctionsOver()
 
             if (currentAuction > finalAuction) {
@@ -271,61 +279,59 @@ export default class BidGENStore {
                 toBlock: 'latest'
             })
 
-            const data = []
+            const auctions = new Map<number, Auction>()
 
             if (currentAuction < 0) {
-                this.setInitialLoad(propertyNames.AUCTION_DATA, false)
-                this.auctionData = {}
+                this.auctionDataLoaded = false
+                this.auctionData = auctions
             }
 
             for (let auctionId = 0; auctionId <= currentAuction; auctionId += 1) {
-                if (!data[auctionId]) {
-                    data[auctionId] = {
-                        totalBids: '0',
-                        bids: {},
-                    }
-                }
+                const auction = this.newAuction()
 
                 if (auctionId < currentAuction) {
-                    data[auctionId].status = 'Complete'
+                    auction.status = AuctionStatus.COMPLETE
                 } else if (auctionId === finalAuction && auctionsEnded) {
-                    data[auctionId].status = 'Complete'
+                    auction.status = AuctionStatus.COMPLETE
                 }
                 else if (auctionId === currentAuction) {
-                    data[auctionId].status = 'In Progress'
+                    auction.status = AuctionStatus.IN_PROGRESS
                 } else {
-                    data[auctionId].status = 'Not Started'
+                    auction.status = AuctionStatus.NOT_STARTED
                 }
+
+                auctions.set(auctionId, auction)
             }
 
             for (const event of bidEvents) {
-                const { _bidder, _auctionId, _amount } = event.returnValues
+                const bid = this.parseBidEvent(event)
 
-                const auctionData = data[_auctionId]
+                if (!auctions.has(bid.auctionId)) {
+                    throw new Error(`Auction ID ${bid.auctionId} in Event isn't valid`)
+                }
+                const auction = auctions.get(bid.auctionId) as Auction
 
-                if (!auctionData.bids[_bidder]) {
-                    auctionData.bids[_bidder] = '0'
+                if (!auction.bids[bid.bidder]) {
+                    auction.bids[bid.bidder] = new BigNumber(0)
                 }
 
-                const currentBid = new BN(auctionData.bids[_bidder])
-                const amountToAdd = new BN(_amount)
+                const currentBid = auction.bids[bid.bidder]
+                const amountToAdd = bid.amount
 
-                auctionData.bids[_bidder] = (currentBid.add(amountToAdd)).toString()
+                auction.bids[bid.bidder] = (currentBid.plus(amountToAdd))
 
-                const currentTotalBid = new BN(auctionData.totalBids)
-                auctionData.totalBids = (currentTotalBid.add(amountToAdd)).toString()
+                const currentTotalBid = auction.totalBid
+                auction.totalBid = (currentTotalBid.plus(amountToAdd))
+
+                auctions.set(bid.auctionId, auction)
             }
 
-            this.auctionData = data
+            this.auctionData = auctions
             this.auctionCount = Number(currentAuction) + 1
-            console.log(data)
-
-            this.setLoadingStatus(propertyNames.AUCTION_DATA, statusCodes.SUCCESS)
-            this.setInitialLoad(propertyNames.AUCTION_DATA, true)
-
+            this.auctionDataLoaded = true
+            console.log(auctions)
         } catch (e) {
             log.error(e)
-            this.setLoadingStatus(propertyNames.AUCTION_DATA, statusCodes.ERROR)
         }
     }
 

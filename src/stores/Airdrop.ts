@@ -1,11 +1,12 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import { observable, action, computed } from 'mobx'
-import * as deployed from "../deployed";
+import { observable, action } from 'mobx'
+import * as deployed from "deployed.json";
 import * as blockchain from "utils/blockchain"
-import * as helpers from "utils/helpers"
-import Big from 'big.js/big.mjs';
 import * as log from 'loglevel'
+import { AirdropStaticParams, SnapshotInfo } from 'types'
+import { RootStore } from './Root';
+import BigNumber from "bignumber.js"
 
 const objectPath = require("object-path")
 
@@ -27,23 +28,15 @@ const propertyNames = {
     USER_DATA: 'userData',
 }
 export default class AirdropStore {
-    // Static Parameters
-    @observable staticParams = {
-        snapshotBlock: '',
-        snapshotTotalSupplyAt: '',
-        claimStartTime: '',
-        claimEndTime: '',
-        totalRepReward: ''
-    }
+    @observable staticParams!: AirdropStaticParams
+    @observable staticParamsLoaded = false
 
-    // Dynamic Data
-    @observable userData = {}
-
-    @observable initialLoad = {
-        staticParams: false
-    }
+    @observable userData = new Map<string, SnapshotInfo>()
+    @observable userDataLoaded = new Map<string, boolean>()
 
     @observable redeemAction = false
+
+    rootStore: RootStore
 
     constructor(rootStore) {
         this.rootStore = rootStore;
@@ -92,29 +85,21 @@ export default class AirdropStore {
         return (now > endTime ? true : false)
     }
 
-    setInitialLoad(propertyName, flag) {
-        objectPath.set(this.initialLoad, `${propertyName}`, flag)
-    }
 
     isUserDataLoaded(userAddress) {
-        const loaded = objectPath.get(this.userData, `${userAddress}.initialLoad`) || false
-
-        return loaded
+        return this.userDataLoaded.get(userAddress) || false
     }
 
     areStaticParamsLoaded() {
-        const loaded = objectPath.get(this.initialLoad, `staticParams`) || false
-        return loaded
+        return this.staticParamsLoaded
     }
 
     getUserData(userAddress) {
-        const a = objectPath.get(this.userData, `${userAddress}`)
-
-        return objectPath.get(this.userData, `${userAddress}`)
+        return this.userData.get(userAddress)
     }
 
     setUserData(userAddress, data) {
-        objectPath.set(this.userData, `${userAddress}`, data)
+        this.userData.set(userAddress, data)
     }
 
     loadNecRepAllocationContract() {
@@ -149,21 +134,23 @@ export default class AirdropStore {
         const contract = this.loadNecRepAllocationContract()
 
         try {
-            const snapshotBlock = await contract.methods.blockReference().call()
-            const snapshotTotalSupplyAt = await contract.methods.totalTokenSupplyAt().call()
-            const claimStartTime = await contract.methods.claimingStartTime().call()
-            const claimEndTime = await contract.methods.claimingEndTime().call()
-            const totalRepReward = await contract.methods.reputationReward().call()
+            const snapshotBlock = Number(await contract.methods.blockReference().call())
+            const snapshotTotalSupplyAt = new BigNumber(await contract.methods.totalTokenSupplyAt().call())
+            const claimStartTime = Number(await contract.methods.claimingStartTime().call())
+            const claimEndTime = Number(await contract.methods.claimingEndTime().call())
+            const totalRepReward = new BigNumber(await contract.methods.reputationReward().call())
+            const token = await contract.methods.token().call()
 
             this.staticParams = {
                 snapshotBlock,
                 snapshotTotalSupplyAt,
                 claimStartTime,
                 claimEndTime,
-                totalRepReward
+                totalRepReward,
+                token
             }
 
-            this.setInitialLoad(propertyNames.STATIC_PARAMS, true)
+            this.staticParamsLoaded = true
         } catch (e) {
             console.log(e)
         }
@@ -174,9 +161,12 @@ export default class AirdropStore {
             throw new Error(text.staticParamsNotLoaded)
         }
 
-
         const contract = this.loadRepFromTokenContract()
         const necRepAllocationContract = this.loadNecRepAllocationContract()
+        const tokenContract = this.loadMiniMeTokenContract(this.staticParams.token)
+
+
+
         console.log('[Fetch] User Airdrop Data', userAddress)
         try {
             const redeemEvents = await contract.getPastEvents(REDEEM_EVENT, {
@@ -185,23 +175,19 @@ export default class AirdropStore {
                 toBlock: 'latest'
             })
 
-            const userBalance = await necRepAllocationContract.methods.balanceOf(userAddress).call()
-            const userRep = await necRepAllocationContract.methods.balanceOf(userAddress).call()
+            const snapshotBalance = await tokenContract.methods.balanceOfAt(userAddress, this.staticParams.snapshotBlock).call()
+            const snapshotRep = await necRepAllocationContract.methods.balanceOf(userAddress).call()
             const hasRedeemed = (redeemEvents.length && redeemEvents.length >= 1)
 
-            const data = {
-                snapshotBalance: userBalance,
-                snapshotRep: userRep,
-                hasRedeemed,
-                initialLoad: true
-            }
+            const data: SnapshotInfo = new SnapshotInfo(snapshotBalance, snapshotRep, hasRedeemed)
             //TODO: filter events for user redemption
             //TODO: calculate REP from (user balance / total supply) * totalREP
             console.log('[Fetched] User Airdrop Data', userAddress, data)
 
             this.setUserData(userAddress, data)
-
-        } catch (e) {
+            this.userDataLoaded[userAddress] = true
+        }
+        catch (e) {
             log.error(e)
         }
     }

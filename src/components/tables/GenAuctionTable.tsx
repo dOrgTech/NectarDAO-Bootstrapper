@@ -3,14 +3,15 @@ import { inject, observer } from "mobx-react";
 import { TableWrapper, RowWrapper, InactiveRowWrapper, Row, CellWrapper, GreyCell } from 'components/common/Table'
 import 'components/common/Table.scss'
 import * as helpers from 'utils/helpers'
+import { RootStore } from 'stores/Root';
 
 @inject('root')
 @observer
-class GenAuctionTable extends React.Component {
+class GenAuctionTable extends React.Component<any, any>{
     generateTableRows(userAddress) {
-        const { bidGENStore } = this.props.root
+        const { bidGENStore } = this.props.root as RootStore
 
-        let rows = []
+        let rows: any[] = []
 
         const auctionCount = bidGENStore.getTrackedAuctionCount()
         for (let i = 0; i < auctionCount; i++) {
@@ -44,10 +45,10 @@ class GenAuctionTable extends React.Component {
 
     render() {
         const { highlightTopRow } = this.props
-        const { bidGENStore, providerStore } = this.props.root
+        const { bidGENStore, providerStore } = this.props.root as RootStore
 
         const userAddress = providerStore.getDefaultAccount()
-        const auctionDataLoaded = bidGENStore.isPropertyInitialLoadComplete('auctionData')
+        const auctionDataLoaded = bidGENStore.isAuctionDataLoaded()
         const auctionsStarted = bidGENStore.haveAuctionsStarted()
 
         const columns = [

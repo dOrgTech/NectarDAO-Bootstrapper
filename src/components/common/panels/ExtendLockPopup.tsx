@@ -1,10 +1,11 @@
 import React from 'react'
 import { inject, observer } from "mobx-react";
 import { ActiveLockingPeriodCell, LockingPeriodCell, LockingPeriodSelectorWrapper, LockingPeriodSelector, LockingPeriodStartCell, LockingPeriodEndCell } from 'components/common/LockingPeriodForm'
+import { RootStore } from 'stores/Root';
 
 @inject('root')
 @observer
-class ExtendLockPopup extends React.Component {
+class ExtendLockPopup extends React.Component<any, any>{
     constructor(props) {
         super(props)
 
@@ -18,12 +19,12 @@ class ExtendLockPopup extends React.Component {
     }
 
     changeLockDuration(value) {
-        const { extendLockFormStore } = this.props.root
+        const { extendLockFormStore } = this.props.root as RootStore
         extendLockFormStore.duration = value
     }
 
     render() {
-        const { lockNECStore, extendLockFormStore } = this.props.root
+        const { lockNECStore, extendLockFormStore } = this.props.root as RootStore
         const { rangeStart } = this.state
 
         const periodsRemaining = lockNECStore.getPeriodsRemaining()
@@ -40,7 +41,7 @@ class ExtendLockPopup extends React.Component {
             maxLockDuration = periodsRemaining
         }
 
-        const cells = []
+        const cells: any[] = []
         for (let i = rangeStart; i <= rangeStart + numCells; i += 1) {
             if (i === lockDuration) {
                 cells.push(<ActiveLockingPeriodCell key={`cell-${i}`}>{i}</ActiveLockingPeriodCell>)

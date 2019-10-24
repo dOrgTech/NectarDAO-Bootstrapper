@@ -6,7 +6,8 @@ import { MaxTokensText } from './LockPanel'
 import InactiveButton from 'components/common/buttons/InactiveButton'
 import ActiveButton from 'components/common/buttons/ActiveButton'
 import LoadingCircle from '../LoadingCircle';
-import * as deployed from 'deployed'
+import * as deployed from 'deployed.json'
+import { RootStore } from 'stores/Root';
 
 const PanelWrapper = styled.div`
 `
@@ -52,14 +53,14 @@ const PanelText = styled.div`
 
 @inject('root')
 @observer
-class BidPanel extends React.Component {
+class BidPanel extends React.Component<any, any>{
   setBidAmount(value) {
-    const { bidFormStore } = this.props.root
+    const { bidFormStore } = this.props.root as RootStore
     bidFormStore.setBidAmount(value)
   }
 
   async bid() {
-    const { bidFormStore, bidGENStore } = this.props.root
+    const { bidFormStore, bidGENStore } = this.props.root as RootStore
     if (!bidFormStore.bidAmount) {
       return
     }
@@ -71,7 +72,7 @@ class BidPanel extends React.Component {
   }
 
   Pending() {
-    const { bidGENStore, bidFormStore } = this.props.root
+    const { bidGENStore, bidFormStore } = this.props.root as RootStore
     const currentAuction = bidGENStore.getActiveAuction()
     const timeUntilNextAuction = bidGENStore.getTimeUntilNextAuction()
     const timeText = helpers.getSecondsText(timeUntilNextAuction)
@@ -115,7 +116,7 @@ class BidPanel extends React.Component {
   }
 
   render() {
-    const { bidGENStore, bidFormStore, tokenStore } = this.props.root
+    const { bidGENStore, bidFormStore, tokenStore } = this.props.root as RootStore
     const { buttonText, userAddress } = this.props
     const auctionsEnded = bidGENStore.areAuctionsOver()
     const auctionsStarted = bidGENStore.haveAuctionsStarted()

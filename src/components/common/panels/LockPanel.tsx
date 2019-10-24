@@ -3,11 +3,11 @@ import styled from 'styled-components'
 import { observer, inject } from 'mobx-react'
 import ActiveButton from 'components/common/buttons/ActiveButton'
 import InactiveButton from 'components/common/buttons/InactiveButton'
-import { NumberInput } from 'components/common'
 import * as helpers from 'utils/helpers'
 import LoadingCircle from '../LoadingCircle'
-import * as deployed from 'deployed'
+import * as deployed from 'deployed.json'
 import { ActiveLockingPeriodCell, LockingPeriodCell, LockingPeriodSelectorWrapper, LockingPeriodSelector, LockingPeriodStartCell, LockingPeriodEndCell } from 'components/common/LockingPeriodForm'
+import { RootStore } from 'stores/Root'
 
 const PanelWrapper = styled.div`
 `
@@ -58,7 +58,7 @@ const ReleaseableDate = styled.div`
 
 @inject('root')
 @observer
-class LockPanel extends React.Component {
+class LockPanel extends React.Component<any, any>{
   constructor(props) {
     super(props)
 
@@ -73,17 +73,17 @@ class LockPanel extends React.Component {
   }
 
   setLockAmount(value) {
-    const { lockFormStore } = this.props.root
+    const { lockFormStore } = this.props.root as RootStore
     lockFormStore.amount = value
   }
 
   changeLockDuration(i) {
-    const { lockFormStore } = this.props.root
+    const { lockFormStore } = this.props.root as RootStore
     lockFormStore.duration = i
   }
 
   LockingPeriod = () => {
-    const { lockNECStore, lockFormStore } = this.props.root
+    const { lockNECStore, lockFormStore } = this.props.root as RootStore
     const { rangeStart } = this.state
 
     const periodsRemaining = lockNECStore.getPeriodsRemaining()
@@ -100,7 +100,7 @@ class LockPanel extends React.Component {
       maxLockDuration = periodsRemaining
     }
 
-    const cells = []
+    const cells: any[] = []
     for (let i = rangeStart; i <= rangeStart + numCells; i += 1) {
       if (i === lockDuration) {
         cells.push(<ActiveLockingPeriodCell key={`cell-${i}`}>{i}</ActiveLockingPeriodCell>)
@@ -115,7 +115,7 @@ class LockPanel extends React.Component {
 
     return (
       <LockingPeriodSelectorWrapper>
-        <div>Lock Duration (Periods)</div>
+        <div>Lock Duration (Months)</div>
         <LockingPeriodSelector>
           <LockingPeriodStartCell onClick={() => {
             this.setRangeStart(rangeStart > 1 ? rangeStart - 1 : 1)
@@ -167,7 +167,7 @@ class LockPanel extends React.Component {
   }
 
   async lockHandler() {
-    const { lockNECStore, lockFormStore } = this.props.root
+    const { lockNECStore, lockFormStore } = this.props.root as RootStore
 
     const amount = helpers.toWei(lockFormStore.amount)
     const duration = lockFormStore.duration
@@ -178,11 +178,11 @@ class LockPanel extends React.Component {
   }
 
   render() {
-    const { lockNECStore, lockFormStore, timeStore, tokenStore } = this.props.root
+    const { lockNECStore, lockFormStore, timeStore, tokenStore } = this.props.root as RootStore
     const { buttonText, pending, enabled, userAddress } = this.props
     const necTokanAddress = deployed.NectarToken
 
-    // The release period is now + (lockingPeriodLength * duration)
+    // The release period is now + (batchTime * duration)
     const now = timeStore.currentTime
     const duration = lockFormStore.duration
     const amount = lockFormStore.amount

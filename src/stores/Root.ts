@@ -8,14 +8,23 @@ import BidFormStore from "./BidForm"
 import ExtendLockFormStore from "./ExtendLockForm"
 import TokenStore from "./Token"
 import TimeStore from "./Time"
-import GraphStore from "./Graph"
-import * as deployed from 'deployed'
+import * as deployed from 'deployed.json'
 
-const GRAPH_HTTP_URI = 'https://api.thegraph.com/subgraphs/name/tspoff/nectardao'
-const GRAPH_WEBSOCKET_URI = 'wss://api.thegraph.com/subgraphs/name/tspoff/nectardao'
+export class RootStore {
+    public providerStore: ProviderStore
+    public airdropStore: AirdropStore
+    public lockNECStore: LockNECStore
+    public bidGENStore: BidGENStore
+    public lockFormStore: LockFormStore
+    public bidFormStore: BidFormStore
+    public extendLockFormStore: ExtendLockFormStore
+    public tokenStore: TokenStore
+    public timeStore: TimeStore
 
+    private dataUpdateInterval: any
+    private clockUpdateInterval: any
+    private blockUpdateInterval: any
 
-class RootStore {
     constructor() {
         this.providerStore = new ProviderStore(this)
         this.airdropStore = new AirdropStore(this)
@@ -26,14 +35,11 @@ class RootStore {
         this.extendLockFormStore = new ExtendLockFormStore(this)
         this.tokenStore = new TokenStore(this)
         this.timeStore = new TimeStore(this)
-        this.graphStore = new GraphStore(this)
-        this.graphStore.setHttpClient(GRAPH_HTTP_URI)
         this.asyncSetup()
     }
 
     asyncSetup = async () => {
         await this.providerStore.setWeb3WebClient()
-        await this.graphStore.fetchLocks(this.providerStore.getDefaultAccount())
     }
 
     setClockUpdateInteral = () => {
@@ -59,14 +65,11 @@ class RootStore {
             const necTokenAddress = deployed.NectarToken
             const lockSchemeAddress = deployed.ContinuousLocking4Reputation
 
-            await this.bidGENStore.fetchStaticParams()
-            await this.lockNECStore.fetchStaticParams()
-
-            if (!this.bidGENStore.isPropertyInitialLoadComplete('staticParams')) {
+            if (!this.bidGENStore.areStaticParamsLoaded()) {
                 await this.bidGENStore.fetchStaticParams()
             }
 
-            if (!this.lockNECStore.isStaticParamsInitialLoadComplete()) {
+            if (!this.lockNECStore.areStaticParamsLoaded()) {
                 await this.lockNECStore.fetchStaticParams()
             }
 
