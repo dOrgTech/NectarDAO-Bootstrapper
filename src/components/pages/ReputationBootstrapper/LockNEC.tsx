@@ -139,7 +139,7 @@ class LockNEC extends React.Component<any, State> {
     const necTokenAddress = deployed.NectarToken
     const spenderAddress = deployed.ContinuousLocking4Reputation
 
-    const tokenApproved = tokenStore.getMaxApprovalFlag(necTokenAddress, userAddress, spenderAddress)
+    const tokenApproved = tokenStore.hasMaxApproval(necTokenAddress, userAddress, spenderAddress)
     const approvePending = tokenStore.isApprovePending(necTokenAddress, userAddress, spenderAddress)
     const lockPending = lockNECStore.isLockActionPending()
 

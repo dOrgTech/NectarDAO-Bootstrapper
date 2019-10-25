@@ -22,6 +22,9 @@ export const { toBN, toWei, fromWei, isAddress, BN } = web3.utils;
 
 export const MAX_GAS = 0xffffffff;
 export const MAX_UINT = web3.utils.toTwosComplement('-1');
+export const MAX_UINT_BN = new BigNumber(MAX_UINT)
+export const MAX_UINT_DIVISOR = new BigNumber(2)
+export const MAX_APPROVAL_THRESHOLD = MAX_UINT_BN.dividedToIntegerBy(MAX_UINT_DIVISOR)
 
 const TEN18 = new BN('1000000000000000000');
 
@@ -133,6 +136,10 @@ export function getDurationTimeText(value) {
   }
 }
 
+export function tokenDisplay(value: BigNumber): string {
+  return roundValue(fromWei(value.toString()))
+}
+
 export function pow10(value) {
   const ten = new BigNumber(10)
   return ten.pow(value)
@@ -183,28 +190,6 @@ export function timestampToDate(timestamp) {
   return `${day}.${month + 1}.${year}`
 }
 
-export const toBytes32 = (x, prefix = true) => {
-  let y = web3.toHex(x);
-  y = y.replace("0x", "");
-  y = padLeft(y, 64);
-  if (prefix) y = "0x" + y;
-  return y;
-}
-
-export const toBytes12 = (x, prefix = true) => {
-  let y = web3.toHex(x);
-  y = y.replace("0x", "");
-  y = padLeft(y, 24);
-  if (prefix) y = "0x" + y;
-  return y;
-}
-
-export const addressToBytes32 = (x, prefix = true) => {
-  let y = x.replace("0x", "");
-  y = padLeft(y, 64);
-  if (prefix) y = "0x" + y;
-  return y;
-}
 
 export const formatNumber = (number, decimals = 0, isWei = true) => {
   let object = web3.toBN(number);
@@ -279,34 +264,6 @@ export const copyToClipboard = e => {
   alert(`Value: "${value}" copied to clipboard`);
 }
 
-// Multiply WAD values
-export const wmul = (a, b) => {
-  return a.times(b).div(WAD);
-}
-
-//Divide WAD values
-export const wdiv = (a, b) => {
-  return a.times(WAD).div(b);
-}
-
-export const etherscanUrl = network => {
-  return `https://${network !== "main" ? `${network}.` : ""}etherscan.io`;
-}
-
-export const etherscanAddress = (network, text, address) => {
-  return <a className="address" href={`${etherscanUrl(network)}/address/${address}`} target="_blank"
-    rel="noopener noreferrer">{text}</a>
-}
-
-export const etherscanTx = (network, text, tx) => {
-  return <a href={`${etherscanUrl(network)}/tx/${tx}`} target="_blank" rel="noopener noreferrer">{text}</a>
-}
-
-export const etherscanToken = (network, text, token, holder = false) => {
-  return <a href={`${etherscanUrl(network)}/token/${token}${holder ? `?a=${holder}` : ""}`} target="_blank"
-    rel="noopener noreferrer">{text}</a>
-}
-
 export const methodSig = method => {
   return web3.sha3(method).substring(0, 10)
 }
@@ -314,31 +271,3 @@ export const methodSig = method => {
 export const generateIcon = (address) => {
   return jazzicon(28, address.substr(0, 10));
 }
-
-export const fetchETHPriceInUSD = () => {
-  return fetch("https://api.coinmarketcap.com/v2/ticker/1027/")
-    .then(data => {
-      return data.json();
-    })
-    .then((json) => {
-      return json.data.quotes.USD.price;
-    });
-}
-
-export const getGasPriceFromETHGasStation = () => {
-  return new Promise((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      reject("Request timed out!");
-    }, 3000);
-
-    fetch("https://ethgasstation.info/json/ethgasAPI.json").then(stream => {
-      stream.json().then(price => {
-        clearTimeout(timeout);
-        resolve(price);
-      })
-    }, e => {
-      clearTimeout(timeout);
-      reject(e);
-    });
-  })
-};

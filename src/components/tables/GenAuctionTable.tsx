@@ -31,12 +31,12 @@ class GenAuctionTable extends React.Component<any, any>{
             // We need to handle very SMALL VALUES too: basically, we should NEVER use exponential for this stringify
             // We'll keep it in RAW format, and then do formatters later like with round Value.
             // We can also from WEI ourselves by mul/div 10^18
-            const userBidDisplay = `${helpers.roundValue(helpers.fromWei(userBid.toString()))} GEN`
-            const totalBidDisplay = `${helpers.roundValue(helpers.fromWei(totalBid.toString()))} GEN`
+            const userBidDisplay = `${helpers.tokenDisplay(userBid)} GEN`
+            const totalBidDisplay = `${helpers.tokenDisplay(totalBid)} GEN`
 
             let statusDisplay = status.toString()
             if (status === AuctionStatus.COMPLETE) {
-                statusDisplay = `${helpers.roundValue(helpers.fromWei(userRep.toString()))} REP`
+                statusDisplay = `${helpers.tokenDisplay(userRep)} REP`
             }
 
             rows.push({

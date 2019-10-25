@@ -1,10 +1,15 @@
 /* eslint-disable class-methods-use-this */
 import { observable, action, computed } from 'mobx'
-import * as deployed from "../deployed";
+import * as deployed from "deployed.json";
 import * as helpers from "utils/helpers"
 import * as blockchain from "utils/blockchain"
 import * as log from 'loglevel';
-const objectPath = require("object-path");
+import { RootStore } from './Root';
+import BigNumber from 'bignumber.js';
+const objectPath = require("object-path")
+
+type Address = string
+type Key = string
 
 const fetch = {
     balanceOf: '[Fetch] Balance Of',
@@ -26,14 +31,15 @@ const defaultAsyncActions = {
 }
 
 export default class TokenStore {
-    @observable symbols = {}
-    @observable balances = {}
-    @observable allowances = {}
-    @observable hasMaxApproval = {}
+    @observable symbols = new Map<Key, string>()
+    @observable balances = new Map<Key, BigNumber>()
+    @observable allowances = new Map<Key, BigNumber>()
 
     @observable asyncActions = {
         approve: {}
     }
+
+    rootStore: RootStore
 
     constructor(rootStore) {
         this.rootStore = rootStore
@@ -58,46 +64,66 @@ export default class TokenStore {
         return blockchain.loadObject('TestToken', tokenAddress, 'TestToken')
     }
 
-    calcMaxApprovalFlag(allowance) {
-        const amount = new helpers.BN(allowance)
-        const max = new helpers.BN(helpers.MAX_UINT)
-        return amount.gte(max.div(new helpers.BN(2)))
+    calcMaxApprovalFlag(allowance: BigNumber): boolean {
+        return allowance.gt(helpers.MAX_APPROVAL_THRESHOLD)
     }
 
-    getMaxApprovalFlag(tokenAddress, owner, spender) {
-        return objectPath.get(this.hasMaxApproval, `${tokenAddress}.${owner}.${spender}`)
+    hasMaxApproval(tokenAddress: Address, owner: Address, spender: Address): boolean {
+        const key = `${tokenAddress}-${owner}-${spender}`
+        const allowance = this.allowances.get(key)
+
+        if (!allowance) {
+            return false
+        }
+        if (this.calcMaxApprovalFlag(allowance)) {
+            return true
+        }
+        return false
     }
 
-    setMaxApprovalFlag(tokenAddress, owner, spender, flag) {
-        objectPath.set(this.hasMaxApproval, `${tokenAddress}.${owner}.${spender}`, flag)
+    getSymbol(tokenAddress: string): string {
+        const symbol = this.symbols.get(tokenAddress)
+        if (!symbol) {
+            throw new Error('Attempt to get non-existent data')
+        }
+        return symbol
     }
 
-    setAllowanceProperty(tokenAddress, owner, spender, amount) {
-        objectPath.set(this.allowances, `${tokenAddress}.${owner}.${spender}`, amount)
+    setAllowanceProperty(tokenAddress: Address, owner: Address, spender: Address, amount: BigNumber) {
+        const key = `${tokenAddress}-${owner}-${spender}`
+        this.allowances.set(key, amount)
     }
 
-    setBalanceProperty(tokenAddress, account, balance) {
-        objectPath.set(this.balances, `${tokenAddress}.${account}`, balance)
+    setBalanceProperty(tokenAddress: Address, account: Address, balance: BigNumber) {
+        const key = `${tokenAddress}-${account}`
+        this.balances.set(key, balance)
     }
 
     hasBalance(tokenAddress, account) {
-        if (objectPath.get(this.balances, `${tokenAddress}.${account}`)) {
+        const key = `${tokenAddress}-${account}`
+        const balance = this.balances.get(key)
+        if (balance) {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
     hasAllowance(tokenAddress, owner, spender) {
-        if (objectPath.get(this.allowances, `${tokenAddress}.${owner}.${spender}`)) {
+        const key = `${tokenAddress}-${owner}-${spender}`
+        const allowance = this.allowances.get(key)
+        if (allowance) {
             return true
-        } else {
-            return false
         }
+        return false
     }
 
-    getBalance(tokenAddress, account) {
-        return objectPath.get(this.balances, `${tokenAddress}.${account}`)
+    getBalance(tokenAddress: string, account: string): BigNumber {
+        const key = `${tokenAddress}-${account}`
+        const balance = this.balances.get(key)
+        if (!balance) {
+            throw new Error('Accessing non-existent data')
+        }
+        return balance
     }
 
     @action approveMax = async (tokenAddress, spender) => {
@@ -137,7 +163,7 @@ export default class TokenStore {
         log.info('[Fetch] Symbol', tokenAddress)
         const token = this.loadContract(tokenAddress)
         const symbol = await token.methods.symbol().call()
-        this.symbols[tokenAddress] = symbol
+        this.symbols.set(tokenAddress, symbol)
         log.info('[Complete] Symbol', tokenAddress, symbol)
     }
 
@@ -154,29 +180,23 @@ export default class TokenStore {
         const token = this.loadContract(tokenAddress)
 
         try {
-            const allowance = await token.methods.allowance(account, spender).call()
-            const hasMaxApproval = this.calcMaxApprovalFlag(allowance)
-
-            log.info('[Complete] Allowance', tokenAddress, account, spender, allowance, hasMaxApproval)
+            const allowance = new BigNumber(await token.methods.allowance(account, spender).call())
+            log.info('[Complete] Allowance', tokenAddress, account, spender, allowance)
 
             this.setAllowanceProperty(tokenAddress, account, spender, allowance)
-            this.setMaxApprovalFlag(tokenAddress, account, spender, hasMaxApproval)
         } catch (e) {
             log.error(error.allowance, e)
         }
 
     }
 
-    getAllowance = (tokenAddress, account, spender) => {
-        if (!this.allowances[tokenAddress]) {
-            return undefined
+    getAllowance = (tokenAddress: string, account: string, spender: string): BigNumber => {
+        const key = `${tokenAddress}-${account}-${spender}`
+        const allowance = this.allowances.get(key)
+        if (!allowance) {
+            throw new Error("Attempt to get non-existent data")
         }
-
-        if (!this.allowances[tokenAddress][account]) {
-            return undefined
-        }
-
-        return this.allowances[tokenAddress][account][spender]
+        return allowance
     }
 
 }

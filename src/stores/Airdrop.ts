@@ -94,12 +94,12 @@ export default class AirdropStore {
         return this.staticParamsLoaded
     }
 
-    getUserData(userAddress) {
-        return this.userData.get(userAddress)
-    }
-
-    setUserData(userAddress, data) {
-        this.userData.set(userAddress, data)
+    getUserData(userAddress: string): SnapshotInfo {
+        const data = this.userData.get(userAddress)
+        if (!data) {
+            throw new Error(`Attempting to get non-existent data for user ${userAddress}`)
+        }
+        return data
     }
 
     loadNecRepAllocationContract() {
@@ -114,20 +114,8 @@ export default class AirdropStore {
         return blockchain.loadObject('ReputationFromToken', deployed.ReputationFromToken, 'ReputationFromToken')
     }
 
-    getSnapshotBlock() {
+    getSnapshotBlock(): number {
         return this.staticParams.snapshotBlock
-    }
-
-    getSnapshotBalance(userAddress) {
-        return this.userData[userAddress].snapshotBalance
-    }
-
-    getSnapshotRep(userAddress) {
-        return this.userData[userAddress].snapshotRep
-    }
-
-    getHasRedeemed(userAddress) {
-        return this.userData[userAddress].hasReemeed
     }
 
     fetchStaticParams = async () => {
@@ -156,7 +144,7 @@ export default class AirdropStore {
         }
     }
 
-    @action fetchUserData = async (userAddress) => {
+    @action fetchUserData = async (userAddress: string) => {
         if (!this.areStaticParamsLoaded()) {
             throw new Error(text.staticParamsNotLoaded)
         }
@@ -164,8 +152,6 @@ export default class AirdropStore {
         const contract = this.loadRepFromTokenContract()
         const necRepAllocationContract = this.loadNecRepAllocationContract()
         const tokenContract = this.loadMiniMeTokenContract(this.staticParams.token)
-
-
 
         console.log('[Fetch] User Airdrop Data', userAddress)
         try {
@@ -175,16 +161,17 @@ export default class AirdropStore {
                 toBlock: 'latest'
             })
 
+            debugger
             const snapshotBalance = await tokenContract.methods.balanceOfAt(userAddress, this.staticParams.snapshotBlock).call()
             const snapshotRep = await necRepAllocationContract.methods.balanceOf(userAddress).call()
-            const hasRedeemed = (redeemEvents.length && redeemEvents.length >= 1)
+            const hasRedeemed = (redeemEvents && (redeemEvents.length >= 1))
 
             const data: SnapshotInfo = new SnapshotInfo(snapshotBalance, snapshotRep, hasRedeemed)
             //TODO: filter events for user redemption
             //TODO: calculate REP from (user balance / total supply) * totalREP
             console.log('[Fetched] User Airdrop Data', userAddress, data)
 
-            this.setUserData(userAddress, data)
+            this.userData.set(userAddress, data)
             this.userDataLoaded[userAddress] = true
         }
         catch (e) {

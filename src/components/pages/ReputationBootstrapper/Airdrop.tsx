@@ -12,6 +12,7 @@ import LoadingCircle from '../../common/LoadingCircle'
 import Tooltip from 'components/common/Tooltip'
 import { RootStore } from 'stores/Root'
 import { SnapshotInfo } from 'types'
+import BigNumber from 'utils/bignumber'
 
 const snapshotStatus = {
   NOT_STARTED: 0,
@@ -228,14 +229,13 @@ class Airdrop extends React.Component<any, any>{
     const userDataLoaded = airdropStore.isUserDataLoaded(userAddress)
 
     const redeemPending = airdropStore.isRedeemPending()
-    const data = airdropStore.userData.get(userAddress)
 
     if (!staticParamsLoaded || !userDataLoaded) {
       return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
     }
 
-    const userData = airdropStore.getUserData(userAddress) as SnapshotInfo
-    const repBalance = helpers.fromWei(airdropStore.getSnapshotRep(userAddress))
+    const userData = airdropStore.getUserData(userAddress)
+    const repBalanceDisplay = helpers.fromWei(userData.rep.toString())
     const snapshotBlock = airdropStore.getSnapshotBlock()
     const currentBlock = timeStore.currentBlock
     const dropVisuals = this.calcDropVisuals()
@@ -247,14 +247,15 @@ class Airdrop extends React.Component<any, any>{
        After the snapshot, we'll get the users SNAPSHOT balance
     */
 
-    let necBalance
+    let necBalance: BigNumber
     if (dropStatus === snapshotStatus.NOT_STARTED) {
       necBalance = tokenStore.getBalance(necTokenAddress, userAddress)
     } else {
-      necBalance = airdropStore.getSnapshotBalance(userAddress)
+      const snapshotData = airdropStore.getUserData(userAddress)
+      necBalance = snapshotData.balance
     }
 
-    const necBalanceDisplay = helpers.roundValue(helpers.fromWei(necBalance))
+    const necBalanceDisplay = helpers.tokenDisplay(necBalance)
 
     return (
       <AirdropWrapper>
@@ -269,7 +270,7 @@ class Airdrop extends React.Component<any, any>{
         />
         <Divider width="80%" margin="20px 0px 20px 0px" />
         <InfoLine title="Nectar Balance" info={necBalanceDisplay} />
-        <InfoLine title="Receive Voting Power" info={repBalance} />
+        <InfoLine title="Receive Voting Power" info={repBalanceDisplay} />
         <Divider width="80%" margin="20px 0px 20px 0px" />
         <InfoLine title="Airdrop Blocknumber" info={snapshotBlock} tooltipText={true} />
         <InfoLine title="Current Blocknumber" info={currentBlock} />

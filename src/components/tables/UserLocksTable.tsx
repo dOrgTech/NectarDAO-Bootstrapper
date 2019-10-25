@@ -16,16 +16,11 @@ import { RootStore } from 'stores/Root';
 type Scores = Map<number, BigNumber>
 type Locks = Map<string, Lock>
 
-interface ExtendData {
-    lockId: string
-}
-
-interface ReleaseData {
+interface ActionData {
     beneficiary: string,
     lockId: string,
     releasable: number,
-    released: boolean,
-    releasableDisplay: string
+    released: boolean
 }
 
 class TableRow {
@@ -33,10 +28,18 @@ class TableRow {
         public startPeriod: number,
         public amount: string,
         public duration: string,
-        public extendData: ExtendData,
-        public releaseData: ReleaseData
+        public releasable: string,
+        public actionData: ActionData
     ) { }
 }
+
+const columns = [
+    { name: 'Period #', key: 'startPeriod', width: '20%', align: 'left' },
+    { name: 'Amount', key: 'amount', width: '20%', align: 'left' },
+    { name: 'Duration', key: 'duration', width: '20%', align: 'left' },
+    { name: 'Releasable', key: 'releasable', width: '20%', align: 'left' },
+    { name: 'Action', key: 'actionData', width: '20%', align: 'left' },
+]
 
 @inject('root')
 @observer
@@ -48,25 +51,21 @@ class UserLocksTable extends React.Component<any, any> {
             console.log(key, lock);
 
             const durationDisplay = `${lock.periodDuration} ${helpers.getMonthsSuffix(lock.periodDuration)}`
+            const displayAmount = `${helpers.tokenDisplay(lock.amount)} NEC`
 
-            const weiAmount = lock.amount.toString()
-            const displayAmount = `${helpers.roundValue(helpers.fromWei(weiAmount))} NEC`
-
+            // let releasableDisplay
             const releasableDisplay = helpers.timestampToDate(lock.releasable)
 
             const row: TableRow = {
                 startPeriod: lock.lockingPeriod,
                 amount: displayAmount,
                 duration: durationDisplay,
-                extendData: {
-                    lockId: lock.id
-                },
-                releaseData: {
+                releasable: releasableDisplay,
+                actionData: {
                     beneficiary: userAddress,
                     lockId: lock.id,
                     releasable: lock.releasable,
-                    released: lock.released,
-                    releasableDisplay
+                    released: lock.released
                 },
             }
 
@@ -104,15 +103,23 @@ class UserLocksTable extends React.Component<any, any> {
 
         const userAddress = providerStore.getDefaultAccount()
 
-        if (key === 'releaseData') {
+        if (key === 'actionData') {
             const { released, releasable, releasableDisplay, beneficiary, lockId } = value
 
             const isReleasable = (now > releasable)
             const isReleaseActionPending = lockNECStore.isReleaseActionPending(lockId)
 
+            const isLockingOver = lockNECStore.isLockingEnded()
+            const remainingPeriods = lockNECStore.getPeriodsRemaining()
+            // If it's not expired (aka releasable), and there are >0 periods left to extend to, we can extend
+            const isExtendable = true
+            const isExtendActionPending = false
 
-            if (!isReleasable) {
-                return <div>{releasableDisplay}</div>
+            const periodsToExtend = extendLockFormStore.duration
+            const batchId = lockNECStore.getActiveLockingPeriod()
+
+            if (!isReleasable && isExtendable) {
+                return <TableButton onClick={() => { this.extend(lockId, periodsToExtend, batchId) }}>Release</TableButton>
             }
 
             if (released) {
@@ -125,53 +132,6 @@ class UserLocksTable extends React.Component<any, any> {
 
             if (isReleaseActionPending) {
                 return <TableButton>Pending...</TableButton>
-            }
-
-            return <DisabledText>Error</DisabledText>
-        }
-
-        if (key === 'extendData') {
-            const { lockId } = value
-
-            const isLockingOver = lockNECStore.isLockingEnded()
-            const remainingPeriods = lockNECStore.getPeriodsRemaining()
-            const isPendingAction = lockNECStore.isExtendLockActionPending(lockId)
-            const periodsToExtend = extendLockFormStore.duration
-            const batchId = lockNECStore.getActiveLockingPeriod()
-
-            //TODO: Revert to proper logic
-            // if (isLockingOver && !isPendingAction) {
-            //     return <DisabledText>-</DisabledText>
-            // }
-
-            if (isPendingAction) {
-                return <TableButton>Pending...</TableButton>
-            }
-
-            if (!isPendingAction) {
-                // This is where you put the popus
-                return (
-                    <Popup trigger={<TableButton>Extend</TableButton>} modal closeOnDocumentClick closeOnEscape position="right center">
-                        <div className="modalform modalinput">
-                            <ExtendLockPopup className="modalinput modalform" rangeStart={1} />
-                            <TableButton className="modalinput modalform" onClick={() => { this.extend(lockId, periodsToExtend, batchId) }}>Extend</TableButton>
-                        </div>
-                    </Popup>
-                )
-            }
-
-            // if (!isLockingOver && !isPendingAction) {
-            //     // This is where you put the popus
-            //     return (<Popup trigger={<button>Extend</button>} position="right center">
-            //         <div>
-            //             <TableButton onClick={() => { console.log('make the modal appear and pass in this lockId') }}>Extend</TableButton>
-            //         </div>
-            //     </Popup>)
-            // }
-
-            if (isPendingAction) {
-                // This is where you put the popus
-                return <TableButton>-</TableButton>
             }
 
             return <DisabledText>Error</DisabledText>
@@ -199,14 +159,6 @@ class UserLocksTable extends React.Component<any, any> {
                 rows = this.generateTableRows(userLocks, userAddress)
             }
         }
-
-        const columns = [
-            { name: 'Period #', key: 'startPeriod', width: '20%', align: 'left' },
-            { name: 'Amount', key: 'amount', width: '20%', align: 'left' },
-            { name: 'Duration', key: 'duration', width: '20%', align: 'left' },
-            { name: 'Extend', key: 'extendData', width: '20%', align: 'left' },
-            { name: 'Release', key: 'releaseData', width: '20%', align: 'left' },
-        ]
 
         return (
             <React.Fragment>

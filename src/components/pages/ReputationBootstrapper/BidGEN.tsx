@@ -82,7 +82,7 @@ class BidGEN extends React.Component<any, any>{
     const genTokenAddress = deployed.GenToken
     const spenderAddress = deployed.Auction4Reputation
 
-    const tokenApproved = tokenStore.getMaxApprovalFlag(genTokenAddress, userAddress, spenderAddress)
+    const tokenApproved = tokenStore.hasMaxApproval(genTokenAddress, userAddress, spenderAddress)
 
     const approvePending = tokenStore.isApprovePending(genTokenAddress, userAddress, spenderAddress)
     const bidPending = bidGENStore.isBidActionPending()
@@ -192,7 +192,6 @@ class BidGEN extends React.Component<any, any>{
     const auctionDataLoaded = bidGENStore.isAuctionDataLoaded()
     const hasBalance = tokenStore.hasBalance(genTokenAddress, userAddress)
     const hasAllowance = tokenStore.hasAllowance(genTokenAddress, userAddress, schemeAddress)
-    const tokenApproved = tokenStore.getMaxApprovalFlag(genTokenAddress, userAddress, schemeAddress)
 
     if (!staticParamsLoaded || !hasBalance || !hasAllowance) {
       return (<LoadingCircle instruction={'Loading...'} subinstruction={''} />)
@@ -200,7 +199,7 @@ class BidGEN extends React.Component<any, any>{
 
     const auctionData = bidGENStore.auctionData
     const genBalance = tokenStore.getBalance(genTokenAddress, userAddress)
-    const genBalanceDisplay = helpers.roundValue(helpers.fromWei(genBalance))
+    const genBalanceDisplay = helpers.tokenDisplay(genBalance)
     const now = timeStore.currentTime
 
     const auctionDisplayInfo = this.getAuctionPercentageAndTimer()
