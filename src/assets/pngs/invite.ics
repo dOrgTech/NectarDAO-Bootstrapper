@@ -1,0 +1,50 @@
+BEGIN:VCALENDAR
+PRODID:-//Google Inc//Google Calendar 70.9054//EN
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+DTSTART:20191030T140000Z
+DTEND:20191030T143000Z
+DTSTAMP:20191025T114309Z
+ORGANIZER;CN=shimonyori@gmail.com:mailto:shimonyori@gmail.com
+UID:5pjr21tpkkv0bkl9p2r4csae63@google.com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=jelli@dorg.tech;X-NUM-GUESTS=0:mailto:jelli@dorg.tech
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=ACCEPTED;RSVP=TRUE
+ ;CN=shimonyori@gmail.com;X-NUM-GUESTS=0:mailto:shimonyori@gmail.com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=thomas@dorg.tech;X-NUM-GUESTS=0:mailto:thomas@dorg.tech
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=yoni9091@gmail.com;X-NUM-GUESTS=0:mailto:yoni9091@gmail.com
+ATTENDEE;CUTYPE=INDIVIDUAL;ROLE=REQ-PARTICIPANT;PARTSTAT=NEEDS-ACTION;RSVP=
+ TRUE;CN=anne@ecf.network;X-NUM-GUESTS=0:mailto:anne@ecf.network
+X-GOOGLE-HANGOUT:https://hangouts.google.com/hangouts/_/calendar/c2hpbW9ueW
+ 9yaUBnbWFpbC5jb20.5pjr21tpkkv0bkl9p2r4csae63
+X-MICROSOFT-CDO-OWNERAPPTID:-335201209
+CREATED:20191025T114309Z
+DESCRIPTION:super<br><br>‫בתאריך יום ד׳\, 23 באוק׳ 2019 ב-23:11 מאת ‪Ori Sh
+ imony‬‏ &lt\;‪ori@dorg.tech‬‏&gt\;:‬<br>&gt\;<br>&gt\; That works! I&#39\;l
+ l send a calendar invite for next Wed. 9am EST if that works for you.<br>&g
+ t\;<br>&gt\; - Ori<br>&gt\;<br>&gt\; On Wed\, Oct 23\, 2019 at 7:12 PM yona
+ tan ben shimon <u></u> wrote:<br>&gt\;&gt\;<br>&gt\;&gt\; sure ! how about 
+ late next week? ( wednesday ? ) morning time est <br>&gt\;&gt\;<br>&gt\;&gt
+ \; ‫בתאריך יום ד׳\, 23 באוק׳ 2019 ב-11:33 מאת ‪Ori Shimony‬‏ &lt\;‪ori@dorg
+ .tech‬‏&gt\;:‬<br>&gt\;&gt\;&gt\;<br>&gt\;&gt\;&gt\; Thanks An...\n\n-::~:~
+ ::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::
+ ~:~::-\nPlease do not edit this section of the description.\n\nThis event h
+ as a Google Hangouts video call.\nJoin: https://hangouts.google.com/hangout
+ s/_/calendar/c2hpbW9ueW9yaUBnbWFpbC5jb20.5pjr21tpkkv0bkl9p2r4csae63?hs=121\
+ n\nView your event at https://www.google.com/calendar/event?action=VIEW&eid
+ =NXBqcjIxdHBra3YwYmtsOXAycjRjc2FlNjMgdGhvbWFzQGRvcmcudGVjaA&tok=MjAjc2hpbW9
+ ueW9yaUBnbWFpbC5jb205MWJiYmY5ZGZkNjNjYjY2OGY0NzVmYzg4ODAwMGZhOWFhM2MxYjM3&c
+ tz=Europe%2FBucharest&hl=en&es=1.\n-::~:~::~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:
+ ~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~:~::~:~::-
+LAST-MODIFIED:20191025T114309Z
+LOCATION:
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:dOrg <> Libracamp
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR

@@ -1,10 +1,10 @@
 import React, { useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
-import { observer, inject } from "mobx-react"
+import { observer, inject, PropTypes } from "mobx-react"
 
 
 // This component must be a child of <App> to have access to the appropriate context
-const Web3Manager = inject('root')(observer(() => {
+const Web3Manager = inject('root')(observer((props) => {
     const context = useWeb3Context()
     // const { providerStore } = root
 
@@ -15,15 +15,19 @@ const Web3Manager = inject('root')(observer(() => {
     if (!context.active && !context.error) {
         // loading
         console.log('loading')
-        return <p>{context.account}</p>
+        // Return Loading Thing
+        return <React.Fragment><p>{context.account}</p>{props.children}</React.Fragment>
     } else if (context.error) {
         //error
         console.log('error')
-        return <p>{context.error}</p>
+        // Return Error Thing
+        return <React.Fragment><p>{context.error}</p>{props.children}</React.Fragment>
     } else {
         // success
         console.log('success')
-        return <p>{context.account}</p>
+        console.log('context', context)
+        // Return Window OR wrong network
+        return <React.Fragment><p>{context.account}</p>{props.children}</React.Fragment>
     }
 }))
 

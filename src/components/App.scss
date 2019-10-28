@@ -1,3 +1,4 @@
+
 :root {
   --active-border: #FFFFFF;
   --action-button: #4e0ffb;
@@ -25,6 +26,10 @@ body {
 
 h1 {
   font-family: var(--pt-serif);
+}
+
+input:focus {
+  outline-style: none;
 }
 
 .green-text {
