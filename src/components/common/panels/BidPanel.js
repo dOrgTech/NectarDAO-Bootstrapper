@@ -1,4 +1,5 @@
 import React from 'react'
+import Popup from 'reactjs-popup'
 import styled from 'styled-components'
 import { inject, observer } from "mobx-react";
 import * as helpers from 'utils/helpers'
@@ -100,7 +101,15 @@ class BidPanel extends React.Component {
           </PanelText>
           <BidAmountWrapper>
             <div>Bid Amount</div>
-            <MaxButton onClick={e => this.setBidAmount(userBalance)} />
+            <Popup
+              trigger={<MaxButton onClick={e => this.setBidAmount(userBalance) } />}
+              position="top"
+              on="hover"
+            >
+              <div>
+                <div>Set max available amount</div>
+              </div>
+            </Popup>
           </BidAmountWrapper>
           <BidForm>
             <input type="text" name="name" placeholder="0" value={bidAmount} onChange={e => this.setBidAmount(e.target.value)} />

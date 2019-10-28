@@ -1,4 +1,5 @@
 import React from 'react'
+import Popup from 'reactjs-popup'
 import styled from 'styled-components'
 import { observer, inject } from 'mobx-react'
 import ActiveButton from 'components/common/buttons/ActiveButton'
@@ -158,7 +159,15 @@ class LockPanel extends React.Component {
       <LockFormWrapper>
         <LockAmountWrapper>
           <div>Lock Amount</div>
-          <MaxButton onClick={e => this.setLockAmount(userBalance)} />
+          <Popup
+            trigger={<MaxButton onClick={e => this.setLockAmount(userBalance) } />}
+            position="top"
+            on="hover"
+          >
+            <div>
+              <div>Set max available amount</div>
+            </div>
+          </Popup>
         </LockAmountWrapper>
         <LockAmountForm>
           <input type="text" name="name" placeholder="0" value={amount} onChange={e => this.setLockAmount(e.target.value)} />
