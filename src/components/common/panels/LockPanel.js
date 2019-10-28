@@ -12,19 +12,28 @@ import { ActiveLockingPeriodCell, LockingPeriodCell, LockingPeriodSelectorWrappe
 const PanelWrapper = styled.div`
 `
 
-export const MaxTokensText = styled.div`
-display: flex;
-font-weight: 600;
-color: var(--action-button);
-`
-
-export const LockAmountWrapper = styled.div`
+const LockFormWrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin: 0px 24px;
   font-weight: 600;
   color: var(--inactive-text);
   height: 64px;
+`
+
+const LockAmountWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`
+
+export const MaxButton = styled.div`
+  background: rgba(101, 102, 251, 0.5);
+  width: 12px;
+  height: 12px;
+  border-radius: 7px;
+  margin-top: 3px;
+  cursor: pointer;
 `
 
 export const LockAmountForm = styled.div`
@@ -146,14 +155,16 @@ class LockPanel extends React.Component {
     const { amount, releaseableDate, buttonText, enabled, userBalance } = values
     return (<React.Fragment>
       {this.LockingPeriod()}
-      <LockAmountWrapper>
-        <div>Lock Amount</div>
+      <LockFormWrapper>
+        <LockAmountWrapper>
+          <div>Lock Amount</div>
+          <MaxButton onClick={e => this.setLockAmount(userBalance)} />
+        </LockAmountWrapper>
         <LockAmountForm>
           <input type="text" name="name" placeholder="0" value={amount} onChange={e => this.setLockAmount(e.target.value)} />
-          <MaxTokensText onClick={e => this.setLockAmount(userBalance)}>Max</MaxTokensText>
           <div>NEC</div>
         </LockAmountForm>
-      </LockAmountWrapper>
+      </LockFormWrapper>
       <ReleaseableDateWrapper>
         <div>Releasable</div>
         <ReleaseableDate>{releaseableDate}</ReleaseableDate>
