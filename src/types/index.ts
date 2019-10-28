@@ -30,7 +30,7 @@ export class Auction {
     ) { };
 }
 
-export class LockBatch {
+export class Batch {
     constructor(
         public id: number,
         public userLocked: BigNumber,
@@ -39,7 +39,7 @@ export class LockBatch {
         public totalRep: BigNumber,
         public userScore: BigNumber,
         public totalScore: BigNumber,
-        public isComplete: false
+        public isComplete: boolean
     ) { }
 }
 

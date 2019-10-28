@@ -34,10 +34,10 @@ const SectionWrapper = styled.div`
 class ReputationBoostrapper extends React.Component<any, any> {
   async componentDidMount() {
     const { providerStore } = this.props.root as RootStore
-    log.info(check.defaultAccount, providerStore.getDefaultAccount())
+    log.debug(check.defaultAccount, providerStore.getDefaultAccount())
     if (!providerStore.getDefaultAccount()) {
       await providerStore.setWeb3WebClient()
-      log.info(check.defaultAccount, providerStore.getDefaultAccount())
+      log.debug(check.defaultAccount, providerStore.getDefaultAccount())
     }
   }
 

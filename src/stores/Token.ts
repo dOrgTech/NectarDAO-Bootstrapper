@@ -52,11 +52,9 @@ export default class TokenStore {
     setApprovePending(token, owner, spender, flag) {
         objectPath.set(this.asyncActions, `approve.${token}.${owner}.${spender}`, flag)
         this.asyncActions.approve[token][owner][spender] = flag
-        log.info('set', this.asyncActions.approve[token][owner][spender])
     }
 
     isApprovePending(token, owner, spender) {
-        log.info('is', objectPath.get(this.asyncActions, `approve.${token}.${owner}.${spender}`) || false)
         return objectPath.get(this.asyncActions, `approve.${token}.${owner}.${spender}`) || false
     }
 
@@ -160,28 +158,28 @@ export default class TokenStore {
     }
 
     @action fetchSymbol = async (tokenAddress) => {
-        log.info('[Fetch] Symbol', tokenAddress)
+        log.debug('[Fetch] Symbol', tokenAddress)
         const token = this.loadContract(tokenAddress)
         const symbol = await token.methods.symbol().call()
         this.symbols.set(tokenAddress, symbol)
-        log.info('[Complete] Symbol', tokenAddress, symbol)
+        log.debug('[Complete] Symbol', tokenAddress, symbol)
     }
 
     @action fetchBalanceOf = async (tokenAddress, account) => {
-        log.info('[Fetch] Balance Of', tokenAddress, account)
+        log.debug('[Fetch] Balance Of', tokenAddress, account)
         const token = this.loadContract(tokenAddress)
         const balance = await token.methods.balanceOf(account).call()
         this.setBalanceProperty(tokenAddress, account, balance)
-        log.info('[Complete] Balance Of', tokenAddress, account, balance)
+        log.debug('[Complete] Balance Of', tokenAddress, account, balance)
     }
 
     @action fetchAllowance = async (tokenAddress, account, spender) => {
-        log.info('[Fetch] Allowance', tokenAddress, account, spender)
+        log.debug('[Fetch] Allowance', tokenAddress, account, spender)
         const token = this.loadContract(tokenAddress)
 
         try {
             const allowance = new BigNumber(await token.methods.allowance(account, spender).call())
-            log.info('[Complete] Allowance', tokenAddress, account, spender, allowance)
+            log.debug('[Complete] Allowance', tokenAddress, account, spender, allowance)
 
             this.setAllowanceProperty(tokenAddress, account, spender, allowance)
         } catch (e) {

@@ -6,27 +6,10 @@ import * as blockchain from "utils/blockchain"
 import * as log from 'loglevel'
 import { AirdropStaticParams, SnapshotInfo } from 'types'
 import { RootStore } from './Root';
+import { logs, errors, prefix } from 'strings'
 import BigNumber from "utils/bignumber"
-
-const objectPath = require("object-path")
-
 const REDEEM_EVENT = 'Redeem'
 
-export const statusCodes = {
-    NOT_LOADED: 0,
-    PENDING: 1,
-    ERROR: 2,
-    SUCCESS: 3
-}
-
-const text = {
-    staticParamsNotLoaded: 'Static params must be loaded before calling this function'
-}
-
-const propertyNames = {
-    STATIC_PARAMS: 'staticParams',
-    USER_DATA: 'userData',
-}
 export default class AirdropStore {
     @observable staticParams!: AirdropStaticParams
     @observable staticParamsLoaded = false
@@ -140,28 +123,26 @@ export default class AirdropStore {
 
             this.staticParamsLoaded = true
         } catch (e) {
-            console.log(e)
+            log.error(e)
         }
     }
 
     @action fetchUserData = async (userAddress: string) => {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const contract = this.loadRepFromTokenContract()
         const necRepAllocationContract = this.loadNecRepAllocationContract()
         const tokenContract = this.loadMiniMeTokenContract(this.staticParams.token)
 
-        console.log('[Fetch] User Airdrop Data', userAddress)
+        log.debug(prefix.FETCH_PENDING, 'User Airdrop Data', userAddress)
         try {
             const redeemEvents = await contract.getPastEvents(REDEEM_EVENT, {
                 filter: { _beneficiary: userAddress },
                 fromBlock: 0,
                 toBlock: 'latest'
             })
-
-            debugger
             const snapshotBalance = await tokenContract.methods.balanceOfAt(userAddress, this.staticParams.snapshotBlock).call()
             const snapshotRep = await necRepAllocationContract.methods.balanceOf(userAddress).call()
             const hasRedeemed = (redeemEvents && (redeemEvents.length >= 1))
@@ -169,29 +150,33 @@ export default class AirdropStore {
             const data: SnapshotInfo = new SnapshotInfo(snapshotBalance, snapshotRep, hasRedeemed)
             //TODO: filter events for user redemption
             //TODO: calculate REP from (user balance / total supply) * totalREP
-            console.log('[Fetched] User Airdrop Data', userAddress, data)
+            log.debug('[Fetched] User Airdrop Data', userAddress, data)
 
             this.userData.set(userAddress, data)
-            this.userDataLoaded[userAddress] = true
+            this.userDataLoaded.set(userAddress, true)
+            log.debug(prefix.FETCH_SUCCESS, 'User Airdrop Data', userAddress)
         }
         catch (e) {
             log.error(e)
+            log.debug(prefix.FETCH_ERROR, 'User Airdrop Data', userAddress)
         }
     }
 
     @action redeem = async (beneficiary) => {
         const contract = this.loadRepFromTokenContract()
 
-        console.log('redeem', beneficiary)
+        log.debug(prefix.ACTION_PENDING, 'redeem', beneficiary)
         this.setRedeemPending(true)
         try {
             await contract.methods.redeem(beneficiary).send()
             this.fetchUserData(beneficiary)
             this.setRedeemPending(false)
+            log.debug(prefix.ACTION_SUCCESS, 'redeem', beneficiary)
         } catch (e) {
             log.error(e)
             this.fetchUserData(beneficiary)
             this.setRedeemPending(false)
+            log.debug(prefix.ACTION_ERROR, 'redeem', beneficiary)
         }
 
     }

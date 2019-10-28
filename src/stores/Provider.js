@@ -30,9 +30,9 @@ export default class ProviderStore {
 
     setNetwork = async () => {
         try {
-            log.info(fetchStart.setAccount)
+            log.debug(fetchStart.setAccount)
             await this.setAccount();
-            log.info(fetchEnd.setAccount)
+            log.debug(fetchEnd.setAccount)
         } catch (e) {
             log.error(errors.setAccount, e);
         }
@@ -65,10 +65,10 @@ export default class ProviderStore {
     @action setWeb3WebClient = async () => {
         try {
 
-            log.info(fetchStart.setWeb3WebClient)
+            log.debug(fetchStart.setWeb3WebClient)
             await blockchain.setWebClientProvider();
             await this.setNetwork();
-            log.info(fetchEnd.setWeb3WebClient)
+            log.debug(fetchEnd.setWeb3WebClient)
         } catch (e) {
             log.error(errors.setWeb3WebClient, e);
         }

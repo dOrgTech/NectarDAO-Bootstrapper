@@ -3,45 +3,21 @@
 import { observable, action, computed } from 'mobx'
 import * as deployed from "deployed.json"
 import * as blockchain from "utils/blockchain"
-import * as helpers from "utils/helpers"
 import BigNumber from 'bignumber.js'
 import * as log from 'loglevel'
 import { BidStaticParams, Auction, AuctionStatus } from 'types'
 import { RootStore } from './Root'
+import { logs, errors, prefix } from 'strings'
 
 const objectPath = require("object-path")
 
 const BID_EVENT = 'Bid'
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
-const { BN } = helpers
-
 interface BidEvent {
     bidder: string;
     auctionId: number,
     amount: BigNumber
-}
-
-export const statusCodes = {
-    NOT_LOADED: 0,
-    PENDING: 1,
-    ERROR: 2,
-    SUCCESS: 3
-}
-
-const defaultLoadingStatus = {
-    status: statusCodes.NOT_LOADED,
-    initialLoad: false
-}
-
-const text = {
-    staticParamsNotLoaded: 'Static params must be loaded to call this function'
-}
-
-const propertyNames = {
-    STATIC_PARAMS: 'staticParams',
-    REP_REWARD_LEFT: 'repRewardLeft',
-    AUCTION_DATA: 'auctionData'
 }
 
 const defaultAsyncActions = {
@@ -62,13 +38,6 @@ export default class BidGENStore {
     @observable auctionData: AuctionData = new Map<number, Auction>()
     @observable auctionDataLoaded = false
     @observable auctionCount = 0
-
-    // Status
-    @observable loadingStatus = {
-        staticParams: defaultLoadingStatus,
-        repRewardLeft: defaultLoadingStatus,
-        auctionData: defaultLoadingStatus
-    }
 
     @observable asyncActions = defaultAsyncActions
 
@@ -143,7 +112,7 @@ export default class BidGENStore {
 
     getFinalAuctionIndex(): number {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         return Number(this.staticParams.numAuctions) - 1
@@ -151,7 +120,7 @@ export default class BidGENStore {
 
     haveAuctionsStarted(): boolean {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const now = this.rootStore.timeStore.currentTime
@@ -165,7 +134,7 @@ export default class BidGENStore {
 
     areAuctionsOver(): boolean {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const now = this.rootStore.timeStore.currentTime
@@ -183,7 +152,7 @@ export default class BidGENStore {
 
     getActiveAuction(): number {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const startTime = this.staticParams.auctionsStartTime
@@ -202,7 +171,7 @@ export default class BidGENStore {
 
     getNextAuctionStartTime(): number {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const startTime = this.staticParams.auctionsStartTime
@@ -217,7 +186,7 @@ export default class BidGENStore {
 
     getTimeUntilNextAuction(): number {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
 
         const currentTime = this.rootStore.timeStore.currentTime
@@ -228,6 +197,8 @@ export default class BidGENStore {
 
     fetchStaticParams = async () => {
         const contract = this.loadContract()
+
+        log.debug(prefix.FETCH_PENDING, 'BidGEN Static Params')
 
         try {
             const auctionsStartTime = await contract.methods.auctionsStartTime().call()
@@ -247,8 +218,10 @@ export default class BidGENStore {
             }
 
             this.staticParamsLoaded = true
+            log.debug(prefix.FETCH_SUCCESS, 'BidGEN Static Params')
 
         } catch (e) {
+            log.debug(prefix.FETCH_ERROR, 'BidGEN Static Params')
             log.error(e)
         }
     }
@@ -284,8 +257,10 @@ export default class BidGENStore {
 
     @action fetchAuctionData = async () => {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(text.staticParamsNotLoaded)
+            throw new Error(errors.staticParamsNotLoaded)
         }
+
+        log.debug(prefix.FETCH_PENDING, 'auctionData')
 
         const contract = this.loadContract()
         const userAddress = this.rootStore.providerStore.getDefaultAccount()
@@ -362,8 +337,9 @@ export default class BidGENStore {
             this.auctionData = auctions
             this.auctionCount = Number(currentAuction) + 1
             this.auctionDataLoaded = true
-            console.log(auctions)
+            log.debug(prefix.FETCH_SUCCESS, 'auctionData')
         } catch (e) {
+            log.debug(prefix.FETCH_ERROR, 'auctionData')
             log.error(e)
         }
     }
@@ -371,12 +347,14 @@ export default class BidGENStore {
     bid = async (amount, auctionId) => {
         const contract = this.loadContract()
 
+        log.debug(prefix.ACTION_PENDING, 'bid', amount, auctionId)
         this.setBidActionPending(true)
-        console.log('bid', amount, auctionId)
         try {
             await contract.methods.bid(amount, auctionId, AGREEMENT_HASH).send()
             this.setBidActionPending(false)
+            log.debug(prefix.ACTION_SUCCESS, 'bid', amount, auctionId)
         } catch (e) {
+            log.debug(prefix.ACTION_ERROR, 'bid', amount, auctionId)
             log.error(e)
             this.setBidActionPending(false)
         }
@@ -386,13 +364,15 @@ export default class BidGENStore {
     redeem = async (beneficiary, auctionId) => {
         const contract = this.loadContract()
 
-        log.info('redeem', beneficiary, auctionId)
+        log.debug(prefix.ACTION_PENDING, 'redeem', beneficiary, auctionId)
         this.setRedeemActionPending(beneficiary, auctionId, true)
 
         try {
             await contract.methods.redeem(beneficiary, auctionId).send()
             this.setRedeemActionPending(beneficiary, auctionId, false)
+            log.debug(prefix.ACTION_SUCCESS, 'redeem', beneficiary, auctionId)
         } catch (e) {
+            log.debug(prefix.ACTION_ERROR, 'redeem', beneficiary, auctionId)
             log.error(e)
             this.setRedeemActionPending(beneficiary, auctionId, false)
         }

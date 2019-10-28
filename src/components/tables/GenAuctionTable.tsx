@@ -73,8 +73,6 @@ class GenAuctionTable extends React.Component<any, any>{
             data = this.generateTableRows(userAddress)
         }
 
-        console.log(data)
-
         return (
             <React.Fragment>
                 <RowWrapper>

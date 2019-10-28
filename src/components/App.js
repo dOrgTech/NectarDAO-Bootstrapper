@@ -7,6 +7,7 @@ import {
 import { inject, observer } from 'mobx-react'
 import 'components/App.scss'
 import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
+import Web3Manager from 'components/shell/Web3Manager'
 
 // window.ethereum.on('accountsChanged', async (accounts) => {
 //   window.location.reload()
@@ -14,17 +15,19 @@ import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
 
 @inject('root')
 @observer
-class App extends React.Component<any, any>{
+class App extends React.Component {
   render() {
     return (
       <HashRouter>
-        <div className="app-shell">
-          <Switch>
-            <Route path="/">
-              <ReputationBoostrapper />
-            </Route>
-          </Switch>
-        </div>
+        <Web3Manager>
+          <div className="app-shell">
+            <Switch>
+              <Route path="/">
+                <ReputationBoostrapper />
+              </Route>
+            </Switch>
+          </div>
+        </Web3Manager>
       </HashRouter>
     )
   }

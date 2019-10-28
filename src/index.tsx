@@ -5,16 +5,21 @@ import App from 'components/App';
 import * as serviceWorker from './serviceWorker';
 import { Provider } from 'mobx-react'
 import RootStore from './stores/Root'
-import InjectedConnector from 'connectors/InjectedConnector'
-import NetworkOnlyConnector from 'connectors/NetworkOnlyConnector'
+import Web3 from 'web3'
+import { Connectors } from 'web3-react'
+const { InjectedConnector, NetworkOnlyConnector } = Connectors
 
-const Network = new NetworkOnlyConnector({ providerURL: process.env.REACT_APP_NETWORK_URL || '' })
-const Injected = new InjectedConnector({ supportedNetworks: [Number(process.env.REACT_APP_NETWORK_ID || '1')] })
-const connectors = { Injected, Network }
+const MetaMask = new InjectedConnector({ supportedNetworks: [1, 4] })
+
+const Infura = new NetworkOnlyConnector({
+    providerURL: 'https://rinkeby.infura.io/v3/cd282052becb4c26ae80ce3aee65aa0c'
+})
+
+const connectors = { MetaMask, Infura }
 
 const Root = (
     <Provider root={RootStore}>
-        <Web3Provider connectors={connectors} libraryName="web3.js">
+        <Web3Provider connectors={connectors} libraryName="web3.js" web3Api={Web3}>
             <App />
         </Web3Provider>
     </Provider>

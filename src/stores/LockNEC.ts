@@ -4,10 +4,11 @@ import { observable, action, computed } from 'mobx'
 import * as blockchain from "utils/blockchain"
 import * as helpers from "utils/helpers"
 import * as log from 'loglevel'
+import { logs, errors, prefix, } from 'strings'
 import * as deployed from 'deployed.json'
 import BigNumber from "utils/bignumber"
 
-import { Lock, LockStaticParams } from 'types'
+import { Lock, LockStaticParams, Batch } from 'types'
 type Scores = Map<number, BigNumber>
 type Locks = Map<string, Lock>
 
@@ -18,15 +19,6 @@ const EXTEND_LOCKING_EVENT = 'ExtendLocking'
 const AGREEMENT_HASH = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const { BN } = helpers
-
-export const statusCodes = {
-    NOT_LOADED: 0,
-    PENDING: 1,
-    ERROR: 2,
-    SUCCESS: 3
-}
-
-const defaultLoadingStatus = statusCodes.NOT_LOADED
 
 const defaultAsyncActions = {
     lock: false,
@@ -43,7 +35,7 @@ export default class LockNECStore {
     @observable userLocks = new Map<string, Locks>()
     @observable userLocksLoaded = new Map<string, boolean>()
 
-    @observable batches = {}
+    @observable batches = new Map<number, Batch>()
     @observable batchesLoaded = false
     @observable completedBatchIndex = 0
 
@@ -200,7 +192,6 @@ export default class LockNECStore {
     }
 
     loadContract() {
-        console.log('deployed.ContinuousLocking4Reputation', deployed.ContinuousLocking4Reputation)
         return blockchain.loadObject('ContinuousLocking4Reputation', deployed.ContinuousLocking4Reputation, 'ContinuousLocking4Reputation')
     }
 
@@ -366,12 +357,11 @@ export default class LockNECStore {
         // Can we get the LOCKING TIME by the blocktime of the TX?
 
         const contract = this.loadContract()
-        log.info('[Fetch] Fetching User Locks', userAddress)
+        log.debug(prefix.FETCH_PENDING, 'User Locks', userAddress)
 
         try {
             const locks = new Map<string, Lock>()
             const events = await contract.events.LockToken()
-            console.log(events)
 
             const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
                 filter: { _locker: userAddress },
@@ -391,17 +381,11 @@ export default class LockNECStore {
                 toBlock: 'latest'
             })
 
-            console.log('lockEvents', lockEvents)
-            console.log('extendEvents', extendEvents)
-            console.log('releaseEvents', releaseEvents)
-
             // Add Locks
             for (const event of lockEvents) {
                 const lock = await this.parseLockEvent(event)
 
                 const scores = this.calcLockScores(lock)
-                console.log('scores', scores)
-
                 lock.scores = scores
                 locks.set(lock.id, lock)
             }
@@ -430,10 +414,11 @@ export default class LockNECStore {
                 locks.set(release.id, lock)
             }
 
-            console.log('[Fetched] User Locks', userAddress, locks)
+            log.debug(prefix.FETCH_SUCCESS, 'User Locks', userAddress, locks)
             this.userLocks.set(userAddress, locks)
             this.userLocksLoaded.set(userAddress, true)
         } catch (e) {
+            log.error(prefix.FETCH_ERROR, 'User Locks', userAddress)
             log.error(e)
         }
     }
@@ -457,7 +442,7 @@ export default class LockNECStore {
         return Number(currentBatch) - 1
     }
 
-    newBatch(id) {
+    newBatch(id: number): Batch {
         return {
             id,
             userLocked: new BigNumber(0),
@@ -474,12 +459,13 @@ export default class LockNECStore {
         Returns the 'amount locked' within a given locking period
         Scores are calculated from each lock and extend lock event
     */
-    async fetchBatches(user) {
+    async fetchBatches(user: string) {
         const contract = this.loadContract()
-        const batches = {}
+        const batches = new Map<number, Batch>()
         const lockScores = {}
         const locks = this.userLocks
 
+        log.debug(prefix.FETCH_PENDING, 'Batches', user)
         try {
             const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
                 fromBlock: 0,
@@ -489,18 +475,16 @@ export default class LockNECStore {
             for (let event of lockEvents) {
                 const lock = await this.parseLockEvent(event)
 
-                let batch = batches[lock.lockingPeriod]
+                let batch = batches.get(lock.lockingPeriod)
                 if (!batch) {
-                    batch = this.newBatch(lock.lockingPeriod)
-                    batches[lock.lockingPeriod] = batch
+                    batches.set(lock.lockingPeriod, this.newBatch(lock.lockingPeriod))
+                    batch = batches.get(lock.lockingPeriod) as Batch
                 }
 
-                const amount = new BigNumber(lock.amount)
-
-                batch.totalLocked = batch.totalLocked.plus(amount)
+                batch.totalLocked = batch.totalLocked.plus(lock.amount)
 
                 if (lock.locker === user) {
-                    batch.userLocked = batch.userLocked.plus(amount)
+                    batch.userLocked = batch.userLocked.plus(lock.amount)
                 }
             }
 
@@ -508,10 +492,10 @@ export default class LockNECStore {
             const currentBatch = this.getActiveLockingPeriod()
 
             for (let i = 0; i <= lastCompletedBatch + 1; i++) {
-                let batch = batches[i]
+                let batch = batches.get(i)
                 if (!batch) {
-                    batch = this.newBatch(i)
-                    batches[i] = batch
+                    batches.set(i, this.newBatch(i))
+                    batch = batches.get(i) as Batch
                 }
 
                 // const totalScore = new BigNumber(await contract.methods.batches(i).call())
@@ -529,6 +513,8 @@ export default class LockNECStore {
                 if (i < currentBatch) {
                     batch.isComplete = true
                 }
+
+                batches.set(i, batch)
             }
 
             // Object.keys(batches).forEach(key => {
@@ -547,7 +533,9 @@ export default class LockNECStore {
 
             this.batchesLoaded = true
             this.batches = batches
+            log.debug(prefix.FETCH_SUCCESS, 'Batches', user)
         } catch (e) {
+            log.error(prefix.FETCH_ERROR, 'Batches', user)
             log.error(e)
         }
     }
@@ -575,7 +563,7 @@ export default class LockNECStore {
         const contract = this.loadContract()
         const userAddress = this.rootStore.providerStore.getDefaultAccount()
         this.setExtendLockActionPending(lockId, true)
-        log.info('extendLock', lockId, periodsToExtend, batchId)
+        log.debug('extendLock', lockId, periodsToExtend, batchId)
 
         try {
             await contract.methods.extendLocking(periodsToExtend, batchId, lockId, AGREEMENT_HASH).send()
@@ -592,7 +580,7 @@ export default class LockNECStore {
         const contract = this.loadContract()
         const userAddress = this.rootStore.providerStore.getDefaultAccount()
         this.setReleaseActionPending(lockId, true)
-        log.info('release', beneficiary, lockId)
+        log.debug('release', beneficiary, lockId)
 
         try {
             await contract.methods.release(beneficiary, lockId).send()

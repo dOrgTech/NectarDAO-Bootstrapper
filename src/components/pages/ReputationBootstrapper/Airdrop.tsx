@@ -13,6 +13,7 @@ import Tooltip from 'components/common/Tooltip'
 import { RootStore } from 'stores/Root'
 import { SnapshotInfo } from 'types'
 import BigNumber from 'utils/bignumber'
+import { tooltip } from 'strings'
 
 const snapshotStatus = {
   NOT_STARTED: 0,
@@ -69,15 +70,25 @@ const Info = styled(InfoTitle)`
   text-align: right;
 `
 
-const InfoLine = (title, info, tooltipText?) => (
-  <InfoWrapper>
-    <InfoTitle>
-      {title}
-      {tooltipText ? <Tooltip title="" content="This is placeholder text describing the Airdrop Blocknumber." position="right top" /> : <div />}
-    </InfoTitle>
-    <Info>{info}</Info>
-  </InfoWrapper>
-)
+interface InfoLineProps {
+  title: string;
+  info: any;
+  hasTooltip: boolean,
+  tooltipText?: string
+}
+
+const InfoLine = (props: InfoLineProps) => {
+  const { title, info, hasTooltip, tooltipText } = props
+  return (
+    < InfoWrapper >
+      <InfoTitle>
+        {title}
+        {hasTooltip ? <Tooltip title="" content={tooltip.airdropBlocknumber} position="right top" /> : <div />}
+      </InfoTitle>
+      <Info>{info}</Info>
+    </InfoWrapper >
+  )
+}
 
 @inject('root')
 @observer
@@ -235,7 +246,6 @@ class Airdrop extends React.Component<any, any>{
     }
 
     const userData = airdropStore.getUserData(userAddress)
-    const repBalanceDisplay = helpers.fromWei(userData.rep.toString())
     const snapshotBlock = airdropStore.getSnapshotBlock()
     const currentBlock = timeStore.currentBlock
     const dropVisuals = this.calcDropVisuals()
@@ -244,18 +254,18 @@ class Airdrop extends React.Component<any, any>{
 
 
     /* Before the snapshot, well get the users' CURRENT balance
-       After the snapshot, we'll get the users SNAPSHOT balance
+    After the snapshot, we'll get the users SNAPSHOT balance
     */
 
     let necBalance: BigNumber
     if (dropStatus === snapshotStatus.NOT_STARTED) {
       necBalance = tokenStore.getBalance(necTokenAddress, userAddress)
     } else {
-      const snapshotData = airdropStore.getUserData(userAddress)
-      necBalance = snapshotData.balance
+      necBalance = userData.balance
     }
 
     const necBalanceDisplay = helpers.tokenDisplay(necBalance)
+    const repBalanceDisplay = helpers.tokenDisplay(userData.rep)
 
     return (
       <AirdropWrapper>
@@ -269,11 +279,11 @@ class Airdrop extends React.Component<any, any>{
           displayTooltip={false}
         />
         <Divider width="80%" margin="20px 0px 20px 0px" />
-        <InfoLine title="Nectar Balance" info={necBalanceDisplay} />
-        <InfoLine title="Receive Voting Power" info={repBalanceDisplay} />
+        <InfoLine title="Nectar Balance" info={necBalanceDisplay} hasTooltip={false} />
+        <InfoLine title="Receive Voting Power" info={repBalanceDisplay} hasTooltip={false} />
         <Divider width="80%" margin="20px 0px 20px 0px" />
-        <InfoLine title="Airdrop Blocknumber" info={snapshotBlock} tooltipText={true} />
-        <InfoLine title="Current Blocknumber" info={currentBlock} />
+        <InfoLine title="Airdrop Blocknumber" info={snapshotBlock} hasTooltip={true} />
+        <InfoLine title="Current Blocknumber" info={currentBlock} hasTooltip={false} />
         <Divider width="80%" margin="20px 0px 20px 0px" />
         <ButtonWrapper>
           {this.renderActionButton(dropStatus, necBalance, redeemPending, userData)}

@@ -48,8 +48,6 @@ class UserLocksTable extends React.Component<any, any> {
         const tableData: TableRow[] = [] as TableRow[]
 
         inputData.forEach((lock, key, map) => {
-            console.log(key, lock);
-
             const durationDisplay = `${lock.periodDuration} ${helpers.getMonthsSuffix(lock.periodDuration)}`
             const displayAmount = `${helpers.tokenDisplay(lock.amount)} NEC`
 
