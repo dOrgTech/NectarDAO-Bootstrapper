@@ -2,7 +2,6 @@
 import { observable, action, computed } from 'mobx'
 import * as deployed from "deployed.json";
 import * as helpers from "utils/helpers"
-import * as blockchain from "utils/blockchain"
 import * as log from 'loglevel';
 import { RootStore } from './Root';
 import BigNumber from 'bignumber.js';
@@ -59,7 +58,7 @@ export default class TokenStore {
     }
 
     loadContract(tokenAddress) {
-        return blockchain.loadObject('TestToken', tokenAddress, 'TestToken')
+        return this.rootStore.providerStore.loadObject('TestToken', tokenAddress, 'TestToken')
     }
 
     calcMaxApprovalFlag(allowance: BigNumber): boolean {
@@ -126,7 +125,7 @@ export default class TokenStore {
 
     @action approveMax = async (tokenAddress, spender) => {
         const token = this.loadContract(tokenAddress)
-        const account = await blockchain.getDefaultAccount()
+        const account = await this.rootStore.providerStore.getDefaultAccount()
         this.setApprovePending(tokenAddress, account, spender, true)
 
         try {
@@ -143,7 +142,7 @@ export default class TokenStore {
 
     @action revokeApproval = async (tokenAddress, spender) => {
         const token = this.loadContract(tokenAddress)
-        const account = await blockchain.getDefaultAccount()
+        const account = await this.rootStore.providerStore.getDefaultAccount()
         this.setApprovePending(tokenAddress, account, spender, true)
 
         try {

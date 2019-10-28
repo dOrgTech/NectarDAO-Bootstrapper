@@ -3,10 +3,11 @@ import React from "react";
 import jazzicon from "jazzicon";
 
 // Utils
-import web3 from "./web3";
+import Web3 from "web3";
 
 // Settings
 import BigNumber from "utils/bignumber"
+export const BN = require('bn.js');
 
 
 export const timeConstants = {
@@ -18,10 +19,10 @@ export const timeConstants = {
   }
 }
 
-export const { toBN, toWei, fromWei, isAddress, BN } = web3.utils;
+const { toBN, isAddress } = Web3.utils;
 
 export const MAX_GAS = 0xffffffff;
-export const MAX_UINT = web3.utils.toTwosComplement('-1');
+export const MAX_UINT = Web3.utils.toTwosComplement('-1');
 export const MAX_UINT_BN = new BigNumber(MAX_UINT)
 export const MAX_UINT_DIVISOR = new BigNumber(2)
 export const MAX_APPROVAL_THRESHOLD = MAX_UINT_BN.dividedToIntegerBy(MAX_UINT_DIVISOR)
@@ -35,15 +36,19 @@ var padLeft = function (string, chars, sign) {
 };
 
 export function toChecksum(address) {
-  return web3.utils.toChecksumAddress(address)
+  return Web3.utils.toChecksumAddress(address)
 }
 
 export function getCurrentTime() {
   return Math.round((new Date()).getTime() / 1000)
 }
 
-export async function getCurrentBlock() {
-  return await web3.eth.getBlockNumber()
+export function toWei(value: string | BigNumber): string {
+  return Web3.utils.toWei(value.toString())
+}
+
+export function fromWei(value: string | BigNumber): string {
+  return Web3.utils.fromWei(value.toString())
 }
 
 function dayText(value) {
@@ -137,7 +142,7 @@ export function getDurationTimeText(value) {
 }
 
 export function tokenDisplay(value: BigNumber): string {
-  return roundValue(fromWei(value.toString()))
+  return roundValue(Web3.utils.fromWei(value.toString()))
 }
 
 export function pow10(value) {
@@ -146,7 +151,7 @@ export function pow10(value) {
 }
 
 export function toAmount(value) {
-  return toFixed(fromWei(value))
+  return toFixed(Web3.utils.fromWei(value))
 }
 
 export function toFixed(value) {
@@ -190,25 +195,6 @@ export function timestampToDate(timestamp) {
   return `${day}.${month + 1}.${year}`
 }
 
-
-export const formatNumber = (number, decimals = 0, isWei = true) => {
-  let object = web3.toBN(number);
-
-  if (isWei) object = web3.fromWei(object.round(0));
-
-  object = object.valueOf();
-
-  if (decimals) {
-    const whole = object.toString().split(".")[0];
-    const decimal = object.toString().split(".")[1];
-    object = whole.concat(".").concat(decimal ? decimal.substr(0, decimals) : "");
-  }
-
-  const parts = object.toString().split(".");
-  const decimalsWithoutTrailingZeros = parts[1] ? parts[1].replace(/[0]+$/, "") : "";
-  return parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") + (decimalsWithoutTrailingZeros ? `.${decimalsWithoutTrailingZeros}` : "");
-}
-
 export const formatDate = timestamp => {
   const date = new Date(timestamp * 1000);
   return `${date.toDateString()} ${addZero(date.getHours())}:${addZero(date.getMinutes())}:${addZero(date.getSeconds())}`;
@@ -219,7 +205,7 @@ export const addZero = value => {
 }
 
 export const fromRaytoWad = (x) => {
-  return web3.toBN(x).div(web3.toBN(10).pow(9));
+  return toBN(x).div(toBN(10).pow(toBN(9)));
 }
 
 export function toAddressStub(address) {
@@ -238,17 +224,17 @@ export function roundValue(value) {
 }
 
 export function hexToNumberString(value) {
-  return web3.utils.hexToNumberString(value)
+  return Web3.utils.hexToNumberString(value)
 }
 
 export function fromFeeToPercentage(value) {
-  const etherValue = web3.utils.fromWei(value)
-  const percentageValue = etherValue * 100
+  const etherValue = Web3.utils.fromWei(value)
+  const percentageValue = Number(etherValue) * 100
   return percentageValue
 }
 
 export function fromPercentageToFee(value) {
-  const weiValue = new BN(web3.utils.toWei(value, 'ether'))
+  const weiValue = new BN(Web3.utils.toWei(value, 'ether'))
   const feeValue = weiValue.div(new BN(100))
   return feeValue.toString()
 }
@@ -265,7 +251,7 @@ export const copyToClipboard = e => {
 }
 
 export const methodSig = method => {
-  return web3.sha3(method).substring(0, 10)
+  return Web3.utils.sha3(method).substring(0, 10)
 }
 
 export const generateIcon = (address) => {

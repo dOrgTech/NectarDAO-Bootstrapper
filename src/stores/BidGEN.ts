@@ -2,7 +2,6 @@
 /* eslint-disable no-restricted-syntax */
 import { observable, action, computed } from 'mobx'
 import * as deployed from "deployed.json"
-import * as blockchain from "utils/blockchain"
 import BigNumber from 'bignumber.js'
 import * as log from 'loglevel'
 import { BidStaticParams, Auction, AuctionStatus } from 'types'
@@ -147,7 +146,7 @@ export default class BidGENStore {
     }
 
     loadContract() {
-        return blockchain.loadObject('Auction4Reputation', deployed.Auction4Reputation, 'Auction4Reputation')
+        return this.rootStore.providerStore.loadObject('Auction4Reputation', deployed.Auction4Reputation, 'Auction4Reputation')
     }
 
     getActiveAuction(): number {

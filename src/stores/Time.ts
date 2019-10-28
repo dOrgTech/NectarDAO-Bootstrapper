@@ -17,6 +17,6 @@ export default class TimeStore {
     }
 
     @action fetchCurrentBlock = async () => {
-        this.currentBlock = Number(await helpers.getCurrentBlock())
+        this.currentBlock = Number(await this.rootStore.providerStore.getCurrentBlock())
     }
 }

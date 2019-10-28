@@ -2,7 +2,6 @@
 /* eslint-disable no-restricted-syntax */
 import { observable, action } from 'mobx'
 import * as deployed from "deployed.json";
-import * as blockchain from "utils/blockchain"
 import * as log from 'loglevel'
 import { AirdropStaticParams, SnapshotInfo } from 'types'
 import { RootStore } from './Root';
@@ -86,15 +85,15 @@ export default class AirdropStore {
     }
 
     loadNecRepAllocationContract() {
-        return blockchain.loadObject('NectarRepAllocation', deployed.NectarRepAllocation, 'NectarRepAllocation')
+        return this.rootStore.providerStore.loadObject('NectarRepAllocation', deployed.NectarRepAllocation, 'NectarRepAllocation')
     }
 
     loadMiniMeTokenContract(tokenAddress) {
-        return blockchain.loadObject('MiniMeToken', tokenAddress, 'MiniMeToken')
+        return this.rootStore.providerStore.loadObject('MiniMeToken', tokenAddress, 'MiniMeToken')
     }
 
     loadRepFromTokenContract() {
-        return blockchain.loadObject('ReputationFromToken', deployed.ReputationFromToken, 'ReputationFromToken')
+        return this.rootStore.providerStore.loadObject('ReputationFromToken', deployed.ReputationFromToken, 'ReputationFromToken')
     }
 
     getSnapshotBlock(): number {

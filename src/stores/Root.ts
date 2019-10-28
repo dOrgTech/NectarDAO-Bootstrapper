@@ -35,14 +35,13 @@ export class RootStore {
         this.extendLockFormStore = new ExtendLockFormStore(this)
         this.tokenStore = new TokenStore(this)
         this.timeStore = new TimeStore(this)
-        this.asyncSetup()
-    }
-
-    asyncSetup = async () => {
-        await this.providerStore.setWeb3WebClient()
     }
 
     setClockUpdateInteral = () => {
+        if (this.clockUpdateInterval) {
+            clearInterval(this.clockUpdateInterval)
+        }
+
         this.clockUpdateInterval = setInterval(() => {
             this.timeStore.fetchCurrentTime();
 
@@ -50,55 +49,69 @@ export class RootStore {
     }
 
     setBlockUpdateInteral = () => {
+        if (this.blockUpdateInterval) {
+            clearInterval(this.clockUpdateInterval)
+        }
+
         this.blockUpdateInterval = setInterval(() => {
             this.timeStore.fetchCurrentBlock();
         }, 1000);
     }
 
-    setDataUpdateInterval = async (userAddress) => {
-        this.dataUpdateInterval = setInterval(async () => {
-            this.timeStore.fetchCurrentBlock();
-            console.log(`data update for user ${userAddress}`)
+    fetchLockingData = async (userAddress) => {
+        console.log(`[Fetch] Locking Data for ${userAddress}`)
 
-            const genTokenAddress = deployed.GenToken
-            const auctionSchemeAddress = deployed.Auction4Reputation
-            const necTokenAddress = deployed.NectarToken
-            const lockSchemeAddress = deployed.ContinuousLocking4Reputation
+        const necTokenAddress = deployed.NectarToken
+        const lockSchemeAddress = deployed.ContinuousLocking4Reputation
 
-            if (!this.bidGENStore.areStaticParamsLoaded()) {
-                await this.bidGENStore.fetchStaticParams()
-            }
+        if (!this.lockNECStore.areStaticParamsLoaded()) {
+            await this.lockNECStore.fetchStaticParams()
+        }
 
-            if (!this.lockNECStore.areStaticParamsLoaded()) {
-                await this.lockNECStore.fetchStaticParams()
-            }
+        await this.tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
+        await this.tokenStore.fetchAllowance(necTokenAddress, userAddress, lockSchemeAddress)
+        await this.lockNECStore.fetchUserLocks(userAddress)
 
-            await this.tokenStore.fetchBalanceOf(genTokenAddress, userAddress)
-            await this.tokenStore.fetchAllowance(genTokenAddress, userAddress, auctionSchemeAddress)
-            await this.bidGENStore.fetchAuctionData()
-
-            await this.tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
-            await this.tokenStore.fetchAllowance(necTokenAddress, userAddress, lockSchemeAddress)
-            await this.lockNECStore.fetchUserLocks(userAddress)
-        }, 3000);
     }
 
-    // loadContracts = () => {
-    //     if (this.network.network && !this.network.stopIntervals) {
-    //         blockchain.resetFilters(true);
-    //         if (typeof this.pendingTxInterval !== "undefined") clearInterval(this.pendingTxInterval);
-    //         const addrs = settings.chain[this.network.network];
-    //         blockchain.loadObject("proxyregistry", addrs.proxyRegistry, "proxyRegistry");
-    //         const setUpPromises = [blockchain.getProxy(this.network.defaultAccount)];
-    //         Promise.all(setUpPromises).then(r => {
-    //             this.system.init();
-    //             this.network.stopLoadingAddress();
-    //             this.profile.setProxy(r[0]);
-    //             this.profile.loadAllowances();
-    //             this.setPendingTxInterval();
-    //         });
-    //     }
-    // }
+    fetchAuctionData = async (userAddress) => {
+        console.log(`[Fetch] Auction Data for ${userAddress}`)
+
+        const genTokenAddress = deployed.GenToken
+        const auctionSchemeAddress = deployed.Auction4Reputation
+
+        if (!this.bidGENStore.areStaticParamsLoaded()) {
+            await this.bidGENStore.fetchStaticParams()
+        }
+
+        await this.tokenStore.fetchBalanceOf(genTokenAddress, userAddress)
+        await this.tokenStore.fetchAllowance(genTokenAddress, userAddress, auctionSchemeAddress)
+        await this.bidGENStore.fetchAuctionData()
+    }
+
+    fetchAirdropData = async (userAddress) => {
+        console.log(`[Fetch] Airdrop Data for ${userAddress}`)
+
+        if (!this.airdropStore.areStaticParamsLoaded()) {
+            await this.airdropStore.fetchStaticParams()
+        }
+
+        await this.airdropStore.fetchUserData(userAddress)
+    }
+
+    setDataUpdateInterval = async (userAddress) => {
+        if (this.dataUpdateInterval) {
+            clearInterval(this.dataUpdateInterval)
+        }
+
+        this.dataUpdateInterval = setInterval(async () => {
+            this.timeStore.fetchCurrentBlock();
+            this.fetchLockingData(userAddress)
+            this.fetchAirdropData(userAddress)
+            this.fetchAuctionData(userAddress)
+
+        }, 3000);
+    }
 }
 
 const store = new RootStore();

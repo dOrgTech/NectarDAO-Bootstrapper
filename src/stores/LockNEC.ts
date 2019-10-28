@@ -1,7 +1,6 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { observable, action, computed } from 'mobx'
-import * as blockchain from "utils/blockchain"
 import * as helpers from "utils/helpers"
 import * as log from 'loglevel'
 import { logs, errors, prefix, } from 'strings'
@@ -192,7 +191,7 @@ export default class LockNECStore {
     }
 
     loadContract() {
-        return blockchain.loadObject('ContinuousLocking4Reputation', deployed.ContinuousLocking4Reputation, 'ContinuousLocking4Reputation')
+        return this.rootStore.providerStore.loadObject('ContinuousLocking4Reputation', deployed.ContinuousLocking4Reputation, 'ContinuousLocking4Reputation')
     }
 
     getActiveLockingPeriod(): number {
@@ -252,7 +251,7 @@ export default class LockNECStore {
             _locker, _lockingId, _amount, _period
         } = event.returnValues
 
-        const block = await blockchain.getBlock(event.blockNumber)
+        const block = await this.rootStore.providerStore.getBlock(event.blockNumber)
         const batchTime = this.staticParams.batchTime
         const periodDuration = Number(_period)
         const timeDuration = periodDuration * batchTime
@@ -277,7 +276,7 @@ export default class LockNECStore {
         const {
             _locker, _lockingId, _extendPeriod
         } = event.returnValues
-        const block = await blockchain.getBlock(event.blockNumber)
+        const block = await this.rootStore.providerStore.getBlock(event.blockNumber)
 
         return {
             locker: _locker,

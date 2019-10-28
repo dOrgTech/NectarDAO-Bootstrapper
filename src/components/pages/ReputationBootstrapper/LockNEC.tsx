@@ -118,21 +118,6 @@ class LockNEC extends React.Component<any, State> {
     this.setState({ currentTab: value })
   }
 
-  async componentDidMount() {
-    const { lockNECStore, providerStore, tokenStore } = this.props.root as RootStore
-    const userAddress = providerStore.getDefaultAccount()
-    const necTokenAddress = deployed.NectarToken
-    const schemeAddress = deployed.ContinuousLocking4Reputation
-
-    if (!lockNECStore.areStaticParamsLoaded()) {
-      await lockNECStore.fetchStaticParams()
-    }
-
-    await tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
-    await tokenStore.fetchAllowance(necTokenAddress, userAddress, schemeAddress)
-    await lockNECStore.fetchUserLocks(userAddress)
-  }
-
   SidePanel = () => {
     const { lockNECStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()

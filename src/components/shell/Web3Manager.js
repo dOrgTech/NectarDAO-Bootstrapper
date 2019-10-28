@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { useWeb3Context } from 'web3-react'
-import { observer, inject, PropTypes } from "mobx-react"
+import { observer, inject } from "mobx-react"
+import { rootCertificates } from 'tls'
 
 
 // This component must be a child of <App> to have access to the appropriate context
@@ -26,7 +27,9 @@ const Web3Manager = inject('root')(observer((props) => {
         // success
         console.log('success')
         console.log('context', context)
+
         // Return Window OR wrong network
+        props.root.providerStore.setWeb3WebClient(context.library)
         return <React.Fragment><p>{context.account}</p>{props.children}</React.Fragment>
     }
 }))

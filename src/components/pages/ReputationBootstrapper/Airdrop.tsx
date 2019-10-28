@@ -93,17 +93,6 @@ const InfoLine = (props: InfoLineProps) => {
 @inject('root')
 @observer
 class Airdrop extends React.Component<any, any>{
-
-  async componentDidMount() {
-    const { airdropStore, tokenStore, providerStore } = this.props.root as RootStore
-    const userAddress = providerStore.getDefaultAccount()
-    const necTokenAddress = deployed.NectarToken
-
-    await airdropStore.fetchStaticParams()
-    await tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
-    await airdropStore.fetchUserData(userAddress)
-  }
-
   calcSnapshotConcluded(snapshotBlock, latestBlock) {
     const blockDiff = snapshotBlock - latestBlock
 
@@ -253,8 +242,8 @@ class Airdrop extends React.Component<any, any>{
     const { dropPercentage, dropTimer, dropStatus } = dropVisuals
 
 
-    /* Before the snapshot, well get the users' CURRENT balance
-    After the snapshot, we'll get the users SNAPSHOT balance
+    /*  Before the snapshot, well get the users' CURRENT balance
+        After the snapshot, we'll get the users SNAPSHOT balance
     */
 
     let necBalance: BigNumber

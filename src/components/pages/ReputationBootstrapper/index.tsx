@@ -32,19 +32,10 @@ const SectionWrapper = styled.div`
 @inject('root')
 @observer
 class ReputationBoostrapper extends React.Component<any, any> {
-  async componentDidMount() {
-    const { providerStore } = this.props.root as RootStore
-    log.debug(check.defaultAccount, providerStore.getDefaultAccount())
-    if (!providerStore.getDefaultAccount()) {
-      await providerStore.setWeb3WebClient()
-      log.debug(check.defaultAccount, providerStore.getDefaultAccount())
-    }
-  }
-
   render() {
     const { providerStore } = this.props.root as RootStore
 
-    if (!providerStore.defaultAccount) {
+    if (!providerStore.web3) {
       return <div>Loading Provider...</div>
     }
 
