@@ -5,7 +5,7 @@ import ActiveButton from 'components/common/buttons/ActiveButton'
 import InactiveButton from 'components/common/buttons/InactiveButton'
 import * as helpers from 'utils/helpers'
 import LoadingCircle from '../LoadingCircle'
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 import { ActiveLockingPeriodCell, LockingPeriodCell, LockingPeriodSelectorWrapper, LockingPeriodSelector, LockingPeriodStartCell, LockingPeriodEndCell } from 'components/common/LockingPeriodForm'
 import { RootStore } from 'stores/Root'
 

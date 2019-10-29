@@ -1,0 +1,11 @@
+{
+    "deployed": {
+        "NectarRepAllocation": "0x997E179C321b1BAc866b7224234E17514A4D14be",
+        "ContinuousLocking4Reputation": "0x26B99F86EDe64821c4193d94eAe626C5ccC5DCb2",
+        "Auction4Reputation": "0x1aad5b60852283cF9747C567730da27Ff9602d4d",
+        "ReputationFromToken": "0x489a7EB42B059ADEA058b0432B6e6f322467a54d",
+        "NectarToken": "0x05a047c9bd8f36b0d9f8ad146176eba821b3a3ae",
+        "GenToken": "0x543Ff227F64Aa17eA132Bf9886cAb5DB55DCAddf"
+    },
+    "activeNetworkId": 4
+}

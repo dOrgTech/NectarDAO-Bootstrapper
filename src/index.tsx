@@ -9,7 +9,7 @@ import Web3 from 'web3'
 import { Connectors } from 'web3-react'
 const { InjectedConnector, NetworkOnlyConnector } = Connectors
 
-const MetaMask = new InjectedConnector({ supportedNetworks: [1, 4] })
+const MetaMask = new InjectedConnector()
 
 const Infura = new NetworkOnlyConnector({
     providerURL: 'https://rinkeby.infura.io/v3/cd282052becb4c26ae80ce3aee65aa0c'

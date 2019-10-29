@@ -4,10 +4,11 @@ import { observable, action, computed } from 'mobx'
 import * as helpers from "utils/helpers"
 import * as log from 'loglevel'
 import { logs, errors, prefix, } from 'strings'
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 import BigNumber from "utils/bignumber"
 
 import { Lock, LockStaticParams, Batch } from 'types'
+import { RootStore } from './Root'
 type Scores = Map<number, BigNumber>
 type Locks = Map<string, Lock>
 
@@ -33,6 +34,7 @@ export default class LockNECStore {
     // Dynamic Data
     @observable userLocks = new Map<string, Locks>()
     @observable userLocksLoaded = new Map<string, boolean>()
+    @observable nextBlockToFetch = 0
 
     @observable batches = new Map<number, Batch>()
     @observable batchesLoaded = false
@@ -43,7 +45,7 @@ export default class LockNECStore {
         globalAuctionData: false,
     }
 
-    rootStore: any
+    rootStore: RootStore
 
     @observable asyncActions = defaultAsyncActions
 
@@ -51,6 +53,25 @@ export default class LockNECStore {
 
     constructor(rootStore) {
         this.rootStore = rootStore;
+    }
+
+    resetData() {
+        // Static Parameters
+        this.staticParams = {} as LockStaticParams
+        this.staticParamsLoaded = false
+        // Dynamic Data
+        this.userLocks = new Map<string, Locks>()
+        this.userLocksLoaded = new Map<string, boolean>()
+        this.nextBlockToFetch = 0
+
+        this.batches = new Map<number, Batch>()
+        this.batchesLoaded = false
+        this.completedBatchIndex = 0
+
+        this.initialLoad = {
+            staticParams: false,
+            globalAuctionData: false,
+        }
     }
 
     //TODO: Do this when switching accounts in metamask
@@ -359,28 +380,41 @@ export default class LockNECStore {
         log.debug(prefix.FETCH_PENDING, 'User Locks', userAddress)
 
         try {
-            const locks = new Map<string, Lock>()
-            const events = await contract.events.LockToken()
+            const currentBlock = this.rootStore.timeStore.currentBlock
+
+            if (currentBlock < this.nextBlockToFetch - 1) {
+                throw new Error(`Current block ${currentBlock} is less than the last fetched block ${this.nextBlockToFetch}`)
+            }
+
+            if (currentBlock === this.nextBlockToFetch - 1) {
+                console.log(`Current block is the same as last fetched block, no need to fetch`)
+                return
+            }
+
+            let locks = new Map<string, Lock>()
+            if (this.userLocks.has(userAddress)) {
+                locks = this.userLocks.get(userAddress) as Locks
+            }
 
             const lockEvents = await contract.getPastEvents(LOCK_EVENT, {
                 filter: { _locker: userAddress },
-                fromBlock: 0,
-                toBlock: 'latest'
+                fromBlock: this.nextBlockToFetch,
+                toBlock: currentBlock
             })
 
             const extendEvents = await contract.getPastEvents(EXTEND_LOCKING_EVENT, {
                 filter: { _locker: userAddress },
-                fromBlock: 0,
-                toBlock: 'latest'
+                fromBlock: this.nextBlockToFetch,
+                toBlock: currentBlock
             })
 
             const releaseEvents = await contract.getPastEvents(RELEASE_EVENT, {
                 filter: { _beneficiary: userAddress },
-                fromBlock: 0,
-                toBlock: 'latest'
+                fromBlock: this.nextBlockToFetch,
+                toBlock: currentBlock
             })
 
-            // Add Locks
+            // Add new Locks
             for (const event of lockEvents) {
                 const lock = await this.parseLockEvent(event)
 
@@ -415,6 +449,7 @@ export default class LockNECStore {
 
             log.debug(prefix.FETCH_SUCCESS, 'User Locks', userAddress, locks)
             this.userLocks.set(userAddress, locks)
+            this.nextBlockToFetch = currentBlock + 1
             this.userLocksLoaded.set(userAddress, true)
         } catch (e) {
             log.error(prefix.FETCH_ERROR, 'User Locks', userAddress)
@@ -461,8 +496,36 @@ export default class LockNECStore {
     async fetchBatches(user: string) {
         const contract = this.loadContract()
         const batches = new Map<number, Batch>()
-        const lockScores = {}
-        const locks = this.userLocks
+
+        const currentBlock = this.rootStore.timeStore.currentBlock
+        const nextBlockToFetch = this.nextBlockToFetch
+
+        /*  We want to only get data up to the most recent user locks fetched
+            We also _require_ that that is already fetched, becuase we're dependent on those score calcuations
+
+            How do we get things?
+
+            User Score: 
+            Sum up the scores from all the locks, for each period
+
+            Total Score: 
+            Read directly from the contract
+
+            User Locked: 
+            Sum up the values from all the locks, for the period it was locked in only.
+
+            User REP:
+            Run a local calculation from the total REP * score / total score
+
+            Total REP:
+            Not sure on the calculation here....
+
+            Is Complete;
+            A simple time calcuation.
+            We set the 'completedBatchIndex' to the latest one that's complete so we don't fetch old data again.
+            Hopefully - we can do the initial load in the background for a while, however, this being the first page shown doesn't bode well for that!
+
+        */
 
         log.debug(prefix.FETCH_PENDING, 'Batches', user)
         try {
@@ -587,7 +650,6 @@ export default class LockNECStore {
             this.setReleaseActionPending(lockId, false)
         } catch (e) {
             log.error(e)
-            await this.fetchUserLocks(userAddress)
             this.setReleaseActionPending(lockId, false)
         }
 

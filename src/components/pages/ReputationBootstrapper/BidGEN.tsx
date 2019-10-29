@@ -9,7 +9,7 @@ import LogoAndText from 'components/common/LogoAndText'
 // TODO: change to GEN
 import GENLogo from 'assets/svgs/GEN-logo.svg'
 import * as helpers from 'utils/helpers'
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 import LoadingCircle from '../../common/LoadingCircle'
 import { RootStore } from 'stores/Root'
 
@@ -61,21 +61,6 @@ const propertyNames = {
 @inject('root')
 @observer
 class BidGEN extends React.Component<any, any>{
-  async componentDidMount() {
-    const { bidGENStore, tokenStore, providerStore } = this.props.root as RootStore
-    const userAddress = providerStore.getDefaultAccount()
-    const genTokenAddress = deployed.GenToken
-    const schemeAddress = deployed.Auction4Reputation
-
-    if (!bidGENStore.areStaticParamsLoaded()) {
-      await bidGENStore.fetchStaticParams()
-    }
-
-    await tokenStore.fetchBalanceOf(genTokenAddress, userAddress)
-    await tokenStore.fetchAllowance(genTokenAddress, userAddress, schemeAddress)
-    await bidGENStore.fetchAuctionData()
-  }
-
   SidePanel = () => {
     const { bidGENStore, tokenStore, providerStore } = this.props.root as RootStore
     const userAddress = providerStore.getDefaultAccount()

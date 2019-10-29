@@ -8,7 +8,7 @@ import BidFormStore from "./BidForm"
 import ExtendLockFormStore from "./ExtendLockForm"
 import TokenStore from "./Token"
 import TimeStore from "./Time"
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 
 export class RootStore {
     public providerStore: ProviderStore
@@ -37,11 +37,26 @@ export class RootStore {
         this.timeStore = new TimeStore(this)
     }
 
-    setClockUpdateInteral = () => {
+    clearClockUpdateInterval = () => {
         if (this.clockUpdateInterval) {
             clearInterval(this.clockUpdateInterval)
         }
+    }
 
+    clearBlockUpdateInterval = () => {
+        if (this.blockUpdateInterval) {
+            clearInterval(this.blockUpdateInterval)
+        }
+    }
+
+    clearDataUpdateInterval = () => {
+        if (this.dataUpdateInterval) {
+            clearInterval(this.dataUpdateInterval)
+        }
+
+    }
+
+    setClockUpdateInteral = () => {
         this.clockUpdateInterval = setInterval(() => {
             this.timeStore.fetchCurrentTime();
 
@@ -49,10 +64,6 @@ export class RootStore {
     }
 
     setBlockUpdateInteral = () => {
-        if (this.blockUpdateInterval) {
-            clearInterval(this.clockUpdateInterval)
-        }
-
         this.blockUpdateInterval = setInterval(() => {
             this.timeStore.fetchCurrentBlock();
         }, 1000);
@@ -70,6 +81,7 @@ export class RootStore {
 
         await this.tokenStore.fetchBalanceOf(necTokenAddress, userAddress)
         await this.tokenStore.fetchAllowance(necTokenAddress, userAddress, lockSchemeAddress)
+        await this.lockNECStore.fetchBatches(userAddress)
         await this.lockNECStore.fetchUserLocks(userAddress)
 
     }
@@ -100,10 +112,6 @@ export class RootStore {
     }
 
     setDataUpdateInterval = async (userAddress) => {
-        if (this.dataUpdateInterval) {
-            clearInterval(this.dataUpdateInterval)
-        }
-
         this.dataUpdateInterval = setInterval(async () => {
             this.timeStore.fetchCurrentBlock();
             this.fetchLockingData(userAddress)

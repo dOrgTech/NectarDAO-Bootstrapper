@@ -1,6 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { observable, action, computed } from 'mobx'
-import * as deployed from "deployed.json";
+import { deployed } from "config.json";
 import * as helpers from "utils/helpers"
 import * as log from 'loglevel';
 import { RootStore } from './Root';

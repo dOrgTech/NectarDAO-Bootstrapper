@@ -37,17 +37,27 @@ export default class ProviderStore {
     @observable defaultAccount = '';
     @observable isProviderSet = false;
     @observable isAccountSet = false;
+    @observable hasWrongNetworkError = false;
 
     constructor(rootStore) {
         this.rootStore = rootStore;
         console.log('window', window)
     }
 
-    resetIntervals = async () => {
+    setIntervals = async () => {
+        const userAddress = this.getDefaultAccount()
+
+        if (userAddress == null) {
+            this.hasWrongNetworkError = true
+            return
+        }
+
+        this.hasWrongNetworkError = false
+
         await this.rootStore.timeStore.fetchCurrentTime()
         await this.rootStore.timeStore.fetchCurrentBlock()
 
-        const userAddress = this.getDefaultAccount()
+        this.resetData()
 
         this.rootStore.fetchLockingData(userAddress)
         this.rootStore.fetchAirdropData(userAddress)
@@ -56,6 +66,12 @@ export default class ProviderStore {
         this.rootStore.setClockUpdateInteral()
         this.rootStore.setBlockUpdateInteral()
         this.rootStore.setDataUpdateInterval(userAddress)
+    }
+
+    clearIntervals = async () => {
+        this.rootStore.clearClockUpdateInterval()
+        this.rootStore.clearBlockUpdateInterval()
+        this.rootStore.clearDataUpdateInterval()
     }
 
     @action setAccount = async () => {
@@ -69,15 +85,24 @@ export default class ProviderStore {
         return this.defaultAccount
     }
 
+    resetData = () => {
+        const { lockNECStore, bidGENStore, airdropStore } = this.rootStore
+        lockNECStore.resetData()
+        bidGENStore.resetData()
+        airdropStore.resetData()
+    }
+
     /*  Set a new web3 provider - for now, we only allow injected clients.
         Set the accounts, and reset all polling intervals for fetching data.
     */
-    @action setWeb3WebClient = async (provider) => {
+    @action setWeb3WebClient = async (provider, setIntervals) => {
         this.web3 = provider
         await this.setAccount()
+        this.clearIntervals()
         this.isProviderSet = true
-        if (this.web3) {
-            await this.resetIntervals()
+
+        if (setIntervals) {
+            await this.setIntervals()
         }
     }
 

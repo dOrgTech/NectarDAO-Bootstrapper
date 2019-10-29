@@ -6,7 +6,7 @@ import { MaxTokensText } from './LockPanel'
 import InactiveButton from 'components/common/buttons/InactiveButton'
 import ActiveButton from 'components/common/buttons/ActiveButton'
 import LoadingCircle from '../LoadingCircle';
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 import { RootStore } from 'stores/Root';
 
 const PanelWrapper = styled.div`

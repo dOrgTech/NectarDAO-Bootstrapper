@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { observable, action } from 'mobx'
-import * as deployed from "deployed.json";
+import { deployed } from "config.json"
 import * as log from 'loglevel'
 import { AirdropStaticParams, SnapshotInfo } from 'types'
 import { RootStore } from './Root';
@@ -22,6 +22,14 @@ export default class AirdropStore {
 
     constructor(rootStore) {
         this.rootStore = rootStore;
+    }
+
+    resetData() {
+        this.staticParams = {} as AirdropStaticParams
+        this.staticParamsLoaded = false
+        this.userData = new Map<string, SnapshotInfo>()
+        this.userDataLoaded = new Map<string, boolean>()
+        this.redeemAction = false
     }
 
     setRedeemPending(flag) {
@@ -168,12 +176,12 @@ export default class AirdropStore {
         this.setRedeemPending(true)
         try {
             await contract.methods.redeem(beneficiary).send()
-            this.fetchUserData(beneficiary)
+            await this.fetchUserData(beneficiary)
             this.setRedeemPending(false)
             log.debug(prefix.ACTION_SUCCESS, 'redeem', beneficiary)
         } catch (e) {
             log.error(e)
-            this.fetchUserData(beneficiary)
+            await this.fetchUserData(beneficiary)
             this.setRedeemPending(false)
             log.debug(prefix.ACTION_ERROR, 'redeem', beneficiary)
         }

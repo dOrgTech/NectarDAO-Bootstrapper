@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
 import { observable, action, computed } from 'mobx'
-import * as deployed from "deployed.json"
+import { deployed } from "config.json"
 import BigNumber from 'bignumber.js'
 import * as log from 'loglevel'
 import { BidStaticParams, Auction, AuctionStatus } from 'types'
@@ -44,6 +44,19 @@ export default class BidGENStore {
 
     constructor(rootStore) {
         this.rootStore = rootStore;
+    }
+
+    resetData() {
+        // Static Parameters
+        this.staticParams = {} as BidStaticParams
+        this.staticParamsLoaded = false
+
+        // Dynamic Data
+        this.repRewardLeft = new BigNumber(0)
+        this.auctionData = new Map<number, Auction>()
+        this.auctionDataLoaded = false
+        this.auctionCount = 0
+        this.asyncActions = defaultAsyncActions
     }
 
     getTrackedAuctionCount() {

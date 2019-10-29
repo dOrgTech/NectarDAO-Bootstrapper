@@ -7,7 +7,7 @@ import TimelineProgress from 'components/common/TimelineProgress'
 import LogoAndText from 'components/common/LogoAndText'
 import TokenValue from 'components/common/TokenValue'
 import icon from 'assets/pngs/NECwithoutText.png'
-import * as deployed from 'deployed.json'
+import { deployed } from 'config.json'
 import BatchesTable from 'components/tables/BatchesTable'
 import UserLocksTable from 'components/tables/UserLocksTable'
 import LoadingCircle from '../../common/LoadingCircle'
@@ -110,7 +110,7 @@ class LockNEC extends React.Component<any, State> {
     super(props)
 
     this.state = {
-      currentTab: TabEnum.YOUR_LOCKS
+      currentTab: TabEnum.ALL_PERIODS
     }
   }
 
@@ -179,8 +179,6 @@ class LockNEC extends React.Component<any, State> {
     const isLockingEnded = lockNECStore.isLockingEnded()
     const numPeriods = lockNECStore.staticParams.numLockingPeriods
     const finalPeriodIndex = lockNECStore.getFinalPeriodIndex()
-
-
 
     let periodPercentage = 0
     let periodTimer = '...'
@@ -287,8 +285,8 @@ class LockNEC extends React.Component<any, State> {
               displayTooltip={true}
             />
             <TableTabEnumWrapper>
-              {this.TabButton(currentTab, TabEnum.YOUR_LOCKS, "Your Locks")}
               {this.TabButton(currentTab, TabEnum.ALL_PERIODS, "All Periods")}
+              {this.TabButton(currentTab, TabEnum.YOUR_LOCKS, "Your Locks")}
             </TableTabEnumWrapper>
           </TableHeaderWrapper>
           {this.renderTable(currentTab)}
