@@ -15,6 +15,36 @@ export class Lock {
     ) { };
 }
 
+export enum TxType {
+    LOCK,
+    EXTEND_LOCK,
+    RELEASE_LOCK,
+    BID,
+    SNAPSHOT_REDEEM,
+}
+
+interface Tx {
+    type: TxType;
+    hash: string;
+    pending: boolean;
+}
+
+export class TxTracker {
+    constructor(
+        tracked: Map<string, Tx>
+    ) { };
+}
+
+export class PendingTx {
+    constructor(
+        public lock: boolean,
+        public bid: boolean,
+        public snapshotRedeem: boolean,
+        public extendLock: Map<string, boolean>,
+        public releaseLock: Map<string, boolean>
+    ) { };
+}
+
 export enum AuctionStatus {
     NOT_STARTED = "Not Started",
     IN_PROGRESS = "In Progress",

@@ -269,7 +269,7 @@ export default class BidGENStore {
 
     @action fetchAuctionData = async () => {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error(errors.staticParamsNotLoaded)
+            await this.fetchStaticParams()
         }
 
         log.debug(prefix.FETCH_PENDING, 'auctionData')

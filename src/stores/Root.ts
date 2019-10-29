@@ -8,6 +8,7 @@ import BidFormStore from "./BidForm"
 import ExtendLockFormStore from "./ExtendLockForm"
 import TokenStore from "./Token"
 import TimeStore from "./Time"
+import TxTracker from "./TxTracker"
 import { deployed } from 'config.json'
 
 export class RootStore {
@@ -20,6 +21,7 @@ export class RootStore {
     public extendLockFormStore: ExtendLockFormStore
     public tokenStore: TokenStore
     public timeStore: TimeStore
+    public txTracker: TxTracker
 
     private dataUpdateInterval: any
     private clockUpdateInterval: any
@@ -35,6 +37,7 @@ export class RootStore {
         this.extendLockFormStore = new ExtendLockFormStore(this)
         this.tokenStore = new TokenStore(this)
         this.timeStore = new TimeStore(this)
+        this.txTracker = new TxTracker(this)
     }
 
     clearClockUpdateInterval = () => {

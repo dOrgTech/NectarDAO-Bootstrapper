@@ -371,7 +371,7 @@ export default class LockNECStore {
 
     @action fetchUserLocks = async (userAddress) => {
         if (!this.areStaticParamsLoaded()) {
-            throw new Error('Static properties must be loaded before fetching user locks')
+            await this.fetchStaticParams()
         }
 
         // Can we get the LOCKING TIME by the blocktime of the TX?
@@ -514,11 +514,14 @@ export default class LockNECStore {
             User Locked: 
             Sum up the values from all the locks, for the period it was locked in only.
 
+            Total Locked:
+            We actually can't get this without reading every event that ever happened.... We'll have to estimate it from the total score
+
             User REP:
             Run a local calculation from the total REP * score / total score
 
             Total REP:
-            Not sure on the calculation here....
+            Not sure on the calculation here.... I think it's a read
 
             Is Complete;
             A simple time calcuation.
@@ -595,6 +598,9 @@ export default class LockNECStore {
 
             this.batchesLoaded = true
             this.batches = batches
+
+            console.log('batches', batches)
+
             log.debug(prefix.FETCH_SUCCESS, 'Batches', user)
         } catch (e) {
             log.error(prefix.FETCH_ERROR, 'Batches', user)

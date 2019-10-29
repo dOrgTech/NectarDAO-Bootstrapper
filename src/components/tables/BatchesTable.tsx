@@ -4,6 +4,7 @@ import { TableWrapper, RowWrapper, InactiveRowWrapper, Row, CellWrapper, GreyCel
 import 'components/common/Table.scss'
 import * as helpers from 'utils/helpers'
 import { RootStore } from 'stores/Root';
+import { Batch } from 'types';
 
 const columns = [
     { name: 'Period #', key: 'batchId', width: '15%', align: 'left' },
@@ -18,14 +19,14 @@ class BatchesTable extends React.Component<any, any>{
     generateTableRows(data) {
         const tableData: any[] = []
 
-        Object.keys(data).forEach(key => {
-
+        data.forEach((batch: Batch, key, map) => {
             const row = {
-                batchId: data[key].id,
-                userLocked: helpers.toAmount(data[key].userLocked.toString()),
-                totalLocked: helpers.toAmount(data[key].totalLocked.toString()),
-                userRep: data[key].isComplete ? '#todo' : 'In Progress'
+                batchId: batch.id,
+                userLocked: helpers.tokenDisplay(batch.userLocked),
+                totalLocked: helpers.tokenDisplay(batch.totalLocked),
+                userRep: batch.userRep ? '#todo' : 'In Progress',
                 // userRep: helpers.fromRep(data[key].userRep.toString())
+                isComplete: batch.isComplete
             }
 
             tableData.push(row)
