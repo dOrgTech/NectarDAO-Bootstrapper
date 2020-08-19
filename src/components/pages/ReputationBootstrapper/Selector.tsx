@@ -8,33 +8,120 @@ import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
 import { tooltip } from 'strings'
+const BigWrap = styled.div`
+  margin: 0 auto;
+
+`
 const HeaderWrapper = styled.div`
   display: flex;
+  width:100%;
+  margin-left: 50;
   flex-direction: column;
   align-items: center;
-  border: 1px solid var(--border);
-  height: ${props => props.height};
+  align-self: top;
 `
 
 const Title = styled.div`
   display: flex;
+  margin: 0 auto;
+  color: var(--white-text);
+  white-space:nowrap;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 40px;
+  line-height: 60px;
+  text-align: justify;
+  letter-spacing: 1px;
+`
+const Biodiv = styled.div `
+display: flex;
+  position:static;
   flex-direction: row;
+  width: 40%
   color: var(--white-text);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  margin: 32px 0px;
+  font-size: 10px;
+  line-height: 12px;
+  text-align: left;
+  margin: 0px 0px;
   letter-spacing: 1px;
 `
 
+  
+const Instructbox = styled.div`
+display: inline-block;
+  flex-direction: column;
+  text-align:center;
+
+  color: var(--white-text);
+  cursor: pointer;
+  border: 1px solid var(--active-border);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  height: 30px;
+  white-space:wrap;
+  padding: 0px 0px;
+  margin: 7.5px;
+  vertical-align:top;
+  float: center;
+  width: auto;`
+
+  
+ const InstrucText = styled.div`
+ 
+ display: inline-block;
+  flex-direction: column;
+  align-items: inline;
+  color: var(--white-text);
+  cursor: pointer;
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  height:15px
+  font-size: 7.5px;
+  line-height: 15px;
+  margin: 5px;
+  float: center;
+  width: 156px;
+  height:20px;
+ `
+ const StatsHolder = styled.div`
+ align-items:center;
+ width:100%;
+ text-align:center;
+ border: 1px solid var(--active-border);
+ 
+ `
+
+ const Statsbox = styled.div`
+display: inline-block;
+  flex-direction: column;
+  
+  color: var(--white-text);
+  cursor: pointer;
+  border: 1px solid var(--active-border);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 10px;
+  height: 30px;
+  
+  white-space:wrap;
+  padding: 0px 0px;
+  margin: 7.5px;
+  vertical-align:top;
+  float: center;
+  width: auto;`
+ 
 const NavWrapper = styled.div`
   display: flex;
   flex-direction: row;
 `
-
 const TotalRepWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -139,21 +226,34 @@ const Selector = withRouter((props) => {
   )
 
   return (
-    <HeaderWrapper height={height}>
+    <BigWrap>
+        <HeaderWrapper height={height}>
       <Title>
-        How do you want to earn Reputation for the necDAO?
-        <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
+        Nectar Beehive
       </Title>
+      <Biodiv>
+
+      <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
+
+          Earn $NEC $BAL and Reputation Rewards for Staking into 
+         The Balancer NEC/wEth Pool
+        </Biodiv>
+        
+        </HeaderWrapper>
+         <StatsHolder>
+           <Statsbox>test</Statsbox>
+           <Statsbox>test</Statsbox>
+           <Statsbox>test</Statsbox>
+           <Statsbox>test</Statsbox>
+
+         </StatsHolder>
+        <Instructbox><InstrucText>Stake into the NEC/wETH Balancer Pool to Receive BPT</InstrucText></Instructbox>
+        <Instructbox><InstrucText>Hold the BPT in your Private Wallet</InstrucText></Instructbox>
+        <Instructbox><InstrucText>Earn $NEC, $BAL and necDAO Reputation </InstrucText></Instructbox>
+        <Instructbox><InstrucText>Claim your $NEC Rewards in 12 Months</InstrucText></Instructbox>
+        <Instructbox><InstrucText>Read the Full Beehive Guide</InstrucText></Instructbox>
       <NavWrapper>
-        <Button option={1} route="/lock-nec">
-          <LogoAndText icon={EthFinexLogo} text="Lock NEC" />
-        </Button>
-        <Button option={2} route="/airdrop">
-          <LogoAndText icon={EthFinexLogo} text="Airdrop" />
-        </Button>
-        <Button option={3} route="/bid-gen">
-          <LogoAndText icon={GENLogo} text="Bid GEN" />
-        </Button>
+      
       </NavWrapper>
       <TotalRepWrapper>
         <StarWrapper>
@@ -161,7 +261,7 @@ const Selector = withRouter((props) => {
         </StarWrapper>
         <TotalRepText>{`Total Rewardable Reputation (Voting Power) - ${currentSchemeTotalRep} REP`}</TotalRepText>
       </TotalRepWrapper>
-    </HeaderWrapper>
+    </BigWrap>
   )
 })
 
