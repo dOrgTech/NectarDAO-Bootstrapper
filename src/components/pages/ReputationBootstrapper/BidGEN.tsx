@@ -19,7 +19,7 @@ const BidGENWrapper = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  max-height: 500px;Screenshot from 2019-10-08 23-01-15
+  max-height: 500px;
 `
 
 const DetailsWrapper = styled.div`

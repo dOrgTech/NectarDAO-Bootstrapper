@@ -8,6 +8,7 @@ import { inject, observer } from 'mobx-react'
 import 'components/App.scss'
 import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
 import Web3Manager from 'components/shell/Web3Manager'
+import Beehive from './pages/Beehive'
 
 // window.ethereum.on('accountsChanged', async (accounts) => {
 //   window.location.reload()
@@ -22,6 +23,9 @@ class App extends React.Component {
         <Web3Manager>
           <div className="app-shell">
             <Switch>
+              <Route path="/beehive">
+                <Beehive />
+              </Route>
               <Route path="/">
                 <ReputationBoostrapper />
               </Route>
