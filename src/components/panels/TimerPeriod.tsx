@@ -7,7 +7,7 @@ import { RootStore } from 'stores/Root'
 
 @inject('root')
 @observer
-class EnableTokenPanel extends React.Component<any, any>{
+class TimerPeriod extends React.Component<any, any>{
   Enable = () => {
     const { tokenStore } = this.props.root as RootStore
     const { instruction, subinstruction, pendingInstruction, buttonText, spenderAddress, tokenAddress } = this.props
@@ -63,4 +63,4 @@ class EnableTokenPanel extends React.Component<any, any>{
   }
 }
 
-export default EnableTokenPanel
+export default TimerPeriod

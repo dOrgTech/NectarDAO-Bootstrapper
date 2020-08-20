@@ -49,10 +49,9 @@ const ConnectWallet = () => {
     <ConnectWrapper>
       <Logo src={NECLogo} />
       <Title>
-        Connect Wallet
+        Please connect your Ethereum wallet to continue
       </Title>
       <SubTitle>
-        To start using the necDAO Interface
       </SubTitle>
       <ButtonWrapper>
         <ActiveButton onClick={() => { window.location.reload() }}>

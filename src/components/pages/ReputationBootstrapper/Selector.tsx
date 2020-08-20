@@ -3,24 +3,32 @@ import { withRouter } from 'react-router-dom'
 import LogoAndText from 'components/common/LogoAndText'
 import Tooltip from 'components/common/Tooltip'
 import EthFinexLogo from 'assets/pngs/NECwithoutText.png'
+import NECLogo from 'assets/svgs/necdao-glow.svg'
 import GENLogo from 'assets/svgs/GEN-logo.svg'
 import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
 import { tooltip } from 'strings'
+
+
 const BigWrap = styled.div`
   margin: 0 auto;
 
 `
 const HeaderWrapper = styled.div`
-  display: flex;
+  display: inline-block;
   width:100%;
-  margin-left: 50;
   flex-direction: column;
   align-items: center;
   align-self: top;
+  
 `
-
+const Logo = styled.img`
+  width: 64px;
+  height: 64px;
+  display:inline-block;
+  float:left;
+`
 const Title = styled.div`
   display: flex;
   margin: 0 auto;
@@ -31,8 +39,11 @@ const Title = styled.div`
   font-weight: 600;
   font-size: 30px;
   line-height: 60px;
-  text-align: justify;
+  text-align: center;
   letter-spacing: 1px;
+  width:25%;
+  float:center;
+  
 `
 const Biodiv = styled.div `
 display: flex;
@@ -46,8 +57,9 @@ display: flex;
   font-size: 10px;
   line-height: 14px;
   text-align: left;
-  margin: 0px 0px;
   letter-spacing: 1px;
+  float:center;
+  margin:0 auto;
 `
 
   
@@ -225,7 +237,10 @@ const Selector = withRouter((props) => {
 
   return (
     <BigWrap>
+
         <HeaderWrapper height={height}>
+        <Logo src={NECLogo} />
+
       <Title>
         Nectar Beehive
       </Title>
@@ -236,10 +251,8 @@ const Selector = withRouter((props) => {
           Earn $NEC $BAL and Reputation Rewards for Staking into 
          The Balancer NEC/wEth Pool
         </Biodiv>
-        
         </HeaderWrapper>
          <StatsHolder>
-           
            <Statsbox>test</Statsbox>
            <Statsbox>test</Statsbox>
            <Statsbox>test</Statsbox>
