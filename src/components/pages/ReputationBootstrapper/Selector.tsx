@@ -29,7 +29,7 @@ const Title = styled.div`
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
-  font-size: 40px;
+  font-size: 30px;
   line-height: 60px;
   text-align: justify;
   letter-spacing: 1px;
@@ -38,13 +38,13 @@ const Biodiv = styled.div `
 display: flex;
   position:static;
   flex-direction: row;
-  width: 40%
+  width: 45%
   color: var(--white-text);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
   font-size: 10px;
-  line-height: 12px;
+  line-height: 14px;
   text-align: left;
   margin: 0px 0px;
   letter-spacing: 1px;
@@ -94,8 +94,7 @@ display: inline-block;
  align-items:center;
  width:100%;
  text-align:center;
- border: 1px solid var(--active-border);
- 
+margin: 15px; 0px; 
  `
 
  const Statsbox = styled.div`
@@ -104,7 +103,6 @@ display: inline-block;
   
   color: var(--white-text);
   cursor: pointer;
-  border: 1px solid var(--active-border);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
@@ -113,7 +111,7 @@ display: inline-block;
   
   white-space:wrap;
   padding: 0px 0px;
-  margin: 7.5px;
+  margin: 10px 60px;
   vertical-align:top;
   float: center;
   width: auto;`
@@ -241,6 +239,7 @@ const Selector = withRouter((props) => {
         
         </HeaderWrapper>
          <StatsHolder>
+           
            <Statsbox>test</Statsbox>
            <Statsbox>test</Statsbox>
            <Statsbox>test</Statsbox>
