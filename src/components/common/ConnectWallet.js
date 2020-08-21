@@ -62,4 +62,4 @@ const ConnectWallet = () => {
   )
 }
 
-export default ConnectWallet
+export default ConnectWallet;

@@ -10,7 +10,7 @@ import { RootStore } from 'stores/Root';
 import ConnectWallet from 'components/common/ConnectWallet'
 import ConnectMainNet from 'components/common/ConnectMainNet'
 import { ProviderState } from 'stores/Provider';
-
+import BigHeader from './BigHeader'
 const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
@@ -35,6 +35,9 @@ class ReputationBoostrapper extends React.Component<any, any> {
         <Route exact path="/lock-nec">
           <LockNEC />
         </Route>
+        <Route exact path="/connect">
+          <BigHeader />
+        </Route>
         <Route exact path="/airdrop">
           <Airdrop />
         </Route>
@@ -42,7 +45,7 @@ class ReputationBoostrapper extends React.Component<any, any> {
           <BidGEN />
         </Route>
         <Route exact path="/">
-          <Redirect to="/lock-nec" />
+          <Redirect to="/connect" />
         </Route>
       </Switch>
     )
