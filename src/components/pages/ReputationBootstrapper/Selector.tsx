@@ -74,7 +74,6 @@ const ActiveButton = styled.div`
   align-items: center;
   color: var(--white-text);
   cursor: pointer;
-  border: 1px solid var(--active-border);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
@@ -82,11 +81,12 @@ const ActiveButton = styled.div`
   line-height: 18px;
   padding: 9px 0px;
   width: 156px;
+  background-color:#390dd8;
 `
 
 const InactiveButton = styled(ActiveButton)`
-  border: 1px solid var(--inactive-border);
   color: var(--inactive-header-text);
+  background-color:blue;
 `
 
 const getCurrentSchemeTotalRep = (pathname) => {
@@ -145,14 +145,9 @@ const Selector = withRouter((props) => {
         <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
       </Title>
       <NavWrapper>
-        <Button option={1} route="/lock-nec">
-          <LogoAndText icon={EthFinexLogo} text="Lock NEC" />
-        </Button>
-        <Button option={2} route="/airdrop">
-          <LogoAndText icon={EthFinexLogo} text="Airdrop" />
-        </Button>
-        <Button option={3} route="/bid-gen">
-          <LogoAndText icon={GENLogo} text="Bid GEN" />
+       
+        <Button option={3} route="/connect">
+          <LogoAndText icon={EthFinexLogo} text="Go To Dao" />
         </Button>
       </NavWrapper>
       <TotalRepWrapper>

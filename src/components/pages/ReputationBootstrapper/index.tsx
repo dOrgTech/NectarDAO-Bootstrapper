@@ -45,7 +45,7 @@ class ReputationBoostrapper extends React.Component<any, any> {
           <BidGEN />
         </Route>
         <Route exact path="/">
-          <Redirect to="/connect" />
+          <Redirect to="/lock-nec" />
         </Route>
       </Switch>
     )
