@@ -81,12 +81,12 @@ const ActiveButton = styled.div`
   line-height: 18px;
   padding: 9px 0px;
   width: 156px;
-  background-color:#390dd8;
+  background-color:#4a20e5;
 `
 
 const InactiveButton = styled(ActiveButton)`
   color: var(--inactive-header-text);
-  background-color:blue;
+  background-color:#4a20e5;
 `
 
 const getCurrentSchemeTotalRep = (pathname) => {
