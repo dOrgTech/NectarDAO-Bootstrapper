@@ -1,5 +1,4 @@
 import React from 'react'
-import { observer, inject } from 'mobx-react'
 import styled from 'styled-components'
 
 const TitleWrapper = styled.div`
@@ -87,66 +86,62 @@ const PanelTitle = styled(CenterText)`
   font-weight: bold;
 `
 
-@inject('root')
-@observer
-class BeehiveHome extends React.Component<any, any> {
+const BeehiveHome: React.FC = () => {
 
-  render() {
-    return (
-      <SectionWrapper>
-        <TitleWrapper>
-          <Title>
-            Earn Rewards For Staking Nectar $NEC
-          </Title>
-          <Title>
-            Join Our Discord To Discuss NEC Staking
-          </Title>
-        </TitleWrapper>
-        <PageWrapper>
-          <Panel>
-            <PanelTitle>
-              Governance
+  return (
+    <SectionWrapper>
+      <TitleWrapper>
+        <Title>
+          Earn Rewards For Staking Nectar $NEC
+        </Title>
+        <Title>
+          Join Our Discord To Discuss NEC Staking
+        </Title>
+      </TitleWrapper>
+      <PageWrapper>
+        <Panel>
+          <PanelTitle>
+            Governance
+          </PanelTitle>
+          <CenterText>
+            Earn necDAO Reputation
+          </CenterText>
+          <PanelBodyTextWrapper>
+            <PanelBodyText>
+              Stake your NEC for up to 12 months to earn Reputation
+              (voting power) in the necDAO and have your say in how
+              17,000 Pledged ETH are managed as well as how DeversiFi
+              is governed
+            </PanelBodyText>
+          </PanelBodyTextWrapper>
+          <Button>Ongoing</Button>
+          <CenterText>
+            Long Term
+            </CenterText>
+        </Panel>
+        <Panel>
+          <PanelTitle>
+            Beehive
             </PanelTitle>
-            <CenterText>
-              Earn necDAO Reputation
+          <CenterText>
+            Earn REP, BAL and necDAO Reputation
             </CenterText>
-            <PanelBodyTextWrapper>
-              <PanelBodyText>
-                Stake your NEC for up to 12 months to earn Reputation
-                (voting power) in the necDAO and have your say in how
-                17,000 Pledged ETH are managed as well as how DeversiFi
-                is governed
+          <PanelBodyTextWrapper>
+            <PanelBodyText>
+              Designed to bootstrap $NEC liquidity,
+              Stake your $NEC & wETH into the NEC/wETH
+              Balancer Labs pool to earn $NEC, $BAL and
+              necDAO Reputation
               </PanelBodyText>
-            </PanelBodyTextWrapper>
-            <Button>Ongoing</Button>
-            <CenterText>
-              Long Term
-            </CenterText>
-          </Panel>
-          <Panel>
-            <PanelTitle>
-              Beehive
-            </PanelTitle>
-            <CenterText>
-              Earn REP, BAL and necDAO Reputation
-            </CenterText>
-            <PanelBodyTextWrapper>
-              <PanelBodyText>
-                Designed to bootstrap $NEC liquidity,
-                Stake your $NEC & wETH into the NEC/wETH
-                Balancer Labs pool to earn $NEC, $BAL and
-                necDAO Reputation
-              </PanelBodyText>
-            </PanelBodyTextWrapper>
-            <Button>Ongoing</Button>
-            <CenterText>
-              Ten Weeks
-            </CenterText>
-          </Panel>
-        </PageWrapper>
-      </SectionWrapper>
-    )
-  }
+          </PanelBodyTextWrapper>
+          <Button>Ongoing</Button>
+          <CenterText>
+            Ten Weeks
+          </CenterText>
+        </Panel>
+      </PageWrapper>
+    </SectionWrapper>
+  )
 
 }
 
