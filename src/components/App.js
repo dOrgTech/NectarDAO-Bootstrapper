@@ -9,6 +9,7 @@ import 'components/App.scss'
 import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
 import Web3Manager from 'components/shell/Web3Manager'
 import Beehive from './pages/Beehive'
+import BigHeader from './pages/ReputationBootstrapper/BigHeader'
 
 // window.ethereum.on('accountsChanged', async (accounts) => {
 //   window.location.reload()
@@ -26,9 +27,13 @@ class App extends React.Component {
               <Route path="/beehive">
                 <Beehive />
               </Route>
+              <Route path="/connect">
+                <BigHeader/>
+              </Route>
               <Route path="/">
                 <ReputationBoostrapper />
               </Route>
+             
             </Switch>
           </div>
         </Web3Manager>
