@@ -143,6 +143,7 @@ const InstructBox = styled.div`
   display: flex;
   flex-flow: column wrap;
   color: var(--white-text);
+  justify-content: center;
   cursor: pointer;
   font-family: Montserrat;
   font-style: normal;

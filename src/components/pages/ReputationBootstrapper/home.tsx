@@ -49,7 +49,7 @@ const Biodiv = styled.div `
 display: flex;
   position:static;
   flex-direction: row;
-  width: 45%
+  width: 45%;
   color: var(--white-text);
   font-family: Montserrat;
   font-style: normal;
@@ -94,7 +94,7 @@ display: inline-block;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
-  height:15px
+  height:15px;
   font-size: 7.5px;
   line-height: 15px;
   margin: 5px;
