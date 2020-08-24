@@ -84,12 +84,9 @@ export default class InjectedConnector extends ErrorCodeMixin(Connector, Injecte
             super._web3ReactErrorHandler(error)
         }
     }
-
     accountsChangedHandler(accounts) {
         if (!accounts[0]) {
-            const unlockRequiredError = Error('Ethereum account locked.');
-            unlockRequiredError.code = InjectedConnector.errorCodes.UNLOCK_REQUIRED;
-            super._web3ReactErrorHandler(unlockRequiredError)
+           console.log("account disconnected")
         } else {
             super._web3ReactUpdateHandler({
                 updateAccount: true,
