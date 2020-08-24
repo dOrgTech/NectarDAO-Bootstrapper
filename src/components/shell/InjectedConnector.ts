@@ -84,8 +84,10 @@ export default class InjectedConnector extends ErrorCodeMixin(Connector, Injecte
             super._web3ReactErrorHandler(error)
         }
     }
+    
     accountsChangedHandler(accounts) {
         if (!accounts[0]) {
+            //need to update page to say connect wallet
            console.log("account disconnected")
         } else {
             super._web3ReactUpdateHandler({

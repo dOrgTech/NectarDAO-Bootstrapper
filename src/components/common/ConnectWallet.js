@@ -4,10 +4,12 @@ import NECLogo from 'assets/svgs/necdao-glow.svg'
 import ActiveButton from './buttons/ActiveButton'
 
 const ConnectWrapper = styled.div`
-  display: flex;
+  display: inline-block;
+
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  text-align:center;
   width: 100%;
   height: 364px;
 `
@@ -16,6 +18,24 @@ const Logo = styled.img`
   width: 64px;
   height: 64px;
   margin-bottom: 24px;
+`
+const MetamaskBox = styled.div `
+  
+  border: 1px solid var(--active-border);
+ width:30%;
+ height:50%;
+ margin 0 auto;
+ float:left;
+ margin-left:15%
+`
+const LedgerBox = styled.div `
+  
+ border: 1px solid var(--active-border);
+ width:30%;
+ height:50%;
+ margin 0 auto;
+ float:right;
+ margin-right:15%
 `
 
 const Title = styled.div`
@@ -42,22 +62,42 @@ const SubTitle = styled.div`
 
 const ButtonWrapper = styled.div`
   width: 200px;
+  float:center
+  margin: auto;
+  margin-top:25%;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 `
 
 const ConnectWallet = () => {
   return (
     <ConnectWrapper>
-      <Logo src={NECLogo} />
-      <Title>
+       <Title>
         Please connect your Ethereum wallet to continue
       </Title>
-      <SubTitle>
-      </SubTitle>
+      <MetamaskBox>
+     
+     
       <ButtonWrapper>
+       
         <ActiveButton onClick={() => { window.location.reload() }}>
-          Connect
+          MetaMask
         </ActiveButton>
       </ButtonWrapper>
+      </MetamaskBox>
+      <LedgerBox>
+     
+      <ButtonWrapper>
+       
+       <ActiveButton onClick={() => { window.location.reload() }}>
+         Ledger
+       </ActiveButton>
+     </ButtonWrapper>
+     
+      <SubTitle>
+      </SubTitle>
+      </LedgerBox>
     </ConnectWrapper>
   )
 }
