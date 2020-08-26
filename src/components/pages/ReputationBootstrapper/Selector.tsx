@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import LogoAndText from 'components/common/LogoAndText'
 import Tooltip from 'components/common/Tooltip'
 import EthFinexLogo from 'assets/pngs/NECwithoutText.png'
-import GENLogo from 'assets/svgs/GEN-logo.svg'
 import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
@@ -161,10 +160,6 @@ const Selector = withRouter((props) => {
         <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
       </Title>
       <NavWrapper>
-       
-        <Button option={3} route="/connect">
-          <LogoAndText icon={EthFinexLogo} text="Go To Dao" />
-        </Button>
         <ButtonExternal>
           <a
             href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"

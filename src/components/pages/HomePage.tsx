@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useHistory } from 'react-router-dom'
 
 const TitleWrapper = styled.div`
   padding: 12px 0;
@@ -86,7 +87,13 @@ const PanelTitle = styled(CenterText)`
   font-weight: bold;
 `
 
-const BeehiveHome: React.FC = () => {
+const HomePage: React.FC = () => {
+
+  const history = useHistory()
+
+  const goToBeehive = () => history.push('/beehive')
+
+  const goToLockNec = () => history.push('/lock-nec')
 
   return (
     <SectionWrapper>
@@ -114,9 +121,9 @@ const BeehiveHome: React.FC = () => {
               is governed
             </PanelBodyText>
           </PanelBodyTextWrapper>
-          <Button>Ongoing</Button>
+          <Button onClick={goToLockNec}>Go</Button>
           <CenterText>
-            Long Term
+            Long Term (Ongoing)
             </CenterText>
         </Panel>
         <Panel>
@@ -134,9 +141,9 @@ const BeehiveHome: React.FC = () => {
               necDAO Reputation
               </PanelBodyText>
           </PanelBodyTextWrapper>
-          <Button>Ongoing</Button>
+          <Button onClick={goToBeehive}>Go</Button>
           <CenterText>
-            Ten Weeks
+            Ten Weeks (Ongoing)
           </CenterText>
         </Panel>
       </PageWrapper>
@@ -145,4 +152,4 @@ const BeehiveHome: React.FC = () => {
 
 }
 
-export default BeehiveHome
+export default HomePage

@@ -3,7 +3,6 @@ import { withRouter } from "react-router-dom";
 import Tooltip from "components/common/Tooltip";
 import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
-import { lockNEC, bidGEN, airdrop } from "config.json";
 import { tooltip } from "strings";
 
 const HeaderWrapper = styled.div`
@@ -16,14 +15,15 @@ const HeaderWrapper = styled.div`
 
 const CenterWrapper = styled.div`
   display: flex;
+  width: 1068px;
   flex-direction: column;
   justify-content: center;
   padding: 0 20px;
 `;
 
 const Logo = styled.img`
-  width: 80px;
-  height: 80px;
+  width: 93px;
+  height: 93px;
 `;
 const Title = styled.div`
   color: var(--white-text);
@@ -39,7 +39,7 @@ const Timerperiod = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 170px;
+  width: 93px;
   height: 5%;
   text-align: center;
   color: var(--white-text);
@@ -54,8 +54,7 @@ const Timer = styled.div`
   font-family: Montserrat;
   font-style: normal;
   font-weight: 400;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 18px;
   text-align: left;
   letter-spacing: 1px;
 `;
@@ -88,7 +87,7 @@ const Biodiv = styled.div`
 const StatsHolder = styled.div`
   display: flex;
   justify-content: center;
-  flex-flow: row wrap;
+  flex-flow: row;
   align-items: top;
   width: 100%;
   text-align: center;
@@ -133,7 +132,7 @@ const UsdVal = styled.div`
 
 const InstructDiv = styled.div`
   display: flex;
-  flex-flow: row wrap;
+  flex-flow: row;
   justify-content: center;
   width: 100%;
   text-align: center;
@@ -185,51 +184,9 @@ const Subtitle = styled.div`
   padding-left: 10px;
 `;
 
-const getCurrentSchemeTotalRep = (pathname) => {
-  switch (pathname) {
-    case "/lock-nec":
-      return lockNEC.totalRep;
-    case "/bid-gen":
-      return bidGEN.totalRep;
-    case "/airdrop":
-      return airdrop.totalRep;
-    case "/":
-      return lockNEC.totalRep;
-  }
-};
-
 const BigHeader = withRouter((props) => {
   const { height } = props;
   const [selected, setSelected] = React.useState(0);
-
-  const currentSchemeTotalRep = getCurrentSchemeTotalRep(
-    props.location.pathname
-  );
-
-  const Button = withRouter(
-    ({ option, route, history, location, children }) => {
-      // Handle external route navigation
-      if (location.pathname === route) {
-        setSelected(option);
-      } else if (location.pathname === "/") {
-        setSelected(0);
-      }
-
-      if (option === selected) {
-        return <ActiveButton>{children}</ActiveButton>;
-      }
-      return (
-        <InactiveButton
-          onClick={() => {
-            setSelected(option);
-            history.push(route);
-          }}
-        >
-          {children}
-        </InactiveButton>
-      );
-    }
-  );
 
   return (
     <>

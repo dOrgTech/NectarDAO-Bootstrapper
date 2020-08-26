@@ -2,12 +2,13 @@ import React from 'react'
 import { observer, inject } from 'mobx-react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import styled from 'styled-components'
-import Selector from './Selector'
-import LockNEC from './LockNEC'
 import { RootStore } from 'stores/Root';
 import ConnectWallet from 'components/common/ConnectWallet'
 import ConnectMainNet from 'components/common/ConnectMainNet'
+import BeehiveHeader from 'components/pages/Beehive/BeehiveHeader'
 import { ProviderState } from 'stores/Provider';
+import BeehivePanel from './BeehivePanel';
+
 const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
@@ -19,21 +20,20 @@ const SectionWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: 1px solid var(--border);
-  border-top: none;
 `
 
 @inject('root')
 @observer
-class ReputationBoostrapper extends React.Component<any, any> {
+class Beehive extends React.Component<any, any> {
 
   renderWidgetWindow() {
     return (
       <Switch>
-        <Route exact path="/lock-nec">
-          <LockNEC />
+        <Route exact path="/panel">
+          <BeehivePanel />
         </Route>
         <Route exact path="/">
-          <Redirect to="/lock-nec" />
+          <Redirect to="/panel" />
         </Route>
       </Switch>
     )
@@ -61,14 +61,16 @@ class ReputationBoostrapper extends React.Component<any, any> {
 
   render() {
     return (
-      <RootWrapper>
-        <Selector height="196px" />
-        <SectionWrapper>
-          {this.renderContents()}
-        </SectionWrapper>
-      </RootWrapper>
+      <>
+        <BeehiveHeader/>
+        <RootWrapper>
+          <SectionWrapper>
+            {this.renderContents()}
+          </SectionWrapper>
+        </RootWrapper>
+      </>
     )
   }
 }
 
-export default ReputationBoostrapper
+export default Beehive
