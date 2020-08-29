@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import LogoAndText from 'components/common/LogoAndText'
 import Tooltip from 'components/common/Tooltip'
 import EthFinexLogo from 'assets/pngs/NECwithoutText.png'
-import GENLogo from 'assets/svgs/GEN-logo.svg'
 import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
@@ -84,6 +83,22 @@ const ActiveButton = styled.div`
   background-color:#4a20e5;
 `
 
+const ButtonExternal = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--action-button);
+  font-family: Montserrat;
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  margin-left: 50px;
+  padding: 9px 0px;
+  cursor: pointer;
+  width: 156px;
+`
+
 const InactiveButton = styled(ActiveButton)`
   color: var(--inactive-header-text);
   background-color:#4a20e5;
@@ -145,10 +160,16 @@ const Selector = withRouter((props) => {
         <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
       </Title>
       <NavWrapper>
-       
-        <Button option={3} route="/connect">
-          <LogoAndText icon={EthFinexLogo} text="Go To Dao" />
-        </Button>
+        <ButtonExternal>
+          <a
+            href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+            target="_blank"
+          >
+            <LogoAndText icon={EthFinexLogo} text="Go to DAO" />
+          </a>
+        </ButtonExternal>
+      </NavWrapper>
+      <NavWrapper>
       </NavWrapper>
       <TotalRepWrapper>
         <StarWrapper>

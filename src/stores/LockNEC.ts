@@ -273,7 +273,7 @@ export default class LockNECStore extends BaseStore {
         return Number(currentBatch) - 1
     }
 
-    /* 
+    /*
         Returns the 'amount locked' within a given locking batch
         Scores are calculated from each lock and extend lock event
     */

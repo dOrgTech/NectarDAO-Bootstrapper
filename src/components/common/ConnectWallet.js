@@ -1,15 +1,16 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
+import { observer, inject } from "mobx-react"
 import NECLogo from 'assets/svgs/necdao-glow.svg'
 import ActiveButton from './buttons/ActiveButton'
+import LedgerModal from './LedgerModal'
+import { Wallet } from '../../stores/Provider'
 
 const ConnectWrapper = styled.div`
-  display: inline-block;
-
+  display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align:center;
   width: 100%;
   height: 364px;
 `
@@ -18,24 +19,6 @@ const Logo = styled.img`
   width: 64px;
   height: 64px;
   margin-bottom: 24px;
-`
-const MetamaskBox = styled.div `
-  
-  border: 1px solid var(--active-border);
- width:30%;
- height:50%;
- margin 0 auto;
- float:left;
- margin-left:15%
-`
-const LedgerBox = styled.div `
-  
- border: 1px solid var(--active-border);
- width:30%;
- height:50%;
- margin 0 auto;
- float:right;
- margin-right:15%
 `
 
 const Title = styled.div`
@@ -60,46 +43,44 @@ const SubTitle = styled.div`
   margin-bottom: 40px;
 `
 
-const ButtonWrapper = styled.div`
-  width: 200px;
-  float:center
-  margin: auto;
-  margin-top:25%;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+const Buttons = styled.div`
+  display: flex;
+  width: 500px;
+  justify-content: space-between;
 `
 
-const ConnectWallet = () => {
+const ButtonWrapper = styled.div`
+  width: 300px;
+`
+
+const ConnectWallet = inject('root')(observer((props) => {
+  const [modal, toggleModal] = useState(false)
   return (
     <ConnectWrapper>
-       <Title>
+      <Logo src={NECLogo} />
+      <Title>
         Please connect your Ethereum wallet to continue
       </Title>
-      <MetamaskBox>
-     
-     
-      <ButtonWrapper>
-       
-        <ActiveButton onClick={() => { window.location.reload() }}>
-          MetaMask
-        </ActiveButton>
-      </ButtonWrapper>
-      </MetamaskBox>
-      <LedgerBox>
-     
-      <ButtonWrapper>
-       
-       <ActiveButton onClick={() => { window.location.reload() }}>
-         Ledger
-       </ActiveButton>
-     </ButtonWrapper>
-     
       <SubTitle>
       </SubTitle>
-      </LedgerBox>
+      <Buttons>
+        <ButtonWrapper>
+          <ActiveButton onClick={() => { props.root.providerStore.setWallet(Wallet.METAMASK) }}>
+            Connect Metamask
+          </ActiveButton>
+        </ButtonWrapper>
+        <ButtonWrapper>
+          <ActiveButton onClick={() => { toggleModal(true) }}>
+            Connect Ledger
+          </ActiveButton>
+        </ButtonWrapper>
+      </Buttons>
+      {
+        modal &&
+        <LedgerModal toggleModal={toggleModal} />
+      }
     </ConnectWrapper>
   )
-}
+}))
 
 export default ConnectWallet;

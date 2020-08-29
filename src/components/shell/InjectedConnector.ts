@@ -84,11 +84,12 @@ export default class InjectedConnector extends ErrorCodeMixin(Connector, Injecte
             super._web3ReactErrorHandler(error)
         }
     }
-    
+
     accountsChangedHandler(accounts) {
         if (!accounts[0]) {
-            //need to update page to say connect wallet
-           console.log("account disconnected")
+            const unlockRequiredError = Error('Ethereum account locked.');
+            unlockRequiredError.code = InjectedConnector.errorCodes.UNLOCK_REQUIRED;
+            super._web3ReactErrorHandler(unlockRequiredError)
         } else {
             super._web3ReactUpdateHandler({
                 updateAccount: true,
