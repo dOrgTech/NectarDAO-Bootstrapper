@@ -29,8 +29,8 @@ const StyledTableRow = withStyles((theme) => ({
 const snapshot1 = "BPT Snapshot 1";
 const earnedRep = "Your Earned Reputation";
 const snapshot2 = "BPT Snapshot 2";
-const earnedNec = "Your Earned $NEC"
-const unlockDate = "Nec Unlock Date"
+const earnedNec = "Your Earned $NEC";
+const unlockDate = "Nec Unlock Date";
 
 function createData(period, status , snapshot1 , earnedRep , snapshot2 , earnedNec , unlockDate , claim) {
   return {period, status, snapshot1, earnedRep , snapshot2 , earnedNec , unlockDate , claim};
@@ -58,11 +58,12 @@ const ActiveButton = styled.div`
   align-items: center;
   color: var(--white-text);
   cursor: pointer;
-  border: 1px solid var(--active-border);
   height: 80%;
   background-color:#92a8d1;
 `;
-
+const Tinyletters = styled.div`
+font-size: 12px;
+`
 export default function CustomizedTables() {
   const classes = useStyles();
 
@@ -88,13 +89,13 @@ export default function CustomizedTables() {
               <StyledTableCell component="th" scope="row">
                 {row.period}
               </StyledTableCell>
-              <StyledTableCell align="right">{row.status}</StyledTableCell>
-              <StyledTableCell align="right">{row.snapshot1}</StyledTableCell>
-              <StyledTableCell align="right">{row.earnedRep}</StyledTableCell>
-              <StyledTableCell align="right">{row.snapshot2}</StyledTableCell>
-              <StyledTableCell align="right">{row.earnedNec}</StyledTableCell>
-              <StyledTableCell align="right">{row.unlockDate}</StyledTableCell>
-              <StyledTableCell align="right"><ActiveButton>Claim</ActiveButton></StyledTableCell>
+          <StyledTableCell align="right">{row.status}</StyledTableCell>
+              <StyledTableCell align="right">{row.snapshot1} {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="right">{row.earnedRep}  {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="right">{row.snapshot2}  {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="right">{row.earnedNec}  {`\n`} <Tinyletters>$2000</Tinyletters></StyledTableCell>
+              <StyledTableCell align="right">{row.unlockDate}  {`\n`} <Tinyletters>00:00:00 UTC</Tinyletters></StyledTableCell>
+              <StyledTableCell align="right"><ActiveButton>Unlock Nec</ActiveButton></StyledTableCell>
 
 
             </StyledTableRow>
