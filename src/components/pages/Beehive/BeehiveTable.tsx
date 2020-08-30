@@ -11,19 +11,21 @@ import styled from "styled-components";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: theme.palette.common.black,
+    backgroundColor: "#222A42",
     color: theme.palette.common.white,
   },
   body: {
     fontSize: 14,
+    color: theme.palette.common.white,
+
   },
 }))(TableCell);
 
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    '&:nth-of-type(odd)': {
-      backgroundColor: theme.palette.action.hover,
-    },
+    
+      backgroundColor: "#222A42",
+    
   },
 }))(TableRow);
 const snapshot1 = "BPT Snapshot 1";
@@ -60,6 +62,7 @@ const ActiveButton = styled.div`
   cursor: pointer;
   height: 80%;
   background-color:#92a8d1;
+  width:
 `;
 const Tinyletters = styled.div`
 font-size: 12px;
