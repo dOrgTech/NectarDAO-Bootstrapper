@@ -36,100 +36,11 @@ const Title = styled.div`
   text-align: center;
   letter-spacing: 1px;
 `;
-const Timerperiod = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 93px;
-  height: 5%;
-  text-align: center;
-  color: var(--white-text);
-  cursor: pointer;
-  border: 1px solid var(--active-border);
-  font-size: 7.5px;
-  padding: 10px;
-`;
 
-const Timer = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 18px;
-  text-align: left;
-  letter-spacing: 1px;
-`;
-const Period = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 70%;
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 200;
-  font-size: 10px;
-  text-align: left;
-  letter-spacing: 1px;
-  margin-left: 5px;
-`;
-const Biodiv = styled.div`
-  display: flex;
-  justify-content: center;
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 12px;
-  text-align: center;
-  padding: 0 20px;
-  letter-spacing: 1px;
-`;
 
-const StatsHolder = styled.div`
-  display: flex;
-  justify-content: center;
-  flex-flow: row;
-  align-items: top;
-  width: 100%;
-  text-align: center;
-  padding-bottom: 2.5%;
-  padding-top: 2.5%;
-`;
 
-const Statsbox = styled.div`
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  color: var(--white-text);
-  cursor: pointer;
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 500;
-  font-size: 10px;
-  margin: 0 0 0 0;
-  width: 150px;
-  padding: 0 20px;
-`;
 
-const BigNum = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 18px;
-  text-align: center;
-  letter-spacing: 1px;
-`;
 
-const UsdVal = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 200;
-  font-size: 10px;
-  text-align: center;
-  letter-spacing: 1px;
-`;
 
 const InstructDiv = styled.div`
   display: flex;

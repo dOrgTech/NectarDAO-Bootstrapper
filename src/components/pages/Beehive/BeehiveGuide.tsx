@@ -17,12 +17,11 @@ const CenterWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 0 20px;
+  text-align:left;
+  margin: 0 auto
 `;
 
-const Logo = styled.img`
-  width: 93px;
-  height: 93px;
-`;
+
 const Title = styled.div`
   color: var(--white-text);
   font-family: Montserrat;
@@ -30,7 +29,6 @@ const Title = styled.div`
   font-weight: 600;
   font-size: 25px;
   line-height: 60px;
-  text-align: center;
   letter-spacing: 1px;
 `;
 
@@ -41,14 +39,12 @@ const GuideHead = styled.div`
 
 `
 const Subtitle = styled.div`
-  padding-left: 10px;
   color: var(--white-text);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
   margin-top:10px;
-  text-align: center;
 
 `;
 
@@ -59,6 +55,7 @@ const BeehiveGuide = withRouter((props) => {
   return (
     <>
      <BeehiveHeader />
+     <CenterWrapper>
      <GuideHead><Title>Walkthrough guide</Title><Subtitle>Join Our Discord to Discuss Beehive</Subtitle></GuideHead>
 <StepBox>
     <Title>Stake NEC & wETH into the Balancer Pool</Title>
@@ -89,13 +86,12 @@ const BeehiveGuide = withRouter((props) => {
     <Subtitle>Once per week, at a random interval, a snapshot of BPT token holders will be taken to calculate NEC rewards</Subtitle>
     <Subtitle>The snapshot details will be published after the end of each week to prevent cheating.</Subtitle>
     <Subtitle>NEC is locked up for 12 months in a smart contract. In 12 months time you will be able to unlock your NEC rewards</Subtitle>
-
 </StepBox>
 <StepBox>
     <Title>BPT Rewards sent directly to your wallet</Title>
     <Subtitle>BPT is sent directly to your wallet by Balancer Labs</Subtitle>
-
 </StepBox>
+</CenterWrapper>
     </>
   );
 });
