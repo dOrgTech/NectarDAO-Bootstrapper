@@ -227,15 +227,7 @@ const BigHeader = withRouter((props) => {
             </Statsbox>
           </StatsHolder>
 
-          <InstructDiv>
-            <InstructBox>
-              Stake into the NEC/wETH Balancer Pool to Receive BPT{" "}
-            </InstructBox>
-            <InstructBox>Earn $NEC, $BAL and necDAO Reputation </InstructBox>
-            <InstructBox>Participate in necDAO Governance</InstructBox>
-            <InstructBox>Claim your $NEC Rewards in 12 Months</InstructBox>
-            <InstructBox>Read the Full Beehive Guide</InstructBox>
-          </InstructDiv>
+        
         </CenterWrapper>
         <Timerperiod>
           <Timer>06:23h:59s</Timer>

@@ -9,6 +9,7 @@ import BeehiveHeader from 'components/pages/Beehive/BeehiveHeader'
 import { ProviderState } from 'stores/Provider';
 import BeehivePanel from './BeehivePanel';
 import BeehiveTable from "./BeehiveTable"
+import BeehiveSteps from './BeehiveSteps'
 const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
@@ -63,6 +64,8 @@ class Beehive extends React.Component<any, any> {
     return (
       <>
         <BeehiveHeader/>
+        <BeehiveSteps/>
+
         <RootWrapper>
           <SectionWrapper>
             {this.renderContents()}
