@@ -8,7 +8,8 @@ import ConnectMainNet from 'components/common/ConnectMainNet'
 import BeehiveHeader from 'components/pages/Beehive/BeehiveHeader'
 import { ProviderState } from 'stores/Provider';
 import BeehivePanel from './BeehivePanel';
-
+import BeehiveTable from "./BeehiveTable"
+import BeehiveSteps from './BeehiveSteps'
 const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
@@ -52,7 +53,7 @@ class Beehive extends React.Component<any, any> {
 
     if (providerStore.getState() === ProviderState.SUCCESS) {
       if (providerStore.providerHasCorrectNetwork()) {
-        return this.renderWidgetWindow()
+        return <BeehiveTable />
       } else {
         return <ConnectMainNet />
       }
@@ -63,6 +64,8 @@ class Beehive extends React.Component<any, any> {
     return (
       <>
         <BeehiveHeader/>
+        <BeehiveSteps/>
+
         <RootWrapper>
           <SectionWrapper>
             {this.renderContents()}

@@ -10,7 +10,7 @@ import ReputationBoostrapper from 'components/pages/ReputationBootstrapper'
 import Web3Manager from 'components/shell/Web3Manager'
 import HomePage from './pages/HomePage'
 import Beehive from './pages/Beehive'
-
+import BeehiveGuide from './pages/Beehive/BeehiveGuide'
 // window.ethereum.on('accountsChanged', async (accounts) => {
 //   window.location.reload()
 // })
@@ -29,6 +29,9 @@ class App extends React.Component {
               </Route>
               <Route path="/lock-nec">
                 <ReputationBoostrapper />
+              </Route>
+              <Route path="/beehive-guide">
+                <BeehiveGuide />
               </Route>
               <Route path="/">
                 <HomePage />
