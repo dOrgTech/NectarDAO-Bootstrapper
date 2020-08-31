@@ -5,6 +5,8 @@ import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
 import { tooltip } from "strings";
 import BeehiveHeader from "./BeehiveHeader"
+import { Link } from 'react-router-dom'
+import Button from '@material-ui/core/Button';
 const Back = styled.button`
 `
 const GuideWrapper = styled.div`
@@ -56,6 +58,9 @@ const BeehiveGuide = withRouter((props) => {
     <>
      <BeehiveHeader />
      <CenterWrapper>
+     <Button component={Link} to="/beehive">
+  Back
+</Button>
      <GuideHead><Title>Walkthrough guide</Title><Subtitle>Join Our Discord to Discuss Beehive</Subtitle></GuideHead>
 <StepBox>
     <Title>Stake NEC & wETH into the Balancer Pool</Title>

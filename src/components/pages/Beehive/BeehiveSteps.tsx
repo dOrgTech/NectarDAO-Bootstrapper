@@ -4,7 +4,8 @@ import Tooltip from "components/common/Tooltip";
 import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
 import { tooltip } from "strings";
-
+import { Link } from 'react-router-dom'
+import Button from '@material-ui/core/Button';
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -116,7 +117,9 @@ const BeehiveSteps = withRouter((props , { history }) => {
             <InstructBox>Participate in necDAO Governance</InstructBox>
             <InstructBox>Claim your $NEC Rewards in 12 Months</InstructBox>
 
-             <InstructBox><GuideBox>Read the Full Beehive Guide</GuideBox></InstructBox>
+             <InstructBox><GuideBox><Button component={Link} to="/beehive-guide">
+  Read the Full Beehive Guide
+</Button></GuideBox></InstructBox>
           </InstructDiv>
 
         </CenterWrapper>
