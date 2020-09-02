@@ -4,17 +4,7 @@ import { useHistory } from 'react-router-dom'
 import { Title } from 'components/common/beehive/Title'
 
 const TitleWrapper = styled.div`
-  padding: 12px 0;
-`
-
-const Text = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 20px;
-  text-align: left;
+  padding: 80px 0 12px 0;
 `
 
 const PanelContent = styled.div`
@@ -41,21 +31,6 @@ const Panel = styled.div`
   background: #172333;
   border-radius: 6px;
   padding: 15px;
-`
-
-const Button = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 34px;
-  background: var(--action-button);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 18px;
-  color: var(--white-text);
 `
 
 const PanelBodyTextWrapper = styled.div`
@@ -133,6 +108,20 @@ const TermContainer = styled.div`
   margin-bottom: 41px;
 `
 
+const JoinText = styled.p`
+  color: #A9ABCB;
+  font-family: Nunito;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 20px;
+`
+
+const JoinTextWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+`
+
 const HomePage: React.FC = () => {
 
   const history = useHistory()
@@ -145,11 +134,11 @@ const HomePage: React.FC = () => {
     <>
       <TitleWrapper>
         <MainTitle>
-          <Title afterElement={true}> Earn Rewards</Title> <Title>For Staking Nectar $NEC</Title>
+          <Title afterElement={true} text={'Earn Rewards'}/> <Title text={'For Staking Nectar $NEC'}/>
         </MainTitle>
-        <SubTitle>
-          Join Our Discord To Discuss NEC Staking
-        </SubTitle>
+        <JoinTextWrapper>
+          <JoinText>Join Our Discord</JoinText>
+        </JoinTextWrapper>
       </TitleWrapper>
       <PageWrapper>
         <Panel>

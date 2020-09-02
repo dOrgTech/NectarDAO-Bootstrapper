@@ -1,6 +1,7 @@
+import React from 'react'
 import styled from 'styled-components'
 
-export const Title = styled.h1`
+const StyledTitle = styled.h1`
   position: relative;
   font-family: Montserrat;
   display: inline-block;
@@ -21,7 +22,7 @@ export const Title = styled.h1`
       color: #000;
       top: 50%;
       left: 0;
-      width: 102%;
+      width: 100%;
       height: 52%;
       background: linear-gradient(315deg, #FF8800 8.75%, #E2A907 100%);
       z-index: -1;
@@ -29,3 +30,16 @@ export const Title = styled.h1`
     }`
 }
 `
+
+interface TitleProps extends React.HTMLProps<HTMLHeadingElement> {
+  text: string;
+  afterElement?: boolean;
+}
+
+export const Title: React.FC<TitleProps> = ({ text, ...props }) => {
+  const wrappedText = text.split(' ')
+
+  return (
+    <>{wrappedText.map((word: string) => <StyledTitle {...props}>{word}</StyledTitle>)}</>
+  )
+}

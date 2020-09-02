@@ -54,7 +54,7 @@ class ReputationBoostrapper extends React.Component<any, any> {
       if (providerStore.providerHasCorrectNetwork()) {
         return this.renderWidgetWindow()
       } else {
-        return <ConnectMainNet />
+        return <ConnectWallet warning={true} />
       }
     }
   }

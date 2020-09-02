@@ -43,7 +43,7 @@ class Beehive extends React.Component<any, any> {
       if (providerStore.providerHasCorrectNetwork()) {
         return <BeehiveTable />
       } else {
-        return <ConnectMainNet />
+        return <ConnectWallet warning={true} />
       }
     }
   }
