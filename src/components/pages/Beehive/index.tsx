@@ -10,18 +10,6 @@ import { ProviderState } from 'stores/Provider';
 import BeehivePanel from './BeehivePanel';
 import BeehiveTable from "./BeehiveTable"
 import BeehiveSteps from './BeehiveSteps'
-const RootWrapper = styled.div`
-  width: 932px;
-  margin: 0px auto;
-  padding: 64px;
-`
-
-const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  border: 1px solid var(--border);
-`
 
 @inject('root')
 @observer
@@ -65,12 +53,7 @@ class Beehive extends React.Component<any, any> {
       <>
         <BeehiveHeader/>
         <BeehiveSteps/>
-
-        <RootWrapper>
-          <SectionWrapper>
-            {this.renderContents()}
-          </SectionWrapper>
-        </RootWrapper>
+        {this.renderContents()}
       </>
     )
   }

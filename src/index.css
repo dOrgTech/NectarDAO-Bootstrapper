@@ -1,7 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Sen:wght@400;700;800&display=swap');
 
+#root {
+  height: 100vh;
+}
+
 body {
-  margin: 0;
+  margin: 0px;
   font-family: 'Sen', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

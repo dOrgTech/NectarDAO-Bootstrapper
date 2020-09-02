@@ -6,10 +6,6 @@ const TitleWrapper = styled.div`
   padding: 12px 0;
 `
 
-const SectionWrapper = styled.div`
-  margin: 62px;
-`
-
 const Text = styled.div`
   color: var(--white-text);
   font-family: Montserrat;
@@ -32,7 +28,6 @@ const PageWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   width: 100%;
-  height: 100%;
 `
 
 const Panel = styled.div`
@@ -40,7 +35,8 @@ const Panel = styled.div`
   flex-direction: column;
   width: 445px;
   height: 440px;
-  margin: 50px;
+  margin: 15px;
+  min-width: 290px;
   background: #172333;
   border-radius: 6px;
   padding: 15px;
@@ -140,7 +136,7 @@ const HomePage: React.FC = () => {
   const goToLockNec = () => history.push('/lock-nec')
 
   return (
-    <SectionWrapper>
+    <>
       <TitleWrapper>
         <Title>
           Earn Rewards For Staking Nectar $NEC
@@ -199,7 +195,7 @@ const HomePage: React.FC = () => {
           </PanelContent> 
         </Panel>
       </PageWrapper>
-    </SectionWrapper>
+    </>
   )
 
 }
