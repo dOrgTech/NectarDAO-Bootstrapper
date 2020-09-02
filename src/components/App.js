@@ -20,6 +20,7 @@ const AppBody = styled.div`
   max-height: calc(100% - 98px);
   overflow-y: auto;
   width: 100%;
+  background: #051018;
 `
 
 const Footer = styled.div`

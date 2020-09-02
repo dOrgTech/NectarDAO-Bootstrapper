@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { useHistory } from 'react-router-dom'
+import { Title } from 'components/common/beehive/Title'
 
 const TitleWrapper = styled.div`
   padding: 12px 0;
@@ -103,7 +104,7 @@ const PanelTitle = styled.div`
   font-size: 18px;
 `
 
-const Title = styled.div`
+const SubTitle = styled.div`
   font-style: normal;
   font-weight: bold;
   font-size: 24px;
@@ -111,6 +112,11 @@ const Title = styled.div`
   letter-spacing: -0.02em;
   color: #FFFFFF;
   padding-bottom: 24px;
+`
+
+const MainTitle = styled.div`
+  width: 100%;
+  text-align: center;
 `
 
 const TermContainer = styled.div`
@@ -138,12 +144,12 @@ const HomePage: React.FC = () => {
   return (
     <>
       <TitleWrapper>
-        <Title>
-          Earn Rewards For Staking Nectar $NEC
-        </Title>
-        <Title>
+        <MainTitle>
+          <Title afterElement={true}> Earn Rewards</Title> <Title>For Staking Nectar $NEC</Title>
+        </MainTitle>
+        <SubTitle>
           Join Our Discord To Discuss NEC Staking
-        </Title>
+        </SubTitle>
       </TitleWrapper>
       <PageWrapper>
         <Panel>
@@ -154,9 +160,9 @@ const HomePage: React.FC = () => {
             <PanelTitle>
               Governance
             </PanelTitle>
-            <Title>
+            <SubTitle>
               Earn necDAO <br/> Reputation
-            </Title>
+            </SubTitle>
             <PanelBodyTextWrapper>
               <PanelBodyText>
                 Stake your NEC for up to 12 months to earn Reputation
@@ -178,9 +184,9 @@ const HomePage: React.FC = () => {
             <PanelTitle>
               Beehive
               </PanelTitle>
-            <Title>
+            <SubTitle>
               Earn REP, BAL and necDAO Reputation
-              </Title>
+              </SubTitle>
             <PanelBodyTextWrapper>
               <PanelBodyText>
                 Designed to bootstrap $NEC liquidity,
