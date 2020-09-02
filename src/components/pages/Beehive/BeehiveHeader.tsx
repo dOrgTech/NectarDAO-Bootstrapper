@@ -3,38 +3,47 @@ import { withRouter } from "react-router-dom";
 import Tooltip from "components/common/Tooltip";
 import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
+import { SubTitle } from 'components/common/beehive/SubTitle';
 import { tooltip } from "strings";
+import { Title } from 'components/common/beehive/Title'
+import { ThemeProvider } from '@material-ui/core/styles'
+import { theme } from './theme'
+import {Typography} from '@material-ui/core'
+import { withStyles, makeStyles , useTheme, withTheme} from '@material-ui/core/styles';
+import Box from '@material-ui/core/Box';
 
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
+  color: #A9ABCB;
   text-align: center;
+  
 `;
-
+const SubText = styled.div`
+color: #A9ABCB
+font-family: Montserrat;
+font-style: normal;
+font-weight: 600;
+font-size: 18px;
+text-align: center;
+letter-spacing: 1px;
+`
 const CenterWrapper = styled.div`
   display: flex;
   width: 1068px;
   flex-direction: column;
   justify-content: center;
   padding: 0 20px;
+  margin: 0 auto;
 `;
 
 const Logo = styled.img`
   width: 93px;
   height: 93px;
 `;
-const Title = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 25px;
-  line-height: 60px;
-  text-align: center;
-  letter-spacing: 1px;
-`;
+
 const Timerperiod = styled.div`
   display: flex;
   flex-direction: column;
@@ -42,7 +51,8 @@ const Timerperiod = styled.div`
   width: 93px;
   height: 5%;
   text-align: center;
-  color: var(--white-text);
+    color: #A9ABCB;
+
   cursor: pointer;
   border: 1px solid var(--active-border);
   font-size: 7.5px;
@@ -111,12 +121,12 @@ const Statsbox = styled.div`
 `;
 
 const BigNum = styled.div`
-  color: var(--white-text);
+  color: white;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 600;
   font-size: 18px;
-  text-align: center;
+  text-align: left;
   letter-spacing: 1px;
 `;
 
@@ -126,7 +136,7 @@ const UsdVal = styled.div`
   font-style: normal;
   font-weight: 200;
   font-size: 10px;
-  text-align: center;
+  text-align: left;
   letter-spacing: 1px;
 `;
 
@@ -163,7 +173,7 @@ const ActiveButton = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--white-text);
+  color: white;
   cursor: pointer;
   border: 1px solid var(--active-border);
   font-family: Montserrat;
@@ -180,64 +190,65 @@ const InactiveButton = styled(ActiveButton)`
   color: var(--inactive-header-text);
 `;
 
-const Subtitle = styled.div`
-  padding-left: 10px;
-`;
+const TitleBox = styled.div`
+width:50%
+margin 0 auto;`
+
 
 const BigHeader = withRouter((props) => {
   const { height } = props;
   const [selected, setSelected] = React.useState(0);
-
   return (
     <>
+    
+    <ThemeProvider theme = {theme}>
       <HeaderWrapper height={height}>
-        <Logo src={NECLogo} />
-        <CenterWrapper>
-          <Title>Nectar Beehive</Title>
+      
+        <CenterWrapper><TitleBox>
+          <Title afterElement = {true}> Nectar Beehive</Title>
+          </TitleBox>
           <Biodiv>
             <Tooltip
               title=""
               content={tooltip.necDAOBasics}
               position="right top"
             />
-            <Subtitle>
+            <SubTitle>
               Earn $NEC $BAL and Reputation Rewards for Staking into The
               Balancer NEC/wEth Pool
-            </Subtitle>
+            </SubTitle>
           </Biodiv>
-
           <StatsHolder>
             <Statsbox>
+            <UsdVal>Total Nec Rewards</UsdVal>
               <BigNum>10,000,000</BigNum>
               <UsdVal>$2,200,000</UsdVal>
-              <UsdVal>Total Nec Rewards</UsdVal>
             </Statsbox>
             <Statsbox>
+            <UsdVal>Remaining NEC Rewards</UsdVal>
               <BigNum>10,000,000</BigNum>
               <UsdVal>$2,200,000</UsdVal>
-              <UsdVal>Remaining NEC Rewards</UsdVal>
+             
             </Statsbox>
             <Statsbox>
+            <UsdVal>Total Reputation</UsdVal>
               <BigNum>10,000,000</BigNum>
-              <UsdVal>Total Reputation</UsdVal>
             </Statsbox>
             <Statsbox>
+            <UsdVal>Remaining Reputation</UsdVal>
               <BigNum>10,000,000</BigNum>
-              <UsdVal>Remaining Reputation</UsdVal>
             </Statsbox>
           </StatsHolder>
 
-        
+
         </CenterWrapper>
-        <Timerperiod>
-          <Timer>06:23h:59s</Timer>
-          <Period>Period 1 out of 10</Period>
-        </Timerperiod>
+     
       </HeaderWrapper>
 
       <NavWrapper></NavWrapper>
+      </ThemeProvider>
     </>
   );
 });
 
-export default BigHeader;
+export default withTheme(BigHeader);

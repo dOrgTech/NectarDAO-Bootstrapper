@@ -7,6 +7,8 @@ import { tooltip } from "strings";
 import BeehiveHeader from "./BeehiveHeader"
 import { Link } from 'react-router-dom'
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+import { Title } from 'components/common/beehive/Title'
 const Back = styled.button`
 `
 const GuideWrapper = styled.div`
@@ -24,15 +26,7 @@ const CenterWrapper = styled.div`
 `;
 
 
-const Title = styled.div`
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 25px;
-  line-height: 60px;
-  letter-spacing: 1px;
-`;
+
 
 const StepBox = styled.div`
 `
@@ -41,14 +35,17 @@ const GuideHead = styled.div`
 
 `
 const Subtitle = styled.div`
-  color: var(--white-text);
+color:#A9ABCB;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
   margin-top:10px;
-
+  
 `;
+const Bigwrap = styled.div`
+background-color:#172333;
+color:white;`
 
 const BeehiveGuide = withRouter((props) => {
   const { height } = props;
@@ -56,12 +53,14 @@ const BeehiveGuide = withRouter((props) => {
 
   return (
     <>
-     <BeehiveHeader />
-     <CenterWrapper>
+    
+     <CenterWrapper height = {height}>
+     <Paper elevation = {3}>
+       <Bigwrap>
      <Button component={Link} to="/beehive">
   Back
 </Button>
-     <GuideHead><Title>Walkthrough guide</Title><Subtitle>Join Our Discord to Discuss Beehive</Subtitle></GuideHead>
+     <GuideHead><Title afterElement = {true}>Walkthrough guide</Title><Subtitle>Join Our Discord to Discuss Beehive</Subtitle></GuideHead>
 <StepBox>
     <Title>Stake NEC & wETH into the Balancer Pool</Title>
     <Subtitle>Buy NEC and ETH at app.deversifi.com, or Balancer if you dont already have NEC or ETH</Subtitle>
@@ -96,6 +95,8 @@ const BeehiveGuide = withRouter((props) => {
     <Title>BPT Rewards sent directly to your wallet</Title>
     <Subtitle>BPT is sent directly to your wallet by Balancer Labs</Subtitle>
 </StepBox>
+</Bigwrap>
+</Paper>
 </CenterWrapper>
     </>
   );

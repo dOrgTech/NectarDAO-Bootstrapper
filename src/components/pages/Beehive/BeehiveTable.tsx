@@ -8,10 +8,14 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import styled from "styled-components";
+import { theme } from './theme'
+import { ThemeProvider } from '@material-ui/core/styles'
+
+
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: "#222A42",
+    backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
   },
   body: {
@@ -21,13 +25,17 @@ const StyledTableCell = withStyles((theme) => ({
   },
 }))(TableCell);
 
+
+
 const StyledTableRow = withStyles((theme) => ({
   root: {
     
-      backgroundColor: "#222A42",
+      backgroundColor: theme.palette.secondary.main,
     
   },
 }))(TableRow);
+
+
 const snapshot1 = "BPT Snapshot 1";
 const earnedRep = "Your Earned Reputation";
 const snapshot2 = "BPT Snapshot 2";
@@ -58,11 +66,11 @@ const ActiveButton = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--white-text);
+  color: #E2A907;
   cursor: pointer;
   height: 80%;
-  background-color:#92a8d1;
-  width:
+  border: 1px solid #E2A907;
+  
 `;
 const Tinyletters = styled.div`
 font-size: 12px;
@@ -71,6 +79,8 @@ export default function CustomizedTables() {
   const classes = useStyles();
 
   return (
+    <ThemeProvider theme = {theme}>
+
     <TableContainer component={Paper}>
       <Table className={classes.table} aria-label="customized table">
         <TableHead>
@@ -106,5 +116,6 @@ export default function CustomizedTables() {
         </TableBody>
       </Table>
     </TableContainer>
+    </ThemeProvider>
   );
 }

@@ -28,7 +28,7 @@ const Title = styled.div`
   font-size: 16px;
   line-height: 20px;
   letter-spacing: 0.4px;
-  color: var(--white-text);
+  color: #A9ABCB;
   margin-bottom: 14px;
 `
 
@@ -51,6 +51,7 @@ const Buttons = styled.div`
 
 const ButtonWrapper = styled.div`
   width: 300px;
+  background-color:#172333;
 `
 
 const ConnectWallet = inject('root')(observer((props) => {

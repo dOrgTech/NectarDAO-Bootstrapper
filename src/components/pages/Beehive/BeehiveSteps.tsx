@@ -3,9 +3,12 @@ import { withRouter } from "react-router-dom";
 import Tooltip from "components/common/Tooltip";
 import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
+import { theme } from './theme'
 import { tooltip } from "strings";
 import { Link } from 'react-router-dom'
 import Button from '@material-ui/core/Button';
+import Paper from '@material-ui/core/Paper';
+
 const HeaderWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -19,6 +22,7 @@ const CenterWrapper = styled.div`
   width: 1068px;
   flex-direction: column;
   justify-content: center;
+  color:white;
   padding: 0 20px;
   margin: 0 auto 0 auto;
 `;
@@ -39,10 +43,6 @@ const Title = styled.div`
 `;
 
 
-
-
-
-
 const InstructDiv = styled.div`
   display: flex;
   flex-flow: row;
@@ -54,19 +54,21 @@ const InstructDiv = styled.div`
 const InstructBox = styled.div`
   display: flex;
   flex-flow: column wrap;
-  color: var(--white-text);
+  color: #A9ABCB;
   justify-content: center;
   cursor: pointer;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 400;
-  border: 1px solid var(--active-border);
+  border: 1px solid grey;
   font-size: 12px;
   padding: 8px;
   margin: 5px;
   width: 156px;
 `;
-
+const InstructHead = styled.div`
+color:white;
+align-text:left`
 const NavWrapper = styled.div`
   display: flex;
   flex-direction: row;
@@ -99,6 +101,9 @@ const Subtitle = styled.div`
   padding-left: 10px;
 `;
 
+
+
+
 const BeehiveSteps = withRouter((props , { history }) => {
   const { height } = props;
   const [selected, setSelected] = React.useState(0);
@@ -106,21 +111,21 @@ const BeehiveSteps = withRouter((props , { history }) => {
   return (
     <>
    
-        <CenterWrapper>
+        <CenterWrapper >
          
 
           <InstructDiv>
-            <InstructBox>
+            <InstructBox><InstructHead>Stake</InstructHead>
               Stake into the NEC/wETH Balancer Pool to Receive BPT{" "}
             </InstructBox>
-            <InstructBox>Earn $NEC, $BAL and necDAO Reputation </InstructBox>
-            <InstructBox>Participate in necDAO Governance</InstructBox>
-            <InstructBox>Claim your $NEC Rewards in 12 Months</InstructBox>
-
-             <InstructBox><GuideBox><Button component={Link} to="/beehive-guide">
+            <InstructBox><InstructHead>Earn</InstructHead>Earn $NEC, $BAL and necDAO Reputation </InstructBox>
+            <InstructBox><InstructHead>Participate</InstructHead>Participate in necDAO Governance</InstructBox>
+            <InstructBox><InstructHead>Claim</InstructHead>Claim your $NEC Rewards in 12 Months</InstructBox>
+            </InstructDiv>
+             <GuideBox><Button component={Link} to="/beehive-guide">
   Read the Full Beehive Guide
-</Button></GuideBox></InstructBox>
-          </InstructDiv>
+</Button></GuideBox>
+         
 
         </CenterWrapper>
       
