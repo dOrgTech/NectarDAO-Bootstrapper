@@ -7,6 +7,54 @@ export const NectarTheme = createMuiTheme({
         borderRadius: 4
       }
     },
+    MuiTypography: {
+      h3: {
+        fontFamily: 'Montserrat',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: '32px',
+        lineHeight: '140%',
+        letterSpacing: '-0.02em'
+      },
+      subtitle1: {
+        fontFamily: 'Sen',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: '24px',
+        lineHeight: '140%',
+        letterSpacing: '-0.02em'
+      },
+      subtitle2: {
+        fontFamily: 'Nunito',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: '20px',
+        lineHeight: '28px',
+        textAlign: 'center'
+      },
+      body1: {
+        fontFamily: 'Sen',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: '18px',
+        lineHeight: '28px'
+      },
+      body2: {
+        fontFamily: 'Sen',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: '16px',
+        lineHeight: '24px'
+      },
+      paragraph: {
+        fontFamily: 'Sen',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: '14px',
+        lineHeight: '150%',
+        textAlign: 'center'
+      }
+    }
   },
   palette: {
     primary: {
@@ -15,7 +63,7 @@ export const NectarTheme = createMuiTheme({
     text: {
       primary: '#FFFFFF',
       secondary: '#A9ABCB',
-      hint: '#F2994A'
+      hint: '#646A7A'
     }
   }
 });

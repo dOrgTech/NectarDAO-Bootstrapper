@@ -63,15 +63,6 @@ const LedgerWalletLogo = styled.img`
   width: 135px;
 `;
 
-const InstructionText = styled(Typography)`
-  font-family: Nunito;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 20px;
-  text-align: center;
-  color: #a9abcb;
-`;
-
 const Alert = styled.div`
   background: linear-gradient(
     315deg,
@@ -106,9 +97,9 @@ const ConnectWallet = inject("root")(
     return (
       <ConnectWrapper>
         <ConnectBody>
-          <InstructionText>
+          <Typography variant={'subtitle2'} color={'textSecondary'}>
             Please connect your Ethereum wallet to continue
-          </InstructionText>
+          </Typography>
           <SubTitle></SubTitle>
           <Buttons>
             <div style={{ paddingRight: 15 }}>
