@@ -32,7 +32,7 @@ font-style: normal;
 font-weight: 500;
 font-size: 15px;
 margin-top: 10px;
-margin-bottom:20px;
+margin-bottom:40px;
 `
 
 const StepNumber = styled.div`
