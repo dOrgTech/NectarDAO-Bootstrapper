@@ -7,6 +7,7 @@ import { tooltip } from "strings";
 import BeehiveHeader from "./BeehiveHeader";
 import { Link } from "react-router-dom";
 import Button from "@material-ui/core/Button";
+import { Modal } from "@material-ui/core";
 const Back = styled.button``;
 const GuideWrapper = styled.div``;
 
@@ -43,12 +44,12 @@ const Subtitle = styled.div`
 `;
 
 const BeehiveGuide = withRouter((props) => {
-  const { height } = props;
-  const [selected, setSelected] = React.useState(0);
 
   return (
-    <>
-      <BeehiveHeader />
+    <Modal
+      {...props}
+      aria-labelledby="beehive-guide"
+    >
       <CenterWrapper>
         <Button component={Link} to="/beehive">
           Back
@@ -130,7 +131,7 @@ const BeehiveGuide = withRouter((props) => {
           </Subtitle>
         </StepBox>
       </CenterWrapper>
-    </>
+    </Modal>
   );
 });
 

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
 import Tooltip from "components/common/Tooltip";
 import styled from "styled-components";
 import { tooltip } from "strings";
 import { Title } from "components/common/beehive/Title";
 import { Typography, Link } from "@material-ui/core";
+import BeehiveGuide from "./BeehiveGuide";
 
 const HeaderWrapper = styled.div`
   width: 100%;
@@ -87,11 +88,6 @@ const InstructContent = styled.div`
   height: 100%;
 `;
 
-const NavWrapper = styled.div`
-  display: flex;
-  flex-direction: row;
-`;
-
 const SubtitleWrapper = styled.div`
   max-width: 445px;
 `;
@@ -141,7 +137,7 @@ const GuideLinkText = styled(Typography)`
 
 const BigHeader = withRouter((props) => {
   const { height } = props;
-  const [selected, setSelected] = React.useState(0);
+  const [isGuideOpen, setIsGuideOpen] = useState(false)
 
   return (
     <>
@@ -330,14 +326,14 @@ const BigHeader = withRouter((props) => {
             </InstructDiv>
 
             <GuideLinkText variant={'body2'} color={'primary'}>
-              <Link href={'#'} underline={'always'}>Read The Full Beehive Guide Here</Link>
+              <Link underline={'always'} onClick={() => setIsGuideOpen(true)}>Read The Full Beehive Guide Here</Link>
             </GuideLinkText>
 
           </PageContent>
         </CenterWrapper>
       </HeaderWrapper>
 
-      <NavWrapper></NavWrapper>
+      <BeehiveGuide open={isGuideOpen} handleClose={() => setIsGuideOpen(false)}/>
     </>
   );
 });
