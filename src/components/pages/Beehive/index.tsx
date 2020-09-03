@@ -52,7 +52,6 @@ class Beehive extends React.Component<any, any> {
     return (
       <>
         <BeehiveHeader/>
-        <BeehiveSteps/>
         {this.renderContents()}
       </>
     )
