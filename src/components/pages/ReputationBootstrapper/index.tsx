@@ -7,6 +7,8 @@ import LockNEC from './LockNEC'
 import { RootStore } from 'stores/Root';
 import ConnectWallet from 'components/common/ConnectWallet'
 import ConnectMainNet from 'components/common/ConnectMainNet'
+import { Title } from "components/common/beehive/Title";
+
 import { ProviderState } from 'stores/Provider';
 const RootWrapper = styled.div`
   width: 932px;
@@ -18,8 +20,8 @@ const SectionWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 1px solid var(--border);
   border-top: none;
+  color:white;
 `
 
 @inject('root')

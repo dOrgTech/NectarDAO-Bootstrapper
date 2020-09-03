@@ -8,23 +8,22 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import styled from "styled-components";
+import { Typography, Link } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
-    backgroundColor: "#222A42",
-    color: theme.palette.common.white,
+    color: theme.palette.text.secondary,
+    background: theme.palette.secondary.main,   
   },
   body: {
-    fontSize: 14,
-    color: theme.palette.common.white,
-
   },
 }))(TableCell);
 
+
+
 const StyledTableRow = withStyles((theme) => ({
   root: {
-    
-      backgroundColor: "#222A42",
+    background:theme.palette.secondary.main,
     
   },
 }))(TableRow);
@@ -50,7 +49,7 @@ const rows = [
 const useStyles = makeStyles({
   table: {
     minWidth: 700,
-
+    borderBottom: '1px solid blue'
   },
 });
 
@@ -58,31 +57,54 @@ const ActiveButton = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: var(--white-text);
+  color: #E2A907;
+  border: 1px solid #E2A907;
   cursor: pointer;
-  height: 80%;
-  background-color:#92a8d1;
+  height: 100%;
   width:
+  
 `;
 const Tinyletters = styled.div`
 font-size: 12px;
+color:#A9ABCB
 `
+const TableWrapper = styled.div`
+width:1100px;
+justify-content:center;
+margin: 50px auto;
+`
+const Orangeletters = styled(Typography)`
+font-size 15px;
+
+color:#E2A907;
+font-weight:bold;
+`
+const StepNumber = styled.div`
+  width: 10px;
+  height: 10px;
+  background: #E2A907;
+  border-radius: 10px;
+`
+const Gap = styled.div`
+margin-left:20px;`
+
 export default function CustomizedTables() {
   const classes = useStyles();
 
   return (
+    <TableWrapper>
     <TableContainer component={Paper}>
-      <Table className={classes.table} aria-label="customized table">
+      <Table>
         <TableHead>
           <TableRow>
-            <StyledTableCell align="right">Period</StyledTableCell>
-            <StyledTableCell align="right">status</StyledTableCell>
-            <StyledTableCell align="right">BPT Snapshot 1</StyledTableCell>
-            <StyledTableCell align="right">Your Earned Reputation</StyledTableCell>
-            <StyledTableCell align="right">BPT Snapshot 2</StyledTableCell>
-            <StyledTableCell align="right">Your Earned $NEC</StyledTableCell>
-            <StyledTableCell align="right">Nec Unlock Date</StyledTableCell>
-            <StyledTableCell align="right">Claim</StyledTableCell>
+            <StyledTableCell align="left">Period</StyledTableCell>
+            <StyledTableCell align="left"><Gap>status</Gap></StyledTableCell>
+            <StyledTableCell align="left">BPT Snapshot 1</StyledTableCell>
+            <StyledTableCell align="left">Your Earned Reputation</StyledTableCell>
+            <StyledTableCell align="left">BPT Snapshot 2</StyledTableCell>
+            <StyledTableCell align="left">Your Earned $NEC</StyledTableCell>
+            <StyledTableCell align="left">Nec Unlock Date</StyledTableCell>
+            <StyledTableCell align="left">Claim</StyledTableCell>
 
           </TableRow>
         </TableHead>
@@ -92,13 +114,13 @@ export default function CustomizedTables() {
               <StyledTableCell component="th" scope="row">
                 {row.period}
               </StyledTableCell>
-          <StyledTableCell align="right">{row.status}</StyledTableCell>
-              <StyledTableCell align="right">{row.snapshot1} {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
-              <StyledTableCell align="right">{row.earnedRep}  {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
-              <StyledTableCell align="right">{row.snapshot2}  {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
-              <StyledTableCell align="right">{row.earnedNec}  {`\n`} <Tinyletters>$2000</Tinyletters></StyledTableCell>
-              <StyledTableCell align="right">{row.unlockDate}  {`\n`} <Tinyletters>00:00:00 UTC</Tinyletters></StyledTableCell>
-              <StyledTableCell align="right"><ActiveButton>Unlock Nec</ActiveButton></StyledTableCell>
+          <StyledTableCell align="right"><StepNumber align="left"></StepNumber>{row.status}</StyledTableCell>  
+              <StyledTableCell align="left"><Orangeletters  variant={"h4"} color={'primary'}>{row.snapshot1} </Orangeletters>{`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="left"><Orangeletters variant={"h4"}>{row.earnedRep} </Orangeletters> {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="left"><Orangeletters variant={"h4"}> {row.snapshot2} </Orangeletters> {`\n`} <Tinyletters>5%</Tinyletters></StyledTableCell>
+              <StyledTableCell align="left"><Orangeletters variant={"h4"}>{row.earnedNec}  </Orangeletters>{`\n`} <Tinyletters>$2000</Tinyletters></StyledTableCell>
+              <StyledTableCell align="left">{row.unlockDate}  {`\n`} <Tinyletters>00:00:00 UTC</Tinyletters></StyledTableCell>
+              <StyledTableCell align="left"><ActiveButton>Unlock Nec</ActiveButton></StyledTableCell>
 
 
             </StyledTableRow>
@@ -106,5 +128,6 @@ export default function CustomizedTables() {
         </TableBody>
       </Table>
     </TableContainer>
+    </TableWrapper>
   );
 }

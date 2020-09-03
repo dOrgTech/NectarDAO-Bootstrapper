@@ -8,6 +8,14 @@ export const NectarTheme = createMuiTheme({
       }
     },
     MuiTypography: {
+      h2:{
+        fontFamily: 'Montserrat',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: '40px',
+        lineHeight: '140%',
+        letterSpacing: '-0.02em'
+      },
       h3: {
         fontFamily: 'Montserrat',
         fontStyle: 'normal',
@@ -15,6 +23,13 @@ export const NectarTheme = createMuiTheme({
         fontSize: '32px',
         lineHeight: '140%',
         letterSpacing: '-0.02em'
+      },
+      h4:{
+        fontFamily: 'Montserrat',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: '20px',
+        letterSpacing: '-0.02em',
       },
       subtitle1: {
         fontFamily: 'Sen',
@@ -59,6 +74,10 @@ export const NectarTheme = createMuiTheme({
   palette: {
     primary: {
       main: '#E2A907',
+      
+    },
+    secondary:{
+     main:'#162131'
     },
     text: {
       primary: '#FFFFFF',

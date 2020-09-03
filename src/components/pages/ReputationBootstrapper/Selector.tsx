@@ -1,11 +1,13 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import LogoAndText from 'components/common/LogoAndText'
+import LogoAndText from '../../common/LogoAndText'
 import Tooltip from 'components/common/Tooltip'
 import EthFinexLogo from 'assets/pngs/NECwithoutText.png'
 import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
+import { Title } from "../../../components/common/beehive/Title";
+
 import { tooltip } from 'strings'
 const HeaderWrapper = styled.div`
   display: flex;
@@ -15,19 +17,9 @@ const HeaderWrapper = styled.div`
   height: ${props => props.height};
 `
 
-const Title = styled.div`
-  display: flex;
-  flex-direction: row;
-  color: var(--white-text);
-  font-family: Montserrat;
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16px;
-  line-height: 20px;
-  text-align: center;
-  margin: 32px 0px;
-  letter-spacing: 1px;
-`
+const TitleHolder = styled.div`
+text-align:center;
+margin-bottom:50px;`
 
 const NavWrapper = styled.div`
   display: flex;
@@ -40,7 +32,7 @@ const TotalRepWrapper = styled.div`
 `
 
 const TotalRepText = styled.div`
-  color: var(--enable-purple-text);
+color: #A9ABCB;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
@@ -64,7 +56,6 @@ const StarWrapper = styled.div`
   width: 20px;
   margin: 24px 12px 24px 0px;
   border-radius: 12px;
-  border: 1px solid var(--enable-purple-text);
 `
 
 const ActiveButton = styled.div`
@@ -87,20 +78,20 @@ const ButtonExternal = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: var(--action-button);
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
-  margin-left: 50px;
   padding: 9px 0px;
   cursor: pointer;
   width: 156px;
+  color: #A9ABCB;
+  border: 1px solid #E2A907;
 `
 
 const InactiveButton = styled(ActiveButton)`
-  color: var(--inactive-header-text);
+  color: ;
   background-color:#4a20e5;
 `
 
@@ -155,13 +146,13 @@ const Selector = withRouter((props) => {
 
   return (
     <HeaderWrapper height={height}>
-      <Title>
-        How do you want to earn Reputation for the necDAO?
-        <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
-      </Title>
+ <TitleHolder>
+      <Title text={"Governance"} afterElement={true} />
+      </TitleHolder>
       <NavWrapper>
+       
         <ButtonExternal>
-          <a
+          <a style ={{color:'#E2A907'}}
             href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
             target="_blank"
           >
