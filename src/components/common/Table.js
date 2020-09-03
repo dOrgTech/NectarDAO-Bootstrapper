@@ -27,7 +27,6 @@ export const Row = styled.div`
   display: flex;
   flex-direction: row;
   height: 39px;
-  border: 1px solid
 `
 
 export const CellWrapper = styled.div`
@@ -42,7 +41,7 @@ export const CellWrapper = styled.div`
 `
 
 export const GreyCell = styled(CellWrapper)`
-  color: white;
+  color: #A9ABCB;;
 `
 
 const Table = ({ highlightTopRow, columns, data }) => (

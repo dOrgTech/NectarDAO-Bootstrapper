@@ -138,7 +138,7 @@ const TotalRepWrapper = styled.div`
 `
 
 const TotalRepText = styled.div`
-  color: var(--enable-purple-text);
+  color: #A9ABCB;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;

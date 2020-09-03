@@ -32,7 +32,7 @@ const TotalRepWrapper = styled.div`
 `
 
 const TotalRepText = styled.div`
-  color: var(--enable-purple-text);
+color: #A9ABCB;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
@@ -56,7 +56,6 @@ const StarWrapper = styled.div`
   width: 20px;
   margin: 24px 12px 24px 0px;
   border-radius: 12px;
-  border: 1px solid var(--enable-purple-text);
 `
 
 const ActiveButton = styled.div`
@@ -88,12 +87,12 @@ const ButtonExternal = styled.div`
   padding: 9px 0px;
   cursor: pointer;
   width: 156px;
-  
+  color: #A9ABCB;
   border: 1px solid #E2A907;
 `
 
 const InactiveButton = styled(ActiveButton)`
-  color: var(--inactive-header-text);
+  color: ;
   background-color:#4a20e5;
 `
 
@@ -154,7 +153,7 @@ const Selector = withRouter((props) => {
       <NavWrapper>
        
         <ButtonExternal>
-          <a
+          <a style ={{color:'#E2A907'}}
             href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
             target="_blank"
           >

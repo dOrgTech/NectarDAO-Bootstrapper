@@ -4,7 +4,6 @@ import styled from 'styled-components'
 const LogoAndTextWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  color: #E2A907;
   line-height: 24px;
 `
 
