@@ -8,6 +8,14 @@ export const NectarTheme = createMuiTheme({
       }
     },
     MuiTypography: {
+      h2:{
+        fontFamily: 'Montserrat',
+        fontStyle: 'normal',
+        fontWeight: 'bold',
+        fontSize: '40px',
+        lineHeight: '140%',
+        letterSpacing: '-0.02em'
+      },
       h3: {
         fontFamily: 'Montserrat',
         fontStyle: 'normal',

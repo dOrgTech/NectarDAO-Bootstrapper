@@ -83,7 +83,6 @@ const ButtonExternal = styled.div`
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
-  margin-left: 50px;
   padding: 9px 0px;
   cursor: pointer;
   width: 156px;
