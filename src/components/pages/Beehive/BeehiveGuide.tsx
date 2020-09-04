@@ -63,7 +63,8 @@ const Subtitle = styled.div`
   font-size: 15px;
   margin-top: 10px;
 `;
-
+const BptHolder = styled.div`
+`
 const BeehiveGuide = withRouter((props) => {
 
   return (
@@ -126,7 +127,9 @@ const BeehiveGuide = withRouter((props) => {
                       >
                         
                       Hold the BPT in your Private Wallet</Typography>
+                      <BptHolder>
           <Subtitle>Your BPT Balance</Subtitle>
+          </BptHolder>
           <Subtitle>
             Simply hold the BPT tokens in your private wallet. You do not need
             to do anything else with them

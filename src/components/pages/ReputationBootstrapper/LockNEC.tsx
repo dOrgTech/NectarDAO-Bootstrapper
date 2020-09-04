@@ -22,6 +22,7 @@ const LockNECWrapper = styled.div`
   width: 100%;
   height: 100%;
   max-height: 500px;
+  margin-top:48px;
 `;
 
 const DetailsWrapper = styled.div`
@@ -85,6 +86,7 @@ const ActionsHeader = styled.div`
   align-items: center;
   height: 64px;
   margin: 0px 24px;
+  margin-top:96px;
   color: var(--white-text);
   border-bottom: 1px solid var(--border);
 `;

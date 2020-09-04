@@ -58,7 +58,7 @@ const ProgressCircle = (props: Props) => {
 
     // Colors
     pathColor: '#9872fb',
-    trailColor: '#3a3867',
+    trailColor: '#E2A907',
   })
 
   if (rotate) {
