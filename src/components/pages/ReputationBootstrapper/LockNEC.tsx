@@ -64,7 +64,11 @@ const TableTabButton = styled.div`
   line-height: 18px;
   color: var(--white-text);
 `;
-
+const ButtonExternal = styled.div`
+ 
+  cursor: pointer;
+  border: 1px solid #E2A907;
+`
 const InactiveTableTabButton = styled(TableTabButton)`
   color: var(--inactive-header-text);
   border: 1px solid var(--inactive-border);
@@ -306,12 +310,13 @@ class LockNEC extends React.Component<any, State> {
                 pending={approvePending}
               />
             ) : currentTab === TabEnum.ALL_PERIODS ? (
+             
               <LockPanel
                 buttonText="Lock NEC"
                 userAddress={userAddress}
                 enabled={isLockingStarted && !isLockingEnded}
                 pending={lockPending}
-              />
+              /> 
             ) : (
               <ExtendLockPanel
                 buttonText="Extend Lock"
