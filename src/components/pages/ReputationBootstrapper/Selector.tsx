@@ -7,6 +7,7 @@ import StarIcon from 'assets/svgs/star.svg'
 import styled from 'styled-components'
 import { lockNEC, bidGEN, airdrop } from 'config.json'
 import { Title } from "../../../components/common/beehive/Title";
+import { Typography } from "@material-ui/core";
 
 import { tooltip } from 'strings'
 const HeaderWrapper = styled.div`
@@ -15,6 +16,7 @@ const HeaderWrapper = styled.div`
   align-items: center;
   border: 1px solid var(--border);
   height: ${props => props.height};
+  margin-top:-64px;
 `
 
 const TitleHolder = styled.div`
@@ -74,6 +76,7 @@ const ActiveButton = styled.div`
   background-color:#4a20e5;
 `
 
+
 const ButtonExternal = styled.div`
   display: flex;
   flex-direction: column;
@@ -89,7 +92,8 @@ const ButtonExternal = styled.div`
   color: #A9ABCB;
   border: 1px solid #E2A907;
 `
-
+const Biodiv = styled.div`
+margin-bottom:24px;`
 const InactiveButton = styled(ActiveButton)`
   color: ;
   background-color:#4a20e5;
@@ -149,6 +153,7 @@ const Selector = withRouter((props) => {
  <TitleHolder>
       <Title text={"Governance"} afterElement={true} />
       </TitleHolder>
+    <Biodiv>  <Typography variant={'body1'} color={'textPrimary'}>Earn necDao Reputation for staking NEC</Typography></Biodiv>
       <NavWrapper>
        
         <ButtonExternal>

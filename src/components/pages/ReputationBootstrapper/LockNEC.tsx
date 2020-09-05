@@ -22,6 +22,7 @@ const LockNECWrapper = styled.div`
   width: 100%;
   height: 100%;
   max-height: 500px;
+  margin-top:48px;
 `;
 
 const DetailsWrapper = styled.div`
@@ -63,7 +64,11 @@ const TableTabButton = styled.div`
   line-height: 18px;
   color: var(--white-text);
 `;
-
+const ButtonExternal = styled.div`
+ 
+  cursor: pointer;
+  border: 1px solid #E2A907;
+`
 const InactiveTableTabButton = styled(TableTabButton)`
   color: var(--inactive-header-text);
   border: 1px solid var(--inactive-border);
@@ -85,6 +90,7 @@ const ActionsHeader = styled.div`
   align-items: center;
   height: 64px;
   margin: 0px 24px;
+  margin-top:96px;
   color: var(--white-text);
   border-bottom: 1px solid var(--border);
 `;
@@ -304,12 +310,13 @@ class LockNEC extends React.Component<any, State> {
                 pending={approvePending}
               />
             ) : currentTab === TabEnum.ALL_PERIODS ? (
+             
               <LockPanel
                 buttonText="Lock NEC"
                 userAddress={userAddress}
                 enabled={isLockingStarted && !isLockingEnded}
                 pending={lockPending}
-              />
+              /> 
             ) : (
               <ExtendLockPanel
                 buttonText="Extend Lock"
