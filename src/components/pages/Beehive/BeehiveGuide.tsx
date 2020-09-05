@@ -1,62 +1,45 @@
-import React from "react";
+import React, { useState } from "react";
 import { withRouter } from "react-router-dom";
-import Tooltip from "components/common/Tooltip";
-import NECLogo from "assets/svgs/necdao-glow.svg";
 import styled from "styled-components";
-import {Title} from "../../../components/common/beehive/Title"
-import { tooltip } from "strings";
-import BeehiveHeader from "./BeehiveHeader";
-import { Link } from "react-router-dom";
-import Button from "@material-ui/core/Button";
-import { Modal } from "@material-ui/core";
+import { Title } from "../../../components/common/beehive/Title";
+import { Modal, Button, Link, IconButton } from "@material-ui/core";
 import { Typography } from "@material-ui/core";
-
-const Back = styled.button``;
-const GuideWrapper = styled.div``;
+import { Close } from "@material-ui/icons";
 
 const CenterWrapper = styled.div`
   display: flex;
-  width: 1068px;
   flex-direction: column;
   justify-content: center;
-  padding: 0 20px;
-  margin: 0 auto;
-  background-color:#162131
+  padding: 5px 65px 95px 65px;
 `;
+
 const TitleHolder = styled.div`
-text-align:center;`
-const Title2 = styled.div`
-color: white;
-font-family: Montserrat;
-font-style: normal;
-font-weight: 500;
-font-size: 15px;
-margin-top: 10px;
-margin-bottom:20px;
-`
+  text-align: center;
+`;
 
 const StepNumber = styled.div`
   width: 32px;
   height: 32px;
-  background: #E2A907;
+  min-height: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 32px;
+  background: #e2a907;
   border-radius: 100px;
-  position:absolute;
-  margin-left:-50px;
-  text-align:center;
-`
+`;
+
 const StepBox = styled.div`
-margin-left:160px;
-margin-top:40px;
+  padding-top: 40px;
 `;
-const OrangeBox = styled.div`
-border:1px solid #E2A907
-width:200px;
-margin:20px;
-text-align:center;`
-const GuideHead = styled.div`
+
+const StepWrapper = styled.div`
+  display: flex;
 `;
+
+const GuideHead = styled.div``;
 const Subtitle = styled.div`
-  color: #A9ABCB;
+  color: #a9abcb;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 500;
@@ -64,153 +47,279 @@ const Subtitle = styled.div`
   margin-top: 10px;
 `;
 
-const BeehiveGuide = withRouter((props) => {
+const StyledModal = styled(Modal)`
+  max-width: 1068px;
+  margin: auto;
+  height: 815px;
+  overflow-y: auto;
+`;
+
+const StepTextWrapper = styled.div`
+  padding-left: 17px;
+`;
+
+const GoToNecButton = styled(Button)`
+  width: 300px;
+  margin-top: 12px !important;
+`;
+
+const BodyText = styled(Typography)`
+  padding-top: 15px;
+  color: rgba(169, 171, 203, 0.8) !important;
+`;
+
+const BalanceText = styled(BodyText)`
+  padding: 16px;
+`;
+
+const BalanceNumberText = styled(Typography)`
+  padding-left: 8px;
+  display: inline-block;
+`;
+
+const BPTBalance = styled.div`
+  background: rgba(5, 15, 22, 0.5);
+  border: 1px solid #404b67;
+  box-sizing: border-box;
+  border-radius: 6px;
+  width: fit-content;
+  height: 58px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 15px 0 20px 0;
+`;
+
+const CloseIconContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`;
+
+const BackgroundWrapper = styled.div`
+  background-color: #222b42;
+  outline: none;
+`;
+
+const CloseIcon = styled(IconButton)`
+  padding: 16px;
+  color: #FFFFFF !important;
+  font-size: 16px;
+`;
+
+const BeehiveGuide: React.FC<any> = withRouter((props) => {
+  const [bptBalance, setBptBalance] = useState(0);
 
   return (
-    <Modal
+    <StyledModal
       {...props}
       aria-labelledby="beehive-guide"
+      disableAutoFocus={true}
     >
-      <CenterWrapper>
-        <Button component={Link} to="/beehive">
-          Back
-        </Button>
-        <GuideHead>
-          <TitleHolder>
-        <Title text={"Walkthrough guide"} afterElement={true} />
-       
-          <Subtitle>Join Our
-          <a style ={{color:'#E2A907'}}
-            href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
-            target="_blank"
-          >
-         Discord </a> to Discuss Beehive</Subtitle>
-          </TitleHolder>
-        </GuideHead>
-        <StepBox>
-          
-           <StepNumber>
-                        <Typography variant={'h4'} color={'textPrimary'}>1</Typography>
-                      </StepNumber>
-                      <Typography
-                        variant={"h4"}
-                        align={"left"}
-                        color={"textPrimary"}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        
-                      Stake NEC & wETH into the Balancer Pool</Typography>
-          <Subtitle>
-            Buy NEC and ETH at app.deversifi.com, or Balancer if you dont
-            already have NEC or ETH
-          </Subtitle>
-          <Subtitle>  <a style ={{color:'#E2A907'}}
-            href="https://pools.balancer.exchange/#/"
-            target="_blank"
-          >https://pools.balancer.exchange/#/
-            </a>
-          </Subtitle>
-        </StepBox>
+      <BackgroundWrapper>
+        <CloseIconContainer>
+          <CloseIcon onClick={props.onClose}>
+            <Close />
+          </CloseIcon>
+        </CloseIconContainer>
+        <CenterWrapper>
+          <GuideHead>
+            <TitleHolder>
+              <Title text={"Walkthrough guide"} afterElement={true} />
 
-      
+              <Subtitle>
+                Join Our
+                <a
+                  style={{ color: "#E2A907" }}
+                  href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+                  target="_blank"
+                >
+                  Discord{" "}
+                </a>{" "}
+                to Discuss Beehive
+              </Subtitle>
+            </TitleHolder>
+          </GuideHead>
 
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  1
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Stake NEC & wETH into the Balancer Pool
+                </Typography>
+                <BodyText variant={"body2"}>
+                  Buy NEC and ETH at app.deversifi.com, or Balancer if you dont
+                  already have NEC or ETH
+                </BodyText>
 
-        <StepBox><StepNumber>
-        <Typography variant={'h4'} color={'textPrimary'}>2</Typography>
-                      </StepNumber>
-                      <Typography
-                        variant={"h4"}
-                        align={"left"}
-                        color={"textPrimary"}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        
-                      Hold the BPT in your Private Wallet</Typography>
-          <Subtitle>Your BPT Balance</Subtitle>
-          <Subtitle>
-            Simply hold the BPT tokens in your private wallet. You do not need
-            to do anything else with them
-          </Subtitle>
-        
-        </StepBox>
-        <StepBox>
-        <StepNumber>
-        <Typography variant={'h4'} color={'textPrimary'}>3</Typography>
-                      </StepNumber>
-                      <Typography
-                        variant={"h4"}
-                        align={"left"}
-                        color={"textPrimary"}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        
-                      Wait for Weekly Snapshot 1</Typography>
-          <Subtitle>
-            Once per week a snapshot of BPT token holders will be taken and
-            necDAO Reputation distributed
-          </Subtitle>
-        
-        </StepBox>
-        <StepBox><StepNumber>
-        <Typography variant={'h4'} color={'textPrimary'}>4</Typography>
-                      </StepNumber>
-                      <Typography
-                        variant={"h4"}
-                        align={"left"}
-                        color={"textPrimary"}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        
-                      Have your say in the NEC DAO</Typography>
-          <Subtitle>
-            You can submit proposals and vote on proposals governing the Nectar
-            and DeversiFi in the necDAO from the moment that you have received
-            your Reputation
-          </Subtitle>
-          <OrangeBox>
-          <Subtitle>  <a style ={{color:'#E2A907'}}
-            href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
-            target="_blank"
-          >
-            Go to the necDAO
-          </a></Subtitle></OrangeBox>
-          <Subtitle>
-            Participation in the necDAO does not impact NEC Beehive rewards, but
-            we hope you will participate
-          </Subtitle>
-        </StepBox>
-        <StepBox>    <StepNumber>
-        <Typography variant={'h4'} color={'textPrimary'}>5</Typography>
-                      </StepNumber>
-                      <Typography
-                        variant={"h4"}
-                        align={"left"}
-                        color={"textPrimary"}
-                        style={{ fontWeight: 'bold' }}
-                      >
-                        
-                      Wait for Weekly Snapshot 2</Typography>
-          <Subtitle>
-            Once per week, at a random interval, a snapshot of BPT token holders
-            will be taken to calculate NEC rewards
-          </Subtitle>
-          <Subtitle>
-            The snapshot details will be published after the end of each week to
-            prevent cheating.
-          </Subtitle>
-          <Subtitle>
-            NEC is locked up for 12 months in a smart contract. In 12 months
-            time you will be able to unlock your NEC rewards
-          </Subtitle>
-        </StepBox>
-        <StepBox>
-          <Title2>BPT Rewards sent directly to your wallet</Title2>
-          <Subtitle>
-            BPT is sent directly to your wallet by Balancer Labs
-          </Subtitle>
-        </StepBox>
-      </CenterWrapper>
-    </Modal>
+                <BodyText variant={"body2"}>
+                  <Link href="https://pools.balancer.exchange/#/">
+                    https://pools.balancer.exchange/#/
+                  </Link>
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  2
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Hold the BPT in your Private Wallet
+                </Typography>
+                <BPTBalance>
+                  <BalanceText variant={"body2"}>
+                    Your BPT Balance:{" "}
+                    <BalanceNumberText variant={"body2"} color={"textPrimary"}>
+                      {bptBalance}
+                    </BalanceNumberText>
+                  </BalanceText>
+                </BPTBalance>
+                <BodyText variant={"body2"}>
+                  Simply hold the BPT tokens in your private wallet. You do not
+                  need to do anything else with them
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  3
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Wait for Weekly Snapshot 1
+                </Typography>
+                <BodyText variant={"body2"}>
+                  Once per week a snapshot of BPT token holders will be taken
+                  and necDAO Reputation distributed
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  4
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Have your say in the NEC DAO
+                </Typography>
+                <BodyText variant={"body2"}>
+                  You can submit proposals and vote on proposals governing the
+                  Nectar and DeversiFi in the necDAO from the moment that you
+                  have received your Reputation
+                </BodyText>
+
+                <Link
+                  href={
+                    "https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+                  }
+                >
+                  <GoToNecButton variant={"outlined"} color={"primary"}>
+                    Go to the necDAO
+                  </GoToNecButton>
+                </Link>
+                <BodyText variant={"body2"}>
+                  Participation in the necDAO does not impact NEC Beehive
+                  rewards, but we hope you will participate
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  5
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  Wait for Weekly Snapshot 2
+                </Typography>
+                <BodyText variant={"body2"}>
+                  Once per week, at a random interval, a snapshot of BPT token
+                  holders will be taken to calculate NEC rewards The snapshot
+                  details will be published after the end of each week to
+                  prevent cheating. NEC is locked up for 12 months in a smart
+                  contract. In 12 months time you will be able to unlock your
+                  NEC rewards
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+
+          <StepBox>
+            <StepWrapper>
+              <StepNumber>
+                <Typography variant={"h4"} color={"textPrimary"}>
+                  6
+                </Typography>
+              </StepNumber>
+              <StepTextWrapper>
+                <Typography
+                  variant={"h4"}
+                  align={"left"}
+                  color={"textPrimary"}
+                  style={{ fontWeight: "bold" }}
+                >
+                  BPT Rewards sent directly to your wallet
+                </Typography>
+                <BodyText variant={"body2"}>
+                  BPT is sent directly to your wallet by Balancer Labs
+                </BodyText>
+              </StepTextWrapper>
+            </StepWrapper>
+          </StepBox>
+        </CenterWrapper>
+      </BackgroundWrapper>
+    </StyledModal>
   );
 });
 

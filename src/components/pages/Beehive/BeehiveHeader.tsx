@@ -333,7 +333,7 @@ const BigHeader = withRouter((props) => {
         </CenterWrapper>
       </HeaderWrapper>
 
-      <BeehiveGuide open={isGuideOpen} handleClose={() => setIsGuideOpen(false)}/>
+      <BeehiveGuide open={isGuideOpen} onClose={() => setIsGuideOpen(false)}/>
     </>
   );
 });
