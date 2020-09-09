@@ -10,12 +10,27 @@ import BeehiveGuide from "./BeehiveGuide";
 const HeaderWrapper = styled.div`
   width: 100%;
   text-align: center;
+  @media (max-width: 480px) {
+    margin:0 auto;
+    width:200px;
+  }
 `;
 
 const CenterWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  @media (max-width: 1250px) {
+    margin:0 auto;
+    width:625px;
+  }
+  @media (max-width: 800px) {
+    align-text:center;
+  }
+  @media (max-width: 480px) {
+    margin:0 auto;
+    width:200px;
+  }
 `;
 
 const StatsHolder = styled.div`
@@ -27,6 +42,7 @@ const StatsHolder = styled.div`
   text-align: center;
   padding-bottom: 2.5%;
   padding-top: 65px;
+
 `;
 
 const Statsbox = styled.div`
@@ -43,10 +59,17 @@ const Statsbox = styled.div`
     position: absolute;
     top: 0px;
   }
+
 `;
 
 const InstructDiv = styled.div`
   width: 100%;
+  @media (max-width: 800px) {
+    margin-right: 40px;
+    }
+    @media (max-width: 600px) {
+      margin-right: 0px;
+      }
 `;
 
 const InstructBox = styled.div`
@@ -78,6 +101,9 @@ const InstructBox = styled.div`
     top:0;
     border: 74px solid transparent;
     border-left: 16px solid #404b67;
+  }
+  @media (max-width: 1250px) {
+  margin-top: 10px;
   }
 `;
 
@@ -333,7 +359,7 @@ const BigHeader = withRouter((props) => {
         </CenterWrapper>
       </HeaderWrapper>
 
-      <BeehiveGuide open={isGuideOpen} handleClose={() => setIsGuideOpen(false)}/>
+      <BeehiveGuide open={isGuideOpen} onClose={() => setIsGuideOpen(false)}/>
     </>
   );
 });

@@ -14,6 +14,10 @@ const ConnectWrapper = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
+  @media (max-width: 480px) {
+    margin:0 auto;
+    width:200px;
+  }
 `;
 
 const ConnectBody = styled.div`
@@ -23,6 +27,7 @@ const ConnectBody = styled.div`
   justify-content: center;
   width: 541px;
   height: 364px;
+  
 `;
 
 const SubTitle = styled.div`
@@ -42,6 +47,10 @@ const Buttons = styled.div`
   width: 100%;
   padding-bottom: 30px;
   justify-content: center;
+  @media (max-width: 600px) {
+    
+    
+  }
 `;
 
 const ConnectButton = styled.div`
@@ -53,6 +62,11 @@ const ConnectButton = styled.div`
   width: 255px;
   border-radius: 6px;
   height: 104px;
+  @media (max-width: 600px) {
+    margin-top:10px;
+    width:150px;
+    height:75px;
+  }
 `;
 
 const MetamaskWalletLogo = styled.img`
@@ -90,6 +104,14 @@ const WarningText = styled.span`
   font-size: 16px;
   line-height: 150%;
 `;
+const Metamask = styled.div`
+margin-right:15px;
+@media (max-width: 480px) {
+  margin-right:0px;
+}
+`
+
+
 
 const ConnectWallet = inject("root")(
   observer((props) => {
@@ -102,7 +124,7 @@ const ConnectWallet = inject("root")(
           </Typography>
           <SubTitle></SubTitle>
           <Buttons>
-            <div style={{ paddingRight: 15 }}>
+          <Metamask>
               <ConnectButton
                 onClick={() => {
                   props.root.providerStore.setWallet(Wallet.METAMASK);
@@ -110,8 +132,8 @@ const ConnectWallet = inject("root")(
               >
                 <MetamaskWalletLogo src={MetamaskLogo} />
               </ConnectButton>
-            </div>
-            <div style={{ paddingLeft: 15 }}>
+            </Metamask>
+            <div>
               <ConnectButton
                 onClick={() => {
                   toggleModal(true);

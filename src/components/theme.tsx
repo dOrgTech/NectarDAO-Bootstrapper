@@ -4,7 +4,10 @@ export const NectarTheme = createMuiTheme({
   overrides: {
     MuiButton: {
       root: {
-        borderRadius: 4
+        borderRadius: 4,
+      },
+      outlined: {
+        padding: '10px 20px'
       }
     },
     MuiTypography: {
@@ -68,12 +71,20 @@ export const NectarTheme = createMuiTheme({
         fontSize: '14px',
         lineHeight: '150%',
         textAlign: 'center'
+      },
+      h6: {
+        fontFamily: 'Sen',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: 11,
+        lineHeight: '150%',
+        textTransform: 'uppercase'
       }
     }
   },
   palette: {
     primary: {
-      main: '#E2A907',
+      main: '#F2994A',
       
     },
     secondary:{
