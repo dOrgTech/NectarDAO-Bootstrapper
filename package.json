@@ -100,7 +100,8 @@
     "ganache": "ganache-cli --deterministic",
     "start": "node scripts/start.js",
     "build": "node scripts/build.js",
-    "test": "node scripts/test.js"
+    "test": "node scripts/test.js",
+    "generate-abis": "truffle build"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -196,7 +197,9 @@
   },
   "homepage": "https://github.com/dOrgTech/NectarDAO-Bootstrapper#readme",
   "devDependencies": {
+    "@openzeppelin/contracts-ethereum-package": "^3.0.0",
+    "@truffle/hdwallet-provider": "^1.0.44",
     "truffle": "^5.1.44",
-    "@truffle/hdwallet-provider": "^1.0.44"
+    "truffle-assertions": "0.9.2"
   }
 }

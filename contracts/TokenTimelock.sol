@@ -29,6 +29,8 @@ contract TokenTimelock {
     // snapshot beneficiaries of tokens after they are released
     mapping(address => uint256) public claimers;
 
+    event RewardReleased(address beneficiary, uint256 amount);
+
     constructor(
         IERC20 _token,
         address[] memory _beneficiaries,
@@ -38,7 +40,7 @@ contract TokenTimelock {
             _beneficiaries.length == _amounts.length,
             "Beneficiaries and amount must be of the same length"
         );
-        releaseTime = block.timestamp + SECONDS_IN_YEAR;
+        releaseTime = (block.timestamp + SECONDS_IN_YEAR).mul(10**3);
         token = _token;
         for (uint256 i = 0; i < _beneficiaries.length; i++) {
             claimers[_beneficiaries[i]] = _amounts[i];
@@ -55,16 +57,21 @@ contract TokenTimelock {
     /**
      * @notice Transfers tokens held by timelock to beneficiary.
      */
-    function release(address _claimer) external {
-        uint256 claimAmount = claimers[_claimer];
-        require(claimAmount > 0, "Claimer not registered on snapshot");
+    function release() external virtual {
+        uint256 claimAmount = claimers[msg.sender];
         require(
-            block.timestamp >= releaseTime,
+            claimAmount > 0,
+            "TokenTimelock: Claimer not registered on snapshot"
+        );
+        require(
+            block.timestamp.mul(10**3) >= releaseTime,
             "TokenTimelock: current time is before release time"
         );
         uint256 amount = token.balanceOf(address(this));
         require(amount > 0, "TokenTimelock: no tokens to release");
+        claimers[msg.sender] = 0;
+        token.safeTransfer(msg.sender, claimAmount);
 
-        token.safeTransfer(_claimer, amount);
+        emit RewardReleased(msg.sender, claimAmount);
     }
 }
