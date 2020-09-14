@@ -64,8 +64,6 @@ const ConnectButton = styled.div`
   height: 104px;
   @media (max-width: 600px) {
     margin-top:10px;
-    width:150px;
-    height:75px;
   }
 `;
 

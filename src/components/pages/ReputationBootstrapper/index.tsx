@@ -14,6 +14,12 @@ const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
   padding: 64px;
+  @media (max-width: 800px) {
+    width:600px;
+  }
+  @media (max-width: 480px) {
+    width:200px;
+  }
 `
 
 const SectionWrapper = styled.div`
@@ -22,6 +28,7 @@ const SectionWrapper = styled.div`
   align-items: center;
   border-top: none;
   color:white;
+
 `
 
 @inject('root')

@@ -11,7 +11,10 @@ const CenterWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   padding: 5px 65px 95px 65px;
-
+  @media (max-width: 480px) {
+    justify-content:left;
+    padding-left:40px;
+    
   }
 `;
 
@@ -29,10 +32,19 @@ const StepNumber = styled.div`
   min-width: 32px;
   background: #e2a907;
   border-radius: 100px;
+  @media (max-width: 480px) {
+    margin-top:-50px;
+    margin-right:-25px;
+  }
 `;
 
 const StepBox = styled.div`
   padding-top: 40px;
+  @media (max-width: 480px) {
+    padding-top:50px;
+    padding-bottom:50px;
+
+  }
 `;
 
 const StepWrapper = styled.div`
@@ -54,11 +66,19 @@ const StyledModal = styled(Modal)`
   margin: auto;
   height: 815px;
   overflow-y: auto;
+   @media (max-width: 800px) {
+    width:90%;
+  }
+  @media (max-width: 480px) {
+    width:100%;
+  }
 `;
 
 const StepTextWrapper = styled.div`
   padding-left: 17px;
-  
+  @media (max-width: 480px) {
+    padding-left:0px;
+  }
 `;
 
 const GoToNecButton = styled(Button)`
@@ -98,6 +118,10 @@ const CloseIconContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  @media (max-width: 480px) {
+    margin-right:40px;
+    padding-top:40px;
+  }
 `;
 
 const BackgroundWrapper = styled.div`
@@ -109,6 +133,7 @@ const CloseIcon = styled(IconButton)`
   padding: 16px;
   color: #FFFFFF !important;
   font-size: 16px;
+  
 `;
 
 const BeehiveGuide: React.FC<any> = withRouter((props) => {
@@ -144,7 +169,7 @@ const BeehiveGuide: React.FC<any> = withRouter((props) => {
               </Subtitle>
             </TitleHolder>
           </GuideHead>
-
+          <br />
           <StepBox>
             <StepWrapper>
               <StepNumber>
@@ -162,7 +187,7 @@ const BeehiveGuide: React.FC<any> = withRouter((props) => {
                   Stake NEC & wETH into the Balancer Pool
                 </Typography>
                 <BodyText variant={"body2"}>
-                  Buy NEC and ETH at app.deversifi.com, or Balancer if you dont
+                  Buy NEC and ETH at app.deversifi.com, or Balancer if you don't
                   already have NEC or ETH
                 </BodyText>
 

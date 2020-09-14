@@ -10,6 +10,7 @@ export const TableWrapper = styled.div`
   overflow: auto;
 background: rgba(40, 50, 74, 0.5);
 
+
 `
 
 export const RowWrapper = styled.div`

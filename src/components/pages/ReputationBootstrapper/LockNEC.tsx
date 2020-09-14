@@ -23,12 +23,23 @@ const LockNECWrapper = styled.div`
   height: 100%;
   max-height: 500px;
   margin-top:48px;
+  @media (max-width: 800px) {
+    flex-wrap:wrap-reverse;
+    width:600px;
+    padding-top:250px;
+    justify-content:center;
+  }
+  @media (max-width: 480px) {
+width:350px;
+padding-top:150px;
+}
 `;
 
 const DetailsWrapper = styled.div`
   min-width: 605px;
   height: 364px;
   border-right: 1px solid var(--border);
+
 `;
 
 const TableHeaderWrapper = styled.div`
@@ -38,6 +49,10 @@ const TableHeaderWrapper = styled.div`
   justify-content: space-between;
   padding: 0px 24px;
   border-bottom: 1px solid var(--border);
+  @media (max-width: 480px) {
+    width:350px;
+    padding-left:125px;
+  } 
 `;
 
 const TableTabEnumWrapper = styled.div`
@@ -81,6 +96,17 @@ const ActionsWrapper = styled.div`
   font-weight: 500;
   font-size: 15px;
   line-height: 18px;
+  @media (max-width: 800px) {
+   justify-content:center;
+   flex-wrap:none;
+   width:400px;
+  }
+  @media (max-width: 480px) {
+    width:90%;
+    justify-content:center;
+    flex-wrap:none;
+    
+   }
 `;
 
 const ActionsHeader = styled.div`

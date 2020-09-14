@@ -22,6 +22,7 @@ const AppBody = styled.div`
   max-height: calc(100% - 98px);
   overflow-y: auto;
   width: 100%;
+ 
 `
 
 const Header = styled.div`
@@ -31,6 +32,9 @@ const Header = styled.div`
   width: 100%;
   height: 70px;
   background: transparent;
+  @media (max-width: 480px) {
+    width:375px;
+  }
 `
 
 const Footer = styled.div`
@@ -43,6 +47,7 @@ const Footer = styled.div`
   width: 100%;
   height: 98px;
   background-color: #061722;
+ 
 `
 
 const FooterText = styled(Typography)`
@@ -50,22 +55,29 @@ const FooterText = styled(Typography)`
   font-size: 14px;
   text-align: right;
   padding-right: 166px;
+  @media (max-width: 480px) {
+    text-align:center;
+    padding-right:0px;
+  }
 `
 
 const Logo = styled.img`
   padding-left: 166px;
   height: 32px;
   width: 32px;
+  @media (max-width: 480px) {
+    padding-left:0px;
+  }
 `
 
 const HeaderButton = styled.div`
-  padding-right: 166px;
 `
 
 const AppWrapper = styled.div`
   width: 100%;
   height: 100%;
   background: linear-gradient(4.5deg, #040E14 19.19%, #061824 88.66%);
+ 
 `
 
 const BackgroundWrapper = styled.div`

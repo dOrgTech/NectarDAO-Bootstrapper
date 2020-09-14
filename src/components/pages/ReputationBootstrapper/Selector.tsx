@@ -17,6 +17,9 @@ const HeaderWrapper = styled.div`
   border: 1px solid var(--border);
   height: ${props => props.height};
   margin-top:-64px;
+  @media (max-width: 480px) {
+    margin-bottom:150px;
+  }
 `
 
 const TitleHolder = styled.div`
@@ -31,6 +34,8 @@ const NavWrapper = styled.div`
 const TotalRepWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  @media (max-width: 480px) {
+  }
 `
 
 const TotalRepText = styled.div`
@@ -43,6 +48,10 @@ color: #A9ABCB;
   text-align: center;
   margin: 24px 0px;
   letter-spacing: 1px;
+  @media (max-width: 480px) {
+    width:375px;
+    align:center;
+  }
 `
 
 const Star = styled.img`
@@ -93,7 +102,10 @@ const ButtonExternal = styled.div`
   border: 1px solid #E2A907;
 `
 const Biodiv = styled.div`
-margin-bottom:24px;`
+margin-bottom:24px;
+@media (max-width: 480px) {
+  text-align:center;
+}`
 const InactiveButton = styled(ActiveButton)`
   color: ;
   background-color:#4a20e5;

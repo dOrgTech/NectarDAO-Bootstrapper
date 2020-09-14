@@ -26,6 +26,7 @@ const CenterWrapper = styled.div`
   }
   @media (max-width: 800px) {
     align-text:center;
+    overflow:hidden;
   }
   @media (max-width: 480px) {
     margin:0 auto;

@@ -6,6 +6,9 @@ import * as helpers from 'utils/helpers'
 import { RootStore } from 'stores/Root';
 import { Batch } from 'types';
 import LoadingCircle from 'components/common/LoadingCircle';
+import styled from 'styled-components';
+
+
 
 const columns = [
     { name: 'Period', key: 'batchIdDisplay', width: '10%', align: 'left' },

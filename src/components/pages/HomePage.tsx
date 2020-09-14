@@ -92,6 +92,10 @@ const SubTitle = styled.div`
 const MainTitle = styled.div`
   width: 100%;
   text-align: center;
+  @media (max-width: 800px) {
+    width:80%;
+    margin:0 auto;
+  }
 `;
 
 const TermContainer = styled.div`

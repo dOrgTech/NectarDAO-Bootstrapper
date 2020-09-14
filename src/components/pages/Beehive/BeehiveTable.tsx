@@ -40,7 +40,10 @@ margin: 50px auto;
     border: none;
   }
   @media (max-width: 800px) {
-    margin-left:40px;
+    margin-right:40px;
+  }
+  @media (max-width: 480px) {
+    margin:0 auto;
   }
 `
 
