@@ -106,7 +106,6 @@ const CustomizedTable = inject("root")(
                   <TableCell align="right">
                     <StatusCell>
                       <StepNumber
-                        align="left"
                         style={{
                           background:
                             row.status === "Open" ? "#F2994A" : "#646A7A",

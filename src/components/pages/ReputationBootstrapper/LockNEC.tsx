@@ -32,7 +32,7 @@ const DetailsWrapper = styled.div`
 `;
 
 const TableHeaderWrapper = styled.div`
-  height: 103px
+  height: 103px;
   display: flex;
   flex-direction: row;
   justify-content: space-between;

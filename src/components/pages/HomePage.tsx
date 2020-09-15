@@ -135,7 +135,7 @@ const HomePage: React.FC = () => {
       <TitleWrapper>
         <MainTitle>
           <Title afterElement={true} text={"Earn Rewards"} />{" "}
-          <Title text={"For Staking Nectar $NEC"} />
+          <Title afterElement={false} text={"For Staking Nectar $NEC"} />
         </MainTitle>
         <JoinTextWrapper>
           <Typography color={"textSecondary"} variant={"subtitle2"}>

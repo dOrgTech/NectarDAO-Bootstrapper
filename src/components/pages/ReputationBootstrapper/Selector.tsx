@@ -15,7 +15,6 @@ const HeaderWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   border: 1px solid var(--border);
-  height: ${props => props.height};
   margin-top:-64px;
 `
 
@@ -95,7 +94,6 @@ const ButtonExternal = styled.div`
 const Biodiv = styled.div`
 margin-bottom:24px;`
 const InactiveButton = styled(ActiveButton)`
-  color: ;
   background-color:#4a20e5;
 `
 
@@ -149,7 +147,7 @@ const Selector = withRouter((props) => {
   )
 
   return (
-    <HeaderWrapper height={height}>
+    <HeaderWrapper style={{ height }}>
  <TitleHolder>
       <Title text={"Governance"} afterElement={true} />
       </TitleHolder>

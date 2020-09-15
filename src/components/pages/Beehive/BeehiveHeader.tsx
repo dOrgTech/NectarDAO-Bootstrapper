@@ -163,7 +163,7 @@ const BigHeader = inject("root")(
 
   return (
     <>
-      <HeaderWrapper height={height}>
+      <HeaderWrapper style={{ height }}>
         <Title text={"Nectar Beehive"} afterElement={true} />
         <CenterWrapper>
           <PageContent>

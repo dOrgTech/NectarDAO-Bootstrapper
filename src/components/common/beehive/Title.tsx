@@ -31,15 +31,15 @@ const StyledTitle = styled.h1`
 }
 `
 
-interface TitleProps extends React.HTMLProps<HTMLHeadingElement> {
+interface TitleProps {
   text: string;
   afterElement?: boolean;
 }
 
-export const Title: React.FC<TitleProps> = ({ text, ...props }) => {
+export const Title = ({ text, afterElement, ...props }) => {
   const wrappedText = text.split(' ')
 
   return (
-    <>{wrappedText.map((word: string) => <StyledTitle {...props}>{word}</StyledTitle>)}</>
+    <>{wrappedText.map((word: string) => <StyledTitle afterElement={!!afterElement} {...props}>{word}</StyledTitle>)}</>
   )
 }
