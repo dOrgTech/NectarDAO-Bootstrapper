@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import { observer, inject } from "mobx-react";
+import { RootStore } from "stores/Root";
 import styled from "styled-components";
 import { Title } from "../../../components/common/beehive/Title";
 import { Modal, Button, Link, IconButton } from "@material-ui/core";
@@ -104,223 +105,233 @@ const BackgroundWrapper = styled.div`
 
 const CloseIcon = styled(IconButton)`
   padding: 16px;
-  color: #FFFFFF !important;
+  color: #ffffff !important;
   font-size: 16px;
 `;
 
-const BeehiveGuide: React.FC<any> = withRouter((props) => {
-  const [bptBalance, setBptBalance] = useState(0);
+const BeehiveGuide: React.FC<any> = inject("root")(
+  observer((props) => {
+    const { beehiveStore } = props.root as RootStore;
 
-  return (
-    <StyledModal
-      {...props}
-      aria-labelledby="beehive-guide"
-      disableAutoFocus={true}
-    >
-      <BackgroundWrapper>
-        <CloseIconContainer>
-          <CloseIcon onClick={props.onClose}>
-            <Close />
-          </CloseIcon>
-        </CloseIconContainer>
-        <CenterWrapper>
-          <GuideHead>
-            <TitleHolder>
-              <Title text={"Walkthrough guide"} afterElement={true} />
+    return (
+      <StyledModal
+        {...props}
+        aria-labelledby="beehive-guide"
+        disableAutoFocus={true}
+      >
+        <BackgroundWrapper>
+          <CloseIconContainer>
+            <CloseIcon onClick={props.onClose}>
+              <Close />
+            </CloseIcon>
+          </CloseIconContainer>
+          <CenterWrapper>
+            <GuideHead>
+              <TitleHolder>
+                <Title text={"Walkthrough guide"} afterElement={true} />
 
-              <Subtitle>
-                Join Our
-                <a
-                  style={{ color: "#E2A907" }}
-                  href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
-                  target="_blank"
-                >
-                  Discord{" "}
-                </a>{" "}
-                to Discuss Beehive
-              </Subtitle>
-            </TitleHolder>
-          </GuideHead>
+                <Subtitle>
+                  Join Our
+                  <a
+                    style={{ color: "#E2A907" }}
+                    href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+                    target="_blank"
+                  >
+                    Discord{" "}
+                  </a>{" "}
+                  to Discuss Beehive
+                </Subtitle>
+              </TitleHolder>
+            </GuideHead>
 
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  1
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  Stake NEC & wETH into the Balancer Pool
-                </Typography>
-                <BodyText variant={"body2"}>
-                  Buy NEC and ETH at app.deversifi.com, or Balancer if you dont
-                  already have NEC or ETH
-                </BodyText>
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    1
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    Stake NEC & wETH into the Balancer Pool
+                  </Typography>
+                  <BodyText variant={"body2"}>
+                    Buy NEC and ETH at app.deversifi.com, or Balancer if you
+                    dont already have NEC or ETH
+                  </BodyText>
 
-                <BodyText variant={"body2"}>
-                  <Link href="https://pools.balancer.exchange/#/">
-                    https://pools.balancer.exchange/#/
+                  <BodyText variant={"body2"}>
+                    <Link href="https://pools.balancer.exchange/#/">
+                      https://pools.balancer.exchange/#/
+                    </Link>
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
+
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    2
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    Hold the BPT in your Private Wallet
+                  </Typography>
+                  <BPTBalance>
+                    <BalanceText variant={"body2"}>
+                      Your BPT Balance:{" "}
+                      <BalanceNumberText
+                        variant={"body2"}
+                        color={"textPrimary"}
+                      >
+                        {beehiveStore.bptBalance}
+                      </BalanceNumberText>
+                    </BalanceText>
+                  </BPTBalance>
+                  <BodyText variant={"body2"}>
+                    Simply hold the BPT tokens in your private wallet. You do
+                    not need to do anything else with them
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
+
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    3
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    Wait for Weekly BPT Snapshot
+                  </Typography>
+                  <BodyText variant={"body2"}>
+                    Once per week Monday morning 00:00 to Sunday evening 23:59,
+                    a hidden snapshot will be taken to determine $NEC rewards.
+                    After the week has ended, the results will be published and
+                    your earned NEC rewards will be displayed in the Beehive
+                    dashboard
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
+
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    4
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    Be part of the DeversiFi Community
+                  </Typography>
+                  <BodyText variant={"body2"}>
+                    Be part of the DeversiFi community as DeversiFi becomes the
+                    Layer 2 exchange of choice for professional traders.
+                    Upcoming features such as instant withdrawals, advanced
+                    trading features and new DeFi token listings will make
+                    DeversiFi the gas-free way to trade all the popular DeFi
+                    tokens
+                  </BodyText>
+
+                  <Link
+                    href={
+                      "https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+                    }
+                  >
+                    <GoToNecButton variant={"outlined"} color={"primary"}>
+                      Trade on DeversiFi
+                    </GoToNecButton>
                   </Link>
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
+                  <BodyText variant={"body2"}>
+                    Participation in the community does not impact NEC Beehive
+                    rewards, but we hope you will be part of the DeversiFi
+                    community over the coming months.
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
 
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  2
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  Hold the BPT in your Private Wallet
-                </Typography>
-                <BPTBalance>
-                  <BalanceText variant={"body2"}>
-                    Your BPT Balance:{" "}
-                    <BalanceNumberText variant={"body2"} color={"textPrimary"}>
-                      {bptBalance}
-                    </BalanceNumberText>
-                  </BalanceText>
-                </BPTBalance>
-                <BodyText variant={"body2"}>
-                  Simply hold the BPT tokens in your private wallet. You do not
-                  need to do anything else with them
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    5
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    BPT Rewards Sent Directly To Your Wallet
+                  </Typography>
+                  <BodyText variant={"body2"}>
+                    BPT (Balancer Pool Token) rewards will be sentto your wallet
+                    weekly. These rewards are independent of DeversiFi and
+                    therefore the process for claiming the BPT rewards may
+                    change
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
 
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  3
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  Wait for Weekly Snapshot 1
-                </Typography>
-                <BodyText variant={"body2"}>
-                  Once per week a snapshot of BPT token holders will be taken
-                  and necDAO Reputation distributed
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
-
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  4
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  Have your say in the NEC DAO
-                </Typography>
-                <BodyText variant={"body2"}>
-                  You can submit proposals and vote on proposals governing the
-                  Nectar and DeversiFi in the necDAO from the moment that you
-                  have received your Reputation
-                </BodyText>
-
-                <Link
-                  href={
-                    "https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
-                  }
-                >
-                  <GoToNecButton variant={"outlined"} color={"primary"}>
-                    Go to the necDAO
-                  </GoToNecButton>
-                </Link>
-                <BodyText variant={"body2"}>
-                  Participation in the necDAO does not impact NEC Beehive
-                  rewards, but we hope you will participate
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
-
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  5
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  Wait for Weekly Snapshot 2
-                </Typography>
-                <BodyText variant={"body2"}>
-                  Once per week, at a random interval, a snapshot of BPT token
-                  holders will be taken to calculate NEC rewards The snapshot
-                  details will be published after the end of each week to
-                  prevent cheating. NEC is locked up for 12 months in a smart
-                  contract. In 12 months time you will be able to unlock your
-                  NEC rewards
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
-
-          <StepBox>
-            <StepWrapper>
-              <StepNumber>
-                <Typography variant={"h4"} color={"textPrimary"}>
-                  6
-                </Typography>
-              </StepNumber>
-              <StepTextWrapper>
-                <Typography
-                  variant={"h4"}
-                  align={"left"}
-                  color={"textPrimary"}
-                  style={{ fontWeight: "bold" }}
-                >
-                  BPT Rewards sent directly to your wallet
-                </Typography>
-                <BodyText variant={"body2"}>
-                  BPT is sent directly to your wallet by Balancer Labs
-                </BodyText>
-              </StepTextWrapper>
-            </StepWrapper>
-          </StepBox>
-        </CenterWrapper>
-      </BackgroundWrapper>
-    </StyledModal>
-  );
-});
+            <StepBox>
+              <StepWrapper>
+                <StepNumber>
+                  <Typography variant={"h4"} color={"textPrimary"}>
+                    6
+                  </Typography>
+                </StepNumber>
+                <StepTextWrapper>
+                  <Typography
+                    variant={"h4"}
+                    align={"left"}
+                    color={"textPrimary"}
+                    style={{ fontWeight: "bold" }}
+                  >
+                    Claim Your NEC Rewards
+                  </Typography>
+                  <BodyText variant={"body2"}>
+                    In 12 months time, you will be able to unlock your NEC rewards from the smart contract
+                  </BodyText>
+                </StepTextWrapper>
+              </StepWrapper>
+            </StepBox>
+          </CenterWrapper>
+        </BackgroundWrapper>
+      </StyledModal>
+    );
+  })
+);
 
 export default BeehiveGuide;

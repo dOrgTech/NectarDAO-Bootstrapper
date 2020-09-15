@@ -1,11 +1,13 @@
-import React, { useState } from "react";
-import { withRouter } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { observer, inject } from "mobx-react";
+import { RootStore } from "stores/Root";
 import Tooltip from "components/common/Tooltip";
 import styled from "styled-components";
 import { tooltip } from "strings";
 import { Title } from "components/common/beehive/Title";
 import { Typography, Link } from "@material-ui/core";
 import BeehiveGuide from "./BeehiveGuide";
+import { NecRewardsDTO, PoolDataDTO } from "types";
 
 const HeaderWrapper = styled.div`
   width: 100%;
@@ -135,9 +137,29 @@ const GuideLinkText = styled(Typography)`
   padding-top: 16px;
 `
 
-const BigHeader = withRouter((props) => {
+const BigHeader = inject("root")(
+  observer((props) => {
   const { height } = props;
   const [isGuideOpen, setIsGuideOpen] = useState(false)
+  const [poolData, setPoolData] = useState<PoolDataDTO>()
+  const [necRewards, setNecRewards] = useState<NecRewardsDTO>()
+
+  const { beehiveStore } = props.root as RootStore;
+
+  useEffect(() => {
+    setPoolData(beehiveStore.poolData)
+  }, [beehiveStore.poolData])
+
+  useEffect(() => {
+    setNecRewards(beehiveStore.necRewards)
+  }, [beehiveStore.necRewards])
+
+  const apy = poolData && poolData.apy && Number(poolData.apy.toFixed(4))
+  const necPrice = poolData && poolData.necPrice && Number(poolData.necPrice.toFixed(4))
+  const totalRewards = necRewards && necRewards.total_nec && Number(necRewards.total_nec.toFixed(4))
+  const remainingRewards = necRewards && necRewards.remaining_nec && Number(necRewards.remaining_nec.toFixed(4))
+  const totalRewardsInUsd = totalRewards && necPrice && Number((totalRewards * necPrice).toFixed(4))
+  const remainingRewardsInUsd = remainingRewards && necPrice && Number((remainingRewards * necPrice).toFixed(4))
 
   return (
     <>
@@ -172,14 +194,14 @@ const BigHeader = withRouter((props) => {
                     align={"left"}
                     color={"textPrimary"}
                   >
-                    10,000,000
+                    {totalRewards? `${totalRewards}`: '0'}
                   </Typography>
                   <SmallSubtitle
                     variant={"body2"}
                     align={"left"}
                     color={"textSecondary"}
                   >
-                    $2,200,000
+                    {totalRewardsInUsd? `$${totalRewardsInUsd}`: '0'}
                   </SmallSubtitle>
                 </StatsboxContent>
               </Statsbox>
@@ -197,14 +219,14 @@ const BigHeader = withRouter((props) => {
                     align={"left"}
                     color={"textPrimary"}
                   >
-                    10,000,000
+                    {remainingRewards? `${remainingRewards}`: '0'}
                   </Typography>
                   <SmallSubtitle
                     variant={"body2"}
                     align={"left"}
                     color={"textSecondary"}
                   >
-                    $2,200,000
+                    {remainingRewardsInUsd? `$${remainingRewardsInUsd}`: '$0'}
                   </SmallSubtitle>
                 </StatsboxContent>
               </Statsbox>
@@ -215,14 +237,14 @@ const BigHeader = withRouter((props) => {
                     align={"left"}
                     color={"textSecondary"}
                   >
-                    Total Reputation
+                    NEC Price
                   </Typography>
                   <Typography
                     variant={"h3"}
                     align={"left"}
                     color={"textPrimary"}
                   >
-                    10,000,000
+                    {necPrice? `$${necPrice}`: '-'}
                   </Typography>
                 </StatsboxContent>
               </Statsbox>
@@ -233,14 +255,14 @@ const BigHeader = withRouter((props) => {
                     align={"left"}
                     color={"textSecondary"}
                   >
-                    Remaining Reputation
+                    APY
                   </Typography>
                   <Typography
                     variant={"h3"}
                     align={"left"}
                     color={"textPrimary"}
                   >
-                    10,000,000
+                    {apy? `${apy}%`: '-'}
                   </Typography>
                 </StatsboxContent>
               </Statsbox>
@@ -264,7 +286,7 @@ const BigHeader = withRouter((props) => {
                       </Typography>
                     </StepWrapper>
                     <InstructText align={"left"} variant={"body2"}>
-                      Stake into the NEC/wETH Balancer Pool to Receive BPT
+                      Stake into the NEC/wETH Balancer Pool to Receive BPT.
                     </InstructText>
                   </InstructBoxContent>
                 </InstructBox>
@@ -282,7 +304,7 @@ const BigHeader = withRouter((props) => {
                       </Typography>
                     </StepWrapper>
                     <InstructText align={"left"} variant={"body2"}>
-                      Earn $NEC, $BAL and necDAO Reputation{" "}
+                      Earn $NEC Rewards Weekly, Locked for 12 months
                     </InstructText>
                   </InstructBoxContent>
                 </InstructBox>
@@ -296,11 +318,11 @@ const BigHeader = withRouter((props) => {
                         color={"textPrimary"}
                         style={{ fontWeight: 'bold' }}
                       >
-                        Participate
+                        EARN
                       </Typography>
                     </StepWrapper>
                     <InstructText align={"left"} variant={"body2"}>
-                      Participate in necDAO Governance
+                      Earn $BAL Rewards Weekly
                     </InstructText>
                   </InstructBoxContent>
                 </InstructBox>
@@ -318,7 +340,7 @@ const BigHeader = withRouter((props) => {
                       </Typography>
                     </StepWrapper>
                     <InstructText align={"left"} variant={"body2"}>
-                      Claim your $NEC Rewards in 12 Months
+                      Unlock Your $NEC Rewards in 12 Months
                     </InstructText>
                   </InstructBoxContent>
                 </InstructBox>
@@ -336,6 +358,6 @@ const BigHeader = withRouter((props) => {
       <BeehiveGuide open={isGuideOpen} onClose={() => setIsGuideOpen(false)}/>
     </>
   );
-});
+}))
 
 export default BigHeader;

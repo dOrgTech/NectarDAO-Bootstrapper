@@ -95,6 +95,7 @@ const MainTitle = styled.div`
 `;
 
 const TermContainer = styled.div`
+  cursor: pointer;
   background: #1f2a3e;
   border-radius: 6px;
   padding: 12px 25px;
