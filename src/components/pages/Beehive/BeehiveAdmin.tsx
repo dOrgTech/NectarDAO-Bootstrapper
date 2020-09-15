@@ -152,7 +152,7 @@ export const BeehiveAdmin = inject("root")(
     const rows = tableDataMapper(tableDataDtos);
 
     const fetchWeekData = async () => {
-      const response = await fetch(`http://localhost:3500/week/all`);
+      const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/week/all`);
       const json = await response.json();
       if (!json.error) {
         setTableDataDtos(json);
@@ -172,7 +172,7 @@ export const BeehiveAdmin = inject("root")(
       const necs = Object.values(necPerWeek).slice(0, weeks);
 
       try {
-        await fetch(`http://localhost:3500/period`, {
+        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/period`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -193,7 +193,7 @@ export const BeehiveAdmin = inject("root")(
 
     const takeSnapshot = async (weekId: string) => {
       try {
-        await fetch(`http://localhost:3500/snapshot/take/${weekId}`, {
+        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/take/${weekId}`, {
           method: "POST",
         });
         await fetchWeekData();
@@ -204,7 +204,7 @@ export const BeehiveAdmin = inject("root")(
 
     const publishResults = async (weekId: string) => {
       try {
-        await fetch(`http://localhost:3500/snapshot/publish/${weekId}`, {
+        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/publish/${weekId}`, {
           method: "POST",
         });
         await fetchWeekData();
@@ -214,7 +214,7 @@ export const BeehiveAdmin = inject("root")(
     };
 
     const getSnapshotCsv = async (weekId: string) => {
-      window.open(`http://localhost:3500/snapshot/csv/${weekId}`);
+      window.open(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/csv/${weekId}`);
     };
 
     return (

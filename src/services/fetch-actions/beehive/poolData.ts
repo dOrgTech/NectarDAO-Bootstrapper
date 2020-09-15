@@ -10,7 +10,7 @@ export class PoolDataFetch extends BaseFetch {
 
     async fetchData(): Promise<FetchActionResult> {
 
-        const response = await fetch(`http://localhost:3500/pool/apy`)
+        const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/pool/apy`)
         const dataResponse = await response.json()
 
         if(!dataResponse.error) {
