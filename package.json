@@ -200,5 +200,5 @@
     "url": "https://github.com/dOrgTech/NectarDAO-Bootstrapper/issues"
   },
   "homepage": "https://github.com/dOrgTech/NectarDAO-Bootstrapper#readme",
-  "devDependencies": {}
+  "devDependencies": { }
 }
