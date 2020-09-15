@@ -88,6 +88,7 @@
     "semver": "6.3.0",
     "style-loader": "1.0.0",
     "styled-components": "^4.4.0",
+    "serve": "^11.3.2",
     "terser-webpack-plugin": "1.4.1",
     "ts-pnp": "1.1.4",
     "typescript": "^3.6.4",
@@ -103,7 +104,8 @@
   },
   "scripts": {
     "ganache": "ganache-cli --deterministic",
-    "start": "node scripts/start.js",
+    "start": "serve -s build",
+    "dev": "node scripts/start.js",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js"
   },
