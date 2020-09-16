@@ -95,7 +95,7 @@ const CustomizedTable = inject("root")(
       const from = (await providerStore.getAccounts())[0]
       let gas = 0
       try {
-        let gasEstimation = await tokenlockInstance.methods.release().estimateGas({ from })
+        let gasEstimation = await tokenlockInstance.methods.release().estimateGas({ from, gas: gasLimit, gasPrice })
         console.log("Gas estimation without motifications ", gasEstimation)
         if (gasEstimation * 1.1 < gasLimit - 100000) {
           gas *= 1.1;
