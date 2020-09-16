@@ -14,6 +14,8 @@ import { Typography, Button, Box } from "@material-ui/core";
 import dotenv from "dotenv";
 import dayjs from "dayjs";
 
+const timelockContract = require("../../../abi/TokenTimelock.json")
+
 dotenv.config();
 
 const parseLocalDate = (dateString: string) => {
@@ -75,7 +77,7 @@ const HeaderText = styled(Typography)`
 const CustomizedTable = inject("root")(
   observer((props) => {
 
-    const { beehiveStore } = props.root as RootStore;
+    const { beehiveStore, providerStore } = props.root as RootStore;
     const rows = beehiveStore.tableData
 
     useEffect(() => {
@@ -84,6 +86,28 @@ const CustomizedTable = inject("root")(
         beehiveStore.toggleCountdown(false)
       }
     }, [])
+
+    const claim = async (contractAddress: string) => {
+      const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
+      const { gasLimit } = await providerStore.web3.eth.getBlock("latest");
+      console.log("Gas limit ", gasLimit)
+      const gasPrice = await providerStore.web3.eth.getGasPrice()
+      const from = (await providerStore.getAccounts())[0]
+      let gas = 0
+      try {
+        let gasEstimation = await tokenlockInstance.methods.release().estimateGas({ from, gas: gasLimit, gasPrice })
+        console.log("Gas estimation without motifications ", gasEstimation)
+        if (gasEstimation * 1.1 < gasLimit - 100000) {
+          gas *= 1.1;
+        }
+      } catch (e) {
+        gas = gasLimit - 100000;
+      }
+      gas = Math.round(gas)
+      console.log("Gas estimation: ", gas)
+      console.log("Gas price: ", gasPrice)
+      await tokenlockInstance.methods.release().send({ from, gas: 235000, gasPrice });
+    }
 
     return (
       <TableWrapper>
@@ -116,7 +140,7 @@ const CustomizedTable = inject("root")(
                 <TableRow key={row.period}>
                   <TableCell component="th" scope="row">
                     <Typography variant={"body2"}>Period {row.period}</Typography>
-                    <Tinyletters>{row.endDate? `Ends in ${parseUtcDate(row.endDate)} UTC`: '-'}</Tinyletters>
+                    <Tinyletters>{row.endDate? `Ends in ${(row.endDate)} UTC`: '-'}</Tinyletters>
                   </TableCell>
                   <TableCell align="right">
                     <StatusCell>
@@ -153,7 +177,7 @@ const CustomizedTable = inject("root")(
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
                         {row.unlockDate? parseLocalDate(row.unlockDate): '-'} {`\n`}{" "}
-                        <Tinyletters>{row.unlockDate? `${parseUtcDate(row.unlockDate)} UTC`: '-'}</Tinyletters>
+                        <Tinyletters>{row.unlockDate? `${(row.unlockDate)} UTC`: '-'}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>
@@ -163,6 +187,7 @@ const CustomizedTable = inject("root")(
                         variant={"outlined"}
                         fullWidth={true}
                         color={"primary"}
+                        onClick={async () => await claim(row.contractAddress)}
                       >
                         Unlock Nec
                       </Button>

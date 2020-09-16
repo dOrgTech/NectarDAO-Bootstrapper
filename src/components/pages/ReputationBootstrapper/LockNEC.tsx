@@ -50,8 +50,8 @@ const TableHeaderWrapper = styled.div`
   padding: 0px 24px;
   border-bottom: 1px solid var(--border);
   @media (max-width: 480px) {
-    width:350px;
-    padding-left:125px;
+    width:100%;
+    margin-left:auto;
   } 
 `;
 

@@ -5,7 +5,6 @@ export const LockingPeriodSelectorWrapper = styled.div`
   flex-direction: column;
   color: var(--inactive-text);
   margin: 20px 24px 23px;
-  
 `
 
 export const LockingPeriodTitle = styled.div`
@@ -21,6 +20,7 @@ export const LockingPeriodSelector = styled.div`
   margin-top: 12px;
   background: rgba(40, 50, 74, 0.5);
 
+
 `
 
 export const LockingPeriodCell = styled.div`
@@ -32,11 +32,11 @@ export const LockingPeriodCell = styled.div`
   border: 1px solid var(--inactive-border);
   cursor: pointer;
   @media (max-width: 800px) {
-    width:60px;
-  }
-  @media (max-width: 600px) {
-    width:40px;
-  }
+    width:80px;
+   }
+   @media (max-width: 480px) {
+     width:40px;     
+    }
 `
 
 export const ActiveLockingPeriodCell = styled(LockingPeriodCell)`

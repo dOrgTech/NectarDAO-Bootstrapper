@@ -6,10 +6,13 @@ export const TableWrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: 360px;
   overflow: auto;
 background: rgba(40, 50, 74, 0.5);
-
+  padding-bottom:20px;
+  @media (max-width: 480px) {
+    margin-left:auto;
+    
+  }
 `
 
 export const RowWrapper = styled.div`

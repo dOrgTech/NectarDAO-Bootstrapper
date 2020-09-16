@@ -18,6 +18,7 @@ const HeaderWrapper = styled.div`
   margin-top:-64px;
   @media (max-width: 480px) {
     margin-bottom:150px;
+    
   }
 `
 
@@ -34,6 +35,7 @@ const TotalRepWrapper = styled.div`
   display: flex;
   flex-direction: row;
   @media (max-width: 480px) {
+    width:350px;
   }
 `
 
