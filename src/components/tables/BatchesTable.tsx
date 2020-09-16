@@ -6,9 +6,6 @@ import * as helpers from 'utils/helpers'
 import { RootStore } from 'stores/Root';
 import { Batch } from 'types';
 import LoadingCircle from 'components/common/LoadingCircle';
-import styled from 'styled-components';
-
-
 
 const columns = [
     { name: 'Period', key: 'batchIdDisplay', width: '10%', align: 'left' },
@@ -78,6 +75,7 @@ class BatchesTable extends React.Component<any, any>{
                 <RowWrapper>
                     <Row>
                         {columns.map((column, index) => (
+                            //@ts-ignore
                             <GreyCell key={`col-${index}`} width={column.width} align={column.align}>
                                 {column.name}
                             </GreyCell>
@@ -96,7 +94,8 @@ class BatchesTable extends React.Component<any, any>{
                                     <Wrapper key={`wrapper-${index}`}>
                                         <Row key={`row-${index}`}>
                                             {columns.map((column, index) => (
-                                                <Cell key={`cell-${index}`} width={column.width} align={column.align}>
+                                                //@ts-ignore
+                                                <Cell key={`cell-${index}`} style={{ width: column.width, align: column.align }}>
                                                     {row[column.key]}
                                                 </Cell>
                                             ))}

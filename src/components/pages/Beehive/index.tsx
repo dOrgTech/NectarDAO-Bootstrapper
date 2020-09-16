@@ -10,10 +10,7 @@ import { ProviderState } from 'stores/Provider';
 import BeehivePanel from './BeehivePanel';
 import BeehiveTable from "./BeehiveTable"
 import BeehiveSteps from './BeehiveSteps'
-const responsiveWrap = styled.div`
-@media (max-width: 480px) {
-  width:100%;
-}`
+
 @inject('root')
 @observer
 class Beehive extends React.Component<any, any> {

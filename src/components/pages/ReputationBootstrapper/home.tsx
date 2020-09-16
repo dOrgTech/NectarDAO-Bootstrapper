@@ -106,7 +106,7 @@ display: inline-block;
  align-items:center;
  width:100%;
  text-align:center;
-margin: 15px; 0px; 
+  margin: 15px 0px; 
  `
 
  const Statsbox = styled.div`
@@ -238,7 +238,7 @@ const Selector = withRouter((props) => {
   return (
     <BigWrap>
 
-        <HeaderWrapper height={height}>
+        <HeaderWrapper style={{ height }}>
         <Logo src={NECLogo} />
 
       <Title>
