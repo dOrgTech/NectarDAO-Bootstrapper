@@ -89,8 +89,20 @@ const CustomizedTable = inject("root")(
 
     const claim = async (contractAddress: string) => {
       const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
+      const { gasLimit } = await providerStore.web3.eth.getBlock("latest");
+      const gasPrice = await providerStore.web3.eth.getGasPrice()
       const from = (await providerStore.getAccounts())[0]
-      await tokenlockInstance.methods.release().send({ from });
+      let gas = 0
+      try {
+        let gasEstimation = await tokenlockInstance.methods.release().estimateGas({ from })
+        if (gasEstimation * 1.1 < gasLimit - 100000) {
+          gas *= 1.1;
+        }
+      } catch (e) {
+        gas = gasLimit - 100000;
+      }
+      gas = Math.round(gas)
+      await tokenlockInstance.methods.release().send({ from, gas, gasPrice });
     }
 
     return (
