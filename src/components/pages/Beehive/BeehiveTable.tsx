@@ -14,6 +14,8 @@ import { Typography, Button, Box } from "@material-ui/core";
 import dotenv from "dotenv";
 import dayjs from "dayjs";
 
+const timelockContract = require("../../../abi/TokenTimelock.json")
+
 dotenv.config();
 
 const parseLocalDate = (dateString: string) => {
@@ -75,7 +77,7 @@ const HeaderText = styled(Typography)`
 const CustomizedTable = inject("root")(
   observer((props) => {
 
-    const { beehiveStore } = props.root as RootStore;
+    const { beehiveStore, providerStore } = props.root as RootStore;
     const rows = beehiveStore.tableData
 
     useEffect(() => {
@@ -84,6 +86,12 @@ const CustomizedTable = inject("root")(
         beehiveStore.toggleCountdown(false)
       }
     }, [])
+
+    const claim = async (contractAddress: string) => {
+      const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
+      const from = (await providerStore.getAccounts())[0]
+      await tokenlockInstance.methods.release().send({ from });
+    }
 
     return (
       <TableWrapper>
@@ -163,6 +171,7 @@ const CustomizedTable = inject("root")(
                         variant={"outlined"}
                         fullWidth={true}
                         color={"primary"}
+                        onClick={async () => await claim(row.contractAddress)}
                       >
                         Unlock Nec
                       </Button>
