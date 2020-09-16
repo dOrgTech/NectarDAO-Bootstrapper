@@ -90,11 +90,13 @@ const CustomizedTable = inject("root")(
     const claim = async (contractAddress: string) => {
       const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
       const { gasLimit } = await providerStore.web3.eth.getBlock("latest");
+      console.log("Gas limit ", gasLimit)
       const gasPrice = await providerStore.web3.eth.getGasPrice()
       const from = (await providerStore.getAccounts())[0]
       let gas = 0
       try {
         let gasEstimation = await tokenlockInstance.methods.release().estimateGas({ from })
+        console.log("Gas estimation without motifications ", gasEstimation)
         if (gasEstimation * 1.1 < gasLimit - 100000) {
           gas *= 1.1;
         }
