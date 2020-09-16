@@ -160,11 +160,6 @@ export const BeehiveAdmin = inject("root")(
     };
 
     useEffect(() => {
-      if (!token) {
-        history.replace("/login");
-        return;
-      }
-
       fetchWeekData();
     }, []);
 
