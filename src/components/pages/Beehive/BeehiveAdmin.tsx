@@ -381,9 +381,11 @@ export const BeehiveAdmin = inject("root")(
                           <Box
                             width="100%"
                             display="flex"
-                            justifyContent="space-evenly"
+                            flexWrap='wrap'
+                            maxWidth='400px'
                           >
                             <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => takeSnapshot(row.id)}
@@ -392,6 +394,7 @@ export const BeehiveAdmin = inject("root")(
                               Take Snapshot
                             </Button>
                             <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => publishResults(row.id)}
@@ -400,14 +403,7 @@ export const BeehiveAdmin = inject("root")(
                               Publish Results and Close
                             </Button>
                             <Button
-                              variant={"outlined"}
-                              color={"primary"}
-                              onClick={() => getSnapshotCsv(row.id)}
-                              disabled={!row.snapshotDate}
-                            >
-                              Get Snapshot CSV
-                            </Button>
-                            <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => redeployContract(row.id)}
@@ -416,12 +412,22 @@ export const BeehiveAdmin = inject("root")(
                               Redeploy contract
                             </Button>
                             <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => addBeneficiaries(row.id)}
                               disabled={!row.contractAddress}
                             >
                               Add Beneficiaries
+                            </Button>
+                            <Button
+                              size='small'
+                              variant={"outlined"}
+                              color={"primary"}
+                              onClick={() => getSnapshotCsv(row.id)}
+                              disabled={!row.snapshotDate}
+                            >
+                              Get Snapshot CSV
                             </Button>
                           </Box>
                         </TableCell>
