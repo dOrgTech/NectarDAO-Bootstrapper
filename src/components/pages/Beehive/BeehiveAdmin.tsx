@@ -324,11 +324,11 @@ export const BeehiveAdmin = inject("root")(
                             Period {row.period}
                           </Typography>
                           <Typography variant={"h6"}>
-                            Ends UTC {formatDate(row.endDate)}
+                            Ends UTC {(row.endDate)}
                           </Typography>
                         </TableCell>
                         <TableCell align="left">
-                          {formatDate(row.startDate) || "-"}
+                          {(row.startDate) || "-"}
                         </TableCell>
                         <TableCell align="right">
                           <StatusCell>
@@ -347,10 +347,10 @@ export const BeehiveAdmin = inject("root")(
                           {row.necToDistribute}
                         </TableCell>
                         <TableCell align="left">
-                          {row.unlockDate? formatDate(row.unlockDate) : "-"}
+                          {row.unlockDate? (row.unlockDate) : "-"}
                         </TableCell>
                         <TableCell align="left">
-                          {row.snapshotDate? formatDate(row.snapshotDate) : "-"}
+                          {row.snapshotDate? (row.snapshotDate) : "-"}
                         </TableCell>
                         <TableCell align="left" style={{ wordBreak: 'break-word' }}>
                           {row.contractAddress? row.contractAddress : "-"}
