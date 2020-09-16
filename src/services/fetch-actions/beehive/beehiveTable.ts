@@ -16,17 +16,20 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): TableData[] => {
       nec_earned,
       nec_to_distribute,
       end_date,
-      snapshot_date
+      snapshot_date,
+      unlock_date,
+      contract_address
     } = dto;
     return {
       period: week_number,
       status: closed ? "Closed" : "Open",
       snapshot1: bpt_balance ? Number(bpt_balance).toFixed(3) : "0",
       earnedNec: nec_earned ? Number(nec_earned).toFixed(3) : "0",
-      endDate: end_date && dayjs.utc(end_date).format("MM/DD/YYYY HH:mm:ss"),
-      unlockDate: "01/09/2021",
+      endDate: end_date,
+      unlockDate: unlock_date,
+      contractAddress: contract_address,
       claim: "Unlock NEC",
-      snapshotDate: snapshot_date && dayjs.utc(snapshot_date).format("MM/DD/YYYY HH:mm:ss"),
+      snapshotDate: snapshot_date,
       earnedNecPercent: nec_earned
         ? ((Number(nec_earned) * 100) / Number(nec_to_distribute)).toFixed(2)
         : "0",

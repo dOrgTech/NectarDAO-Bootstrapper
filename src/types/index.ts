@@ -130,6 +130,7 @@ export interface TableData {
     snapshot1: string;
     earnedNec: string;
     unlockDate: string;
+    contractAddress: string;
     claim: string;
     endDate: string;
     earnedNecPercent: string;
@@ -145,6 +146,8 @@ export interface TableDataDTO {
   fk_period_id: string;
   snapshot_date: string;
   bpt_balance: string;
+  unlock_date: string;
+  contract_address: string;
 }
 
 export interface PoolDataDTO {

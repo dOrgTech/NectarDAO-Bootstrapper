@@ -16,6 +16,14 @@ import dayjs from "dayjs";
 
 dotenv.config();
 
+const parseLocalDate = (dateString: string) => {
+  return dayjs(dateString).format('YYYY/MM/DD HH:mm:ss')
+}
+
+const parseUtcDate = (dateString: string) => {
+  return dayjs.utc(dateString).format('YYYY/MM/DD HH:mm:ss')
+}
+
 const Tinyletters = styled.div`
   font-size: 12px;
   color: #a9abcb;
@@ -101,7 +109,7 @@ const CustomizedTable = inject("root")(
                 <TableRow key={row.period}>
                   <TableCell component="th" scope="row">
                     <Typography variant={"body2"}>Period {row.period}</Typography>
-                    <Tinyletters>{row.endDate} UTC</Tinyletters>
+                    <Tinyletters>{row.endDate? `${parseUtcDate(row.endDate)} UTC`: '-'}</Tinyletters>
                   </TableCell>
                   <TableCell align="right">
                     <StatusCell>
@@ -137,8 +145,8 @@ const CustomizedTable = inject("root")(
                   <TableCell>
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
-                        {row.unlockDate} {`\n`}{" "}
-                        <Tinyletters>00:00:00 UTC</Tinyletters>
+                        {row.unlockDate? parseLocalDate(row.unlockDate): '-'} {`\n`}{" "}
+                        <Tinyletters>{row.unlockDate? `${parseUtcDate(row.unlockDate)} UTC`: '-'}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>

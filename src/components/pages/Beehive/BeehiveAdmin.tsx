@@ -180,7 +180,7 @@ export const BeehiveAdmin = inject("root")(
           body: JSON.stringify({
             necPerWeek: necs,
             weeks,
-            scheduleStartDate,
+            start_date: scheduleStartDate,
           }),
         });
         await fetchWeekData();
@@ -305,6 +305,9 @@ export const BeehiveAdmin = inject("root")(
                       <HeaderText variant={"h6"}>Snapshot Date</HeaderText>
                     </TableCell>
                     <TableCell align="left">
+                      <HeaderText variant={"h6"}>Timelock Contract Address</HeaderText>
+                    </TableCell>
+                    <TableCell align="left">
                       <HeaderText variant={"h6"}>Actions</HeaderText>
                     </TableCell>
                   </TableRow>
@@ -355,6 +358,9 @@ export const BeehiveAdmin = inject("root")(
                         </TableCell>
                         <TableCell align="left">
                           {row.snapshotDate? formatDate(row.snapshotDate) : "-"}
+                        </TableCell>
+                        <TableCell align="left" style={{ wordBreak: 'break-word' }}>
+                          {row.contractAddress? row.contractAddress : "-"}
                         </TableCell>
                         <TableCell align="left">
                           <Box
