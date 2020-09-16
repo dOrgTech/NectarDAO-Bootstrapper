@@ -219,6 +219,17 @@ export const BeehiveAdmin = inject("root")(
       }
     };
 
+    const addBeneficiaries = async (weekId: string) => {
+      try {
+        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/addBeneficiaries/${weekId}`, {
+          method: "POST",
+        });
+        await fetchWeekData();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const getSnapshotCsv = async (weekId: string) => {
       window.open(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/csv/${weekId}`);
     };
@@ -370,9 +381,11 @@ export const BeehiveAdmin = inject("root")(
                           <Box
                             width="100%"
                             display="flex"
-                            justifyContent="space-evenly"
+                            flexWrap='wrap'
+                            maxWidth='400px'
                           >
                             <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => takeSnapshot(row.id)}
@@ -381,6 +394,7 @@ export const BeehiveAdmin = inject("root")(
                               Take Snapshot
                             </Button>
                             <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => publishResults(row.id)}
@@ -389,20 +403,31 @@ export const BeehiveAdmin = inject("root")(
                               Publish Results and Close
                             </Button>
                             <Button
-                              variant={"outlined"}
-                              color={"primary"}
-                              onClick={() => getSnapshotCsv(row.id)}
-                              disabled={!row.snapshotDate}
-                            >
-                              Get Snapshot CSV
-                            </Button>
-                            <Button
+                              size='small'
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => redeployContract(row.id)}
                               disabled={!row.snapshotDate || row.status === 'Open'}
                             >
                               Redeploy contract
+                            </Button>
+                            <Button
+                              size='small'
+                              variant={"outlined"}
+                              color={"primary"}
+                              onClick={() => addBeneficiaries(row.id)}
+                              disabled={!row.contractAddress}
+                            >
+                              Add Beneficiaries
+                            </Button>
+                            <Button
+                              size='small'
+                              variant={"outlined"}
+                              color={"primary"}
+                              onClick={() => getSnapshotCsv(row.id)}
+                              disabled={!row.snapshotDate}
+                            >
+                              Get Snapshot CSV
                             </Button>
                           </Box>
                         </TableCell>
