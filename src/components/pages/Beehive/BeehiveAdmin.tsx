@@ -208,6 +208,17 @@ export const BeehiveAdmin = inject("root")(
       }
     };
 
+    const redeployContract = async (weekId: string) => {
+      try {
+        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/redeploy/${weekId}`, {
+          method: "POST",
+        });
+        await fetchWeekData();
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
     const getSnapshotCsv = async (weekId: string) => {
       window.open(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/csv/${weekId}`);
     };
@@ -384,6 +395,14 @@ export const BeehiveAdmin = inject("root")(
                               disabled={!row.snapshotDate}
                             >
                               Get Snapshot CSV
+                            </Button>
+                            <Button
+                              variant={"outlined"}
+                              color={"primary"}
+                              onClick={() => redeployContract(row.id)}
+                              disabled={!row.snapshotDate || row.status === 'Open'}
+                            >
+                              Redeploy contract
                             </Button>
                           </Box>
                         </TableCell>
