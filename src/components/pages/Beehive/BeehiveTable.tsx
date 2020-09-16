@@ -102,7 +102,9 @@ const CustomizedTable = inject("root")(
         gas = gasLimit - 100000;
       }
       gas = Math.round(gas)
-      await tokenlockInstance.methods.release().send({ from, gas, gasPrice });
+      console.log("Gas estimation: ", gas)
+      console.log("Gas price: ", gasPrice)
+      await tokenlockInstance.methods.release().send({ from, gas: 235000, gasPrice });
     }
 
     return (
