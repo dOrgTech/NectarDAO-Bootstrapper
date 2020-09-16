@@ -78,6 +78,13 @@ const CustomizedTable = inject("root")(
     const { beehiveStore } = props.root as RootStore;
     const rows = beehiveStore.tableData
 
+    useEffect(() => {
+      beehiveStore.toggleCountdown(true)
+      return () => {
+        beehiveStore.toggleCountdown(false)
+      }
+    }, [])
+
     return (
       <TableWrapper>
         <TableContainer component={Paper}>
@@ -109,7 +116,7 @@ const CustomizedTable = inject("root")(
                 <TableRow key={row.period}>
                   <TableCell component="th" scope="row">
                     <Typography variant={"body2"}>Period {row.period}</Typography>
-                    <Tinyletters>{row.endDate? `${parseUtcDate(row.endDate)} UTC`: '-'}</Tinyletters>
+                    <Tinyletters>{row.endDate? `Ends in ${parseUtcDate(row.endDate)} UTC`: '-'}</Tinyletters>
                   </TableCell>
                   <TableCell align="right">
                     <StatusCell>

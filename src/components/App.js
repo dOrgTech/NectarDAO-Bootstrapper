@@ -10,12 +10,12 @@ import BeehiveGuide from "./pages/Beehive/BeehiveGuide";
 import styled from "styled-components";
 import { Typography, Button, ThemeProvider } from "@material-ui/core";
 import NectarLogo from "assets/pngs/NECwithoutText.png";
-import NectarLogoHeader from "assets/svgs/NecLogo.svg";
+
 import HexagonsBackground from "assets/svgs/hexagonsBackground.svg";
 import { NectarTheme } from "./theme";
 import { BeehiveLogin } from "./pages/Beehive/BeehiveLogin";
 import { BeehiveAdmin } from "./pages/Beehive/BeehiveAdmin";
-import { ArrowForward } from "@material-ui/icons";
+import { AppHeader } from 'components/common/Header';
 
 const AppBody = styled.div`
   height: calc(100% - 70px - 98px);
@@ -25,15 +25,7 @@ const AppBody = styled.div`
   padding-top: 70px;
 `;
 
-const Header = styled.div`
-  position: fixed;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  height: 70px;
-  background: transparent;
-`;
+
 
 const Footer = styled.div`
   position: fixed;
@@ -53,11 +45,7 @@ const FooterText = styled(Typography)`
   padding-right: 166px;
 `;
 
-const Logo = styled.img`
-  padding-left: 166px;
-  height: 50px;
-  width: 50px;
-`;
+
 
 const FooterLogo = styled.img`
   padding-left: 166px;
@@ -65,12 +53,7 @@ const FooterLogo = styled.img`
   width: 32px;
 `;
 
-const HeaderButton = styled.div`
-  padding-right: 166px;
-  .MuiButton-outlinedPrimary {
-    color: #ffffff !important;
-  }
-`;
+
 
 const AppWrapper = styled.div`
   width: 100%;
@@ -97,22 +80,7 @@ const App = inject("root")(
           <BackgroundWrapper
             style={{ backgroundImage: `url(${HexagonsBackground})` }}
           >
-            <Header>
-              <Logo src={NectarLogoHeader} />
-              <HeaderButton>
-                <Button variant={"outlined"} color={"primary"}>
-                  <Typography
-                    variant={"body2"}
-                    align={"left"}
-                    color={"textPrimary"}
-                    style={{ fontWeight: "bold", marginRight: "5px" }}
-                  >
-                    DeversiFi
-                  </Typography>{" "}
-                  <ArrowForward fontSize={"small"} />
-                </Button>
-              </HeaderButton>
-            </Header>
+            <AppHeader/>
             <AppBody>
               <HashRouter>
                 <Web3Manager>

@@ -23,6 +23,7 @@ export default class BeehiveStore extends BaseStore {
   @observable poolData?: PoolDataDTO;
   @observable necRewards?: NecRewardsDTO;
   @observable bptBalance: string = "0";
+  @observable showCountdown: boolean = false;
 
   private BPTAddress = "0xb21e53d8bd2c81629dd916eead08d338e7fcc201";
 
@@ -97,5 +98,9 @@ export default class BeehiveStore extends BaseStore {
         await this.fetchNecRewardsData()
         await this.fetchPoolData()
     }, 30000)
+  }
+
+  @action toggleCountdown = (value: boolean) => {
+    this.showCountdown = value
   }
 }

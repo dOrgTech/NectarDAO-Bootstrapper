@@ -2,7 +2,8 @@ import React from "react";
 import styled from "styled-components";
 import { useHistory } from "react-router-dom";
 import { Title } from "components/common/beehive/Title";
-import { Typography } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
+import { TimeIcon } from "components/common/Icons/time";
 
 const TitleWrapper = styled.div`
   padding: 80px 0 12px 0;
@@ -162,7 +163,13 @@ const HomePage: React.FC = () => {
                 are managed as well as how DeversiFi is governed
               </PanelBodyText>
             </PanelBodyTextWrapper>
-            <TermContainer onClick={goToLockNec}>Long Term</TermContainer>
+            <TermContainer onClick={goToLockNec}>
+              {" "}
+              <Box display="flex" alignItems="flex-end" paddingRight="5px">
+                <TimeIcon />
+              </Box>
+              Long Term
+            </TermContainer>
           </PanelContent>
         </Panel>
         <Panel>
@@ -181,7 +188,12 @@ const HomePage: React.FC = () => {
                 necDAO Reputation
               </PanelBodyText>
             </PanelBodyTextWrapper>
-            <TermContainer onClick={goToBeehive}>Ten Weeks</TermContainer>
+            <TermContainer onClick={goToBeehive}>
+              <Box display="flex" alignItems="flex-end" paddingRight="5px">
+                <TimeIcon />
+              </Box>
+              Ten Weeks
+            </TermContainer>
           </PanelContent>
         </Panel>
       </PageWrapper>
