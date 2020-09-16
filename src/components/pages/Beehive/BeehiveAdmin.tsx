@@ -215,7 +215,6 @@ export const BeehiveAdmin = inject("root")(
     return (
       <>
         {" "}
-        {isAuthenticated && (
           <PageWrapper>
             <InputsContainer>
               <Typography variant={"h4"} color={"primary"}>
@@ -274,7 +273,6 @@ export const BeehiveAdmin = inject("root")(
               </Box>
             </InputsContainer>
           </PageWrapper>
-        )}{" "}
         <Box>
           <TableWrapper>
             <TableContainer component={Paper}>
