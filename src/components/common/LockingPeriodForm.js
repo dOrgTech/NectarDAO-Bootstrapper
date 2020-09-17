@@ -35,7 +35,7 @@ export const LockingPeriodCell = styled.div`
     width:80px;
    }
    @media (max-width: 480px) {
-     width:40px;     
+     width:60px;     
     }
 `
 

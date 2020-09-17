@@ -30,7 +30,7 @@ const LockNECWrapper = styled.div`
     justify-content:center;
   }
   @media (max-width: 480px) {
-width:350px;
+width:400px;
 padding-top:150px;
 }
 `;

@@ -12,6 +12,10 @@ import { NecRewardsDTO, PoolDataDTO } from "types";
 const HeaderWrapper = styled.div`
   width: 100%;
   text-align: center;
+  @media (max-width: 800px) {
+    width:80%;
+    margin: 0 auto;
+  }
 `;
 
 const CenterWrapper = styled.div`
@@ -49,6 +53,7 @@ const Statsbox = styled.div`
 
 const InstructDiv = styled.div`
   width: 100%;
+  margin-right:30px;
 `;
 
 const InstructBox = styled.div`
@@ -59,7 +64,9 @@ const InstructBox = styled.div`
   border-radius: 6px;
   width: 255px;
   height: 148px;
-
+  @media (max-width: 800px) {
+    margin-bottom:25px;
+  }
   &::after {
     content:"";
     position:absolute;
