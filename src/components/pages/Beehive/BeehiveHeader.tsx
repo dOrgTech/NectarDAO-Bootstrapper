@@ -38,6 +38,10 @@ const InstructBox = styled(Box)`
   height: 148px;
   padding: 14px 16px;
 
+  @media (max-width: 599px) {
+    min-width: 255px;
+  }
+
   ${({ shaped }: { shaped: boolean }) => shaped && `
     &::after {
     content: "";
@@ -62,6 +66,7 @@ const InstructBox = styled(Box)`
   }
 
   @media (max-width: 599px) {
+
     &::after {
       content: "";
       position: absolute;
@@ -243,7 +248,7 @@ const BigHeader = inject("root")(
       <>
         <Box width="100%" textAlign="center">
           <Title text={"Nectar Beehive"} afterElement={true} />
-          <Box display="flex" justifyContent="center">
+          <Box display="flex" justifyContent="center" paddingX='30px'>
             <Box maxWidth="1110px" width="100%">
               <Grid container direction="column" alignItems="center">
                 <Box maxWidth="445px" paddingX='25px' boxSizing='border-box'>

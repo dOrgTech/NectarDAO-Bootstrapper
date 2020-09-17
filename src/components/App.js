@@ -21,6 +21,7 @@ const AppBody = styled.div`
   height: calc(100% - 70px - 98px);
   max-height: calc(100% - 70px - 98px);
   overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
   padding-top: 70px;
 `;
