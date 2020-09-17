@@ -1,55 +1,71 @@
-import React, { useEffect, useState } from 'react'
+import React from "react";
 import { observer, inject } from "mobx-react";
-import Countdown from 'react-countdown';
-import styled from 'styled-components';
-import dayjs from 'dayjs';
-import { TableData } from 'types';
-import { RootStore } from 'stores/Root';
-import { Box, Typography } from '@material-ui/core';
-import { TimeIcon } from '../Icons/time';
+import Countdown from "react-countdown";
+import styled from "styled-components";
+import dayjs from "dayjs";
+import { RootStore } from "stores/Root";
+import { Box, Grid, Typography } from "@material-ui/core";
+import { TimeIcon } from "../Icons/time";
 
-const CountdownBody = styled.div`
-  width: 100%;
+const CountdownBody = styled(Box)`
   padding: 15px 20px;
-  background: #28324A;
+  background: #28324a;
   border-radius: 6px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`
+`;
 
 const Bold = styled.span`
   font-weight: bold !important;
-  color: #FFFFFF !important;
-`
+  color: #ffffff !important;
+`;
 
 export const BeehiveCountdown = inject("root")(
   observer((props) => {
     const { beehiveStore } = props.root as RootStore;
 
-    const nextWeek = beehiveStore.tableData.find((row) => row.status === 'Open')
+    const nextWeek = beehiveStore.tableData.find(
+      (row) => row.status === "Open"
+    );
 
-    console.log(nextWeek)
+    console.log(nextWeek);
 
     return (
-      nextWeek && <Countdown 
-        date={dayjs(nextWeek.endDate).unix() * 1000}
-        renderer={({ hours, days, minutes }) => {
-          return (
-            <CountdownBody>
-              <Box display='flex'>
-                <Box display='flex' alignItems='flex-end' paddingRight='5px'><TimeIcon/></Box>
-                <Typography color='textSecondary' variant='body1' style={{ fontFamily: 'Montserrat', letterSpacing: 1 }}>
-                  <Bold>{days}</Bold>D:<Bold>{hours}</Bold>H:<Bold>{minutes}</Bold>m
-                </Typography> 
-              </Box>
-              <Typography color='textSecondary' variant='body2' style={{ fontFamily: 'Montserrat' }}>
-                Period {nextWeek.period} of {beehiveStore.tableData.length}
-              </Typography>
-            </CountdownBody>
-          )
-        }}
-      />
+      nextWeek && (
+        <Countdown
+          date={dayjs(nextWeek.endDate).unix() * 1000}
+          renderer={({ hours, days, minutes }) => {
+            return (
+              <CountdownBody>
+                <Grid container spacing={5} justify="space-between" alignItems="center">
+                  <Grid container item xs={6} alignItems="center">
+                    <Box display='flex' alignItems='center'>
+                      <TimeIcon/>
+                      <Typography
+                        color="textSecondary"
+                        variant="body1"
+                        style={{ fontFamily: "Montserrat", letterSpacing: 1 }}
+                      >
+                        <Bold>{days}</Bold>D:<Bold>{hours}</Bold>H:
+                        <Bold>{minutes}</Bold>m
+                      </Typography>
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography
+                      color="textSecondary"
+                      variant="body2"
+                      align='right'
+                      style={{ fontFamily: "Montserrat" }}
+                    >
+                      Period {nextWeek.period} of{" "}
+                      {beehiveStore.tableData.length}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </CountdownBody>
+            );
+          }}
+        />
+      )
     );
   })
 );
