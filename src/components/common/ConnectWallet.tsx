@@ -22,14 +22,6 @@ const SubTitle = styled.p`
   margin: 0 0 40px 0;
 `;
 
-const Buttons = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-  padding-bottom: 30px;
-  justify-content: center;
-`;
-
 const ConnectButton = styled.div`
   display: flex;
   cursor: pointer;
@@ -49,7 +41,7 @@ const LedgerWalletLogo = styled.img`
   width: 135px;
 `;
 
-const Alert = styled.div`
+const Alert = styled(Box)`
   background: linear-gradient(
     315deg,
     rgba(255, 136, 0, 0.2) 8.75%,
@@ -68,15 +60,6 @@ const AlertContent = styled.div`
   justify-content: center;
 `;
 
-const WarningText = styled.span`
-  margin: 0;
-  font-family: Sen;
-  font-style: normal;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 150%;
-`;
-
 const ConnectWallet = inject("root")(
   observer((props) => {
     const [modal, toggleModal] = useState(false);
@@ -85,26 +68,28 @@ const ConnectWallet = inject("root")(
         <Grid container justify="center">
           <Box width="541px" height="364px">
             <SubTitle>Please connect your Ethereum wallet to continue</SubTitle>
-            <Grid container spacing={2} justify='center'>
-              <Grid item>
-                <ConnectButton
-                  onClick={() => {
-                    props.root.providerStore.setWallet(Wallet.METAMASK);
-                  }}
-                >
-                  <MetamaskWalletLogo src={MetamaskLogo} />
-                </ConnectButton>
+            <Box paddingBottom='25px' width='100%'>
+              <Grid container spacing={2} justify='center'>
+                <Grid item>
+                  <ConnectButton
+                    onClick={() => {
+                      props.root.providerStore.setWallet(Wallet.METAMASK);
+                    }}
+                  >
+                    <MetamaskWalletLogo src={MetamaskLogo} />
+                  </ConnectButton>
+                </Grid>
+                <Grid item>
+                  <ConnectButton
+                    onClick={() => {
+                      toggleModal(true);
+                    }}
+                  >
+                    <LedgerWalletLogo src={LedgerLogo} />
+                  </ConnectButton>
+                </Grid>
               </Grid>
-              <Grid item>
-                <ConnectButton
-                  onClick={() => {
-                    toggleModal(true);
-                  }}
-                >
-                  <LedgerWalletLogo src={LedgerLogo} />
-                </ConnectButton>
-              </Grid>
-            </Grid>
+            </Box>
             {modal && <LedgerModal toggleModal={toggleModal} />}
             {props.warning && (
               <Alert>
@@ -116,10 +101,10 @@ const ConnectWallet = inject("root")(
                         "linear-gradient(315deg, #FF8800 8.75%, #E2A907 100%);",
                     }}
                   />
-                  <WarningText>
+                  <Typography variant='body2' color='inherit'>
                     Warning: You are on the wrong network, please switch to
                     Ethereum mainnet
-                  </WarningText>
+                  </Typography>
                 </AlertContent>
               </Alert>
             )}

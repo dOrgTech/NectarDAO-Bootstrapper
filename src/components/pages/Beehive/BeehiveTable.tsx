@@ -22,16 +22,12 @@ const parseLocalDate = (dateString: string) => {
   return dayjs(dateString).format('YYYY/MM/DD HH:mm:ss')
 }
 
-const parseUtcDate = (dateString: string) => {
-  return dayjs.utc(dateString).format('YYYY/MM/DD HH:mm:ss')
-}
-
 const Tinyletters = styled.div`
   font-size: 12px;
   color: #a9abcb;
 `;
 const TableWrapper = styled.div`
-  width: 1100px;
+  max-width: 1100px;
   justify-content: center;
   margin: 50px auto;
 
