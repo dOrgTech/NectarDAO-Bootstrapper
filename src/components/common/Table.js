@@ -9,10 +9,7 @@ export const TableWrapper = styled.div`
   overflow: auto;
 background: rgba(40, 50, 74, 0.5);
   padding-bottom:20px;
-  @media (max-width: 480px) {
-    margin-left:auto;
-    
-  }
+  
 `
 
 export const RowWrapper = styled.div`
@@ -34,13 +31,14 @@ export const Row = styled.div`
 
 export const CellWrapper = styled.div`
   width: ${props => props.width};
-  text-align: ${props => props.align};
+  text-align:center;
   color: white;
   font-family: Montserrat;
   font-style: normal;
   font-weight: 400;
   font-size: 16px;
   line-height: 39px;
+  
 `
 
 export const GreyCell = styled(CellWrapper)`

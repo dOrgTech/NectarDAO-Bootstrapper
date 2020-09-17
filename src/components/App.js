@@ -78,7 +78,6 @@ const App = inject("root")(
       <ThemeProvider theme={NectarTheme}>
         <AppWrapper>
           <BackgroundWrapper
-            style={{ backgroundImage: `url(${HexagonsBackground})` }}
           >
             <AppHeader/>
             <AppBody>
@@ -88,8 +87,11 @@ const App = inject("root")(
                     <Route path="/beehive">
                       <Beehive />
                     </Route>
-                    <Route path="/lock-nec">
-                      <ReputationBoostrapper />
+                    <Route path="/lock-nec" >
+                      <ReputationBoostrapper  
+                                  style={{ backgroundImage: `url(${HexagonsBackground})` }}
+  
+                      />
                     </Route>
                     <Route path="/beehive-guide">
                       <BeehiveGuide />

@@ -49,10 +49,12 @@ const TableHeaderWrapper = styled.div`
   justify-content: space-between;
   padding: 0px 24px;
   border-bottom: 1px solid var(--border);
-  @media (max-width: 480px) {
-    width:100%;
-    margin-left:auto;
-  } 
+   @media (max-width: 480px) {
+     margin-left:125px;
+     flex-wrap:wrap;
+     padding-top:25px;
+     padding-bottom:25px;
+    }
 `;
 
 const TableTabEnumWrapper = styled.div`
@@ -60,6 +62,7 @@ const TableTabEnumWrapper = styled.div`
   flex-direction: row;
   align-items: center;
   height: 103px;
+ 
 `;
 
 const TableTabButton = styled.div`
@@ -70,7 +73,7 @@ const TableTabButton = styled.div`
   padding: 7.5px 14px;
   margin-left: 12px;
   background: var(--background);
-  border: 1px solid var(--active-border);
+  border: 1px solid white;
   cursor: pointer;
   font-family: Montserrat;
   font-style: normal;
@@ -86,7 +89,7 @@ const ButtonExternal = styled.div`
 `
 const InactiveTableTabButton = styled(TableTabButton)`
   color: var(--inactive-header-text);
-  border: 1px solid var(--inactive-border);
+  border: 1px solid #A9ABCB;
 `;
 
 const ActionsWrapper = styled.div`

@@ -6,7 +6,12 @@ import * as helpers from 'utils/helpers'
 import { RootStore } from 'stores/Root';
 import { Batch } from 'types';
 import LoadingCircle from 'components/common/LoadingCircle';
-
+import styled from 'styled-components'
+const BatchWrapper = styled.div`
+@media (max-width: 480px) {
+    margin-left:125px;
+  }
+`
 const columns = [
     { name: 'Period', key: 'batchIdDisplay', width: '10%', align: 'left' },
     { name: 'You Locked', key: 'userLocked', width: '25%', align: 'right' },
@@ -72,6 +77,7 @@ class BatchesTable extends React.Component<any, any>{
 
         return (
             <React.Fragment>
+                <BatchWrapper>
                 <RowWrapper>
                     <Row>
                         {columns.map((column, index) => (
@@ -108,6 +114,7 @@ class BatchesTable extends React.Component<any, any>{
                         this.renderNoDataTable(isLockingStarted)
                     }
                 </TableWrapper>
+                </BatchWrapper>
             </React.Fragment>
         )
     }

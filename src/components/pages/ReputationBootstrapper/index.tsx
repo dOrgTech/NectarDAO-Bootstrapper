@@ -8,12 +8,18 @@ import { RootStore } from 'stores/Root';
 import ConnectWallet from 'components/common/ConnectWallet'
 import ConnectMainNet from 'components/common/ConnectMainNet'
 import { Title } from "components/common/beehive/Title";
-
 import { ProviderState } from 'stores/Provider';
+const GovBackground = styled.div`
+
+`
 const RootWrapper = styled.div`
   width: 932px;
   margin: 0px auto;
   padding: 64px;
+
+  @media (max-width: 800px) {
+    width:600px;
+  }
   @media (max-width: 480px) {
     width:200px;
   }
@@ -67,12 +73,14 @@ class ReputationBoostrapper extends React.Component<any, any> {
 
   render() {
     return (
+      <GovBackground>
       <RootWrapper>
         <Selector height="196px" />
         <SectionWrapper>
           {this.renderContents()}
         </SectionWrapper>
       </RootWrapper>
+      </GovBackground>
     )
   }
 }
