@@ -18,7 +18,7 @@ const timelockContract = require("../../../abi/TokenTimelock.json")
 
 dotenv.config();
 
-const parseLocalDate = (dateString: string) => {
+const parseDate = (dateString: string) => {
   return dayjs(dateString).format('YYYY/MM/DD HH:mm:ss')
 }
 
@@ -75,6 +75,9 @@ const CustomizedTable = inject("root")(
 
     const { beehiveStore, providerStore } = props.root as RootStore;
     const rows = beehiveStore.tableData
+    const poolData = beehiveStore.poolData
+    const necPrice =
+      poolData && poolData.necPrice && Number(poolData.necPrice);
 
     useEffect(() => {
       beehiveStore.toggleCountdown(true)
@@ -121,7 +124,7 @@ const CustomizedTable = inject("root")(
                 <TableRow key={row.period}>
                   <TableCell component="th" scope="row">
                     <Typography variant={"body2"}>Period {row.period}</Typography>
-                    <Tinyletters>{row.endDate? `Ends in ${(row.endDate)} UTC`: '-'}</Tinyletters>
+                    <Tinyletters>{row.endDate? `Ends in ${(parseDate(row.endDate))} UTC`: '-'}</Tinyletters>
                   </TableCell>
                   <TableCell align="right">
                     <StatusCell>
@@ -150,15 +153,15 @@ const CustomizedTable = inject("root")(
                       <Orangeletters align='center' variant={"h4"} color={"primary"}>
                         {row.earnedNec}{" "}
                       </Orangeletters>
-                      {`\n`} <Tinyletters>${row.earnedNec}</Tinyletters>
+                      {`\n`} <Tinyletters>${row.earnedNec? Number((Number(row.earnedNec) * necPrice).toFixed(4)): '-' }</Tinyletters>
                     </Box>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
-                        {row.unlockDate? parseLocalDate(row.unlockDate): '-'} {`\n`}{" "}
-                        <Tinyletters>{row.unlockDate? `${(row.unlockDate)} UTC`: '-'}</Tinyletters>
+                        {row.unlockDate? parseDate(row.unlockDate): '-'} {`\n`}{" "}
+                        <Tinyletters>{row.unlockDate? `${(parseDate(row.unlockDate))} UTC`: '-'}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>
@@ -168,6 +171,7 @@ const CustomizedTable = inject("root")(
                         variant={"outlined"}
                         fullWidth={true}
                         color={"primary"}
+                        disabled={dayjs().isBefore(dayjs(row.unlockDate))}
                         onClick={async () => await claim(row.contractAddress)}
                       >
                         Unlock Nec

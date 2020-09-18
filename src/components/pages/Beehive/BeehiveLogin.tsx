@@ -52,6 +52,7 @@ export const BeehiveLogin = () => {
         />
         <Input
           placeholder={"Password"}
+          type='password'
           value={password}
           onChange={onChangePassword}
         />

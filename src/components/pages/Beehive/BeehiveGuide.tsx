@@ -66,6 +66,7 @@ const GoToNecButton = styled(Button)`
 
 const BodyText = styled(Typography)`
   padding-top: 15px;
+  cursor: pointer;
   color: rgba(169, 171, 203, 0.8) !important;
 `;
 
@@ -165,10 +166,8 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     dont already have NEC or ETH
                   </BodyText>
 
-                  <BodyText variant={"body2"}>
-                    <Link href="https://pools.balancer.exchange/#/">
-                      https://pools.balancer.exchange/#/
-                    </Link>
+                  <BodyText variant={"body2"} onClick={() => window.open('https://pools.balancer.exchange/#/', "_blank")}>
+                    <Link>https://pools.balancer.exchange/#/</Link>
                   </BodyText>
                 </StepTextWrapper>
               </StepWrapper>
@@ -266,9 +265,6 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                       "https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
                     }
                   >
-                    <GoToNecButton variant={"outlined"} color={"primary"}>
-                      Trade on DeversiFi
-                    </GoToNecButton>
                   </Link>
                   <BodyText variant={"body2"}>
                     Participation in the community does not impact NEC Beehive

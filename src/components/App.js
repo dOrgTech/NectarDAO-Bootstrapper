@@ -18,15 +18,13 @@ import { BeehiveAdmin } from "./pages/Beehive/BeehiveAdmin";
 import { AppHeader } from 'components/common/Header';
 
 const AppBody = styled.div`
-  height: calc(100% - 70px - 98px);
-  max-height: calc(100% - 70px - 98px);
+  height: calc(100% - 70px - 70px);
+  max-height: calc(100% - 70px - 70px);
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
   padding-top: 70px;
 `;
-
-
 
 const Footer = styled.div`
   position: fixed;
@@ -35,7 +33,7 @@ const Footer = styled.div`
   align-items: center;
   bottom: 0;
   width: 100%;
-  height: 98px;
+  height: 70px;
   background-color: #061722;
 `;
 
@@ -46,15 +44,11 @@ const FooterText = styled(Typography)`
   padding-right: 166px;
 `;
 
-
-
 const FooterLogo = styled.img`
   padding-left: 166px;
   height: 32px;
   width: 32px;
 `;
-
-
 
 const AppWrapper = styled.div`
   width: 100%;
