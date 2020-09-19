@@ -104,6 +104,11 @@ export const BeehiveAdmin = inject("root")(
     const [necPerWeek, setNecPerWeek] = useState({});
     const [rows, setRows] = useState<AdminTableData[]>([]);
 
+    if (!isAuthenticated) {
+      history.push("/login");
+      return;
+    }
+
     const fetchWeekData = async () => {
       try {
         const weeksData = await fetchWeeksData();
@@ -114,10 +119,6 @@ export const BeehiveAdmin = inject("root")(
     };
 
     useEffect(() => {
-      if (!isAuthenticated) {
-        history.push("/login");
-        return;
-      }
       fetchWeekData();
     }, []);
 
