@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { Input, Button } from "@material-ui/core";
+import { login } from "services/fetch-actions/httpApi";
 
 const InputsContainer = styled.div`
   display: flex;
@@ -21,18 +22,23 @@ const PageWrapper = styled.div`
 `;
 
 export const BeehiveLogin = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const onSubmit = async () => {
-    console.log(username, password);
+    try {
+      const response = await login(email, password)
+      console.log(response)
+    } catch(error) {
+      console.log(error)
+    }
   };
 
-  const onChangeUsername = (
+  const onChangeEmail = (
     event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
   ) => {
     console.log(event);
-    setUsername(event.currentTarget.value);
+    setEmail(event.currentTarget.value);
   };
 
   const onChangePassword = (
@@ -46,9 +52,9 @@ export const BeehiveLogin = () => {
     <PageWrapper>
       <InputsContainer>
         <Input
-          placeholder={"Username"}
-          value={username}
-          onChange={onChangeUsername}
+          placeholder={"Email"}
+          value={email}
+          onChange={onChangeEmail}
         />
         <Input
           placeholder={"Password"}

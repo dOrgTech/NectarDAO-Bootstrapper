@@ -15,7 +15,7 @@ import HexagonsBackground from "assets/svgs/hexagonsBackground.svg";
 import { NectarTheme } from "./theme";
 import { BeehiveLogin } from "./pages/Beehive/BeehiveLogin";
 import { BeehiveAdmin } from "./pages/Beehive/BeehiveAdmin";
-import { AppHeader } from 'components/common/Header';
+import { AppHeader } from "components/common/Header";
 
 const AppBody = styled.div`
   height: calc(100% - 70px - 70px);
@@ -66,7 +66,7 @@ const App = inject("root")(
   observer((props) => {
     useEffect(() => {
       const { beehiveStore } = props.root;
-      beehiveStore.fetchNonUserData()
+      beehiveStore.fetchNonUserData();
     }, []);
 
     return (
@@ -75,9 +75,9 @@ const App = inject("root")(
           <BackgroundWrapper
             style={{ backgroundImage: `url(${HexagonsBackground})` }}
           >
-            <AppHeader/>
-            <AppBody>
-              <HashRouter>
+            <HashRouter>
+              <AppHeader />
+              <AppBody>
                 <Web3Manager>
                   <Switch>
                     <Route path="/beehive">
@@ -100,12 +100,12 @@ const App = inject("root")(
                     </Route>
                   </Switch>
                 </Web3Manager>
-              </HashRouter>
-              <Footer>
-                <FooterLogo src={NectarLogo} />
-                <FooterText>Copyright @2020 DeversiFi</FooterText>
-              </Footer>
-            </AppBody>
+                <Footer>
+                  <FooterLogo src={NectarLogo} />
+                  <FooterText>Copyright @2020 DeversiFi</FooterText>
+                </Footer>
+              </AppBody>
+            </HashRouter>
           </BackgroundWrapper>
         </AppWrapper>
       </ThemeProvider>

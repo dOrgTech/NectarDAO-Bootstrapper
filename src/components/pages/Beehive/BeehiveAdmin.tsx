@@ -19,6 +19,16 @@ import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
+import {
+  addBeneficiaries,
+  AdminTableData,
+  deployContract,
+  fetchWeeksData,
+  getSnapshotCsv,
+  publishWeek,
+  schedulePeriods,
+  takeSnapshot,
+} from "services/fetch-actions/httpApi";
 
 dayjs.extend(utc);
 dayjs.Ls.en.weekStart = 1;
@@ -79,64 +89,6 @@ const HeaderText = styled(Typography)`
   color: rgba(169, 171, 203, 0.7) !important;
 `;
 
-interface TableData {
-  id: string;
-  period: string;
-  status: string;
-  endDate: string;
-  startDate: string;
-  unlockDate: string;
-  contractAddress: string;
-  snapshotDate: string;
-  necToDistribute: string;
-}
-
-interface TableDataDTO {
-  id: string;
-  week_number: string;
-  nec_to_distribute: string;
-  start_date: string;
-  nec_earned: string;
-  closed: boolean;
-  fk_period_id: string;
-  snapshot_date: string;
-  bpt_balance: string;
-  contract_address: string;
-  unlock_date: string;
-  end_date: string;
-}
-
-const formatDate = (dateString: string) => {
-  return dayjs.utc(dateString).format("YYYY-MM-DD HH:mm:ss");
-};
-
-const tableDataMapper = (tableDataDtos: TableDataDTO[]): TableData[] => {
-  return tableDataDtos.map((dto) => {
-    const {
-      week_number,
-      nec_to_distribute,
-      start_date,
-      closed,
-      snapshot_date,
-      contract_address,
-      unlock_date,
-      end_date,
-      id,
-    } = dto;
-    return {
-      period: week_number,
-      status: closed ? "Closed" : "Open",
-      unlockDate: unlock_date && `UTC ${formatDate(unlock_date)}`,
-      contractAddress: contract_address,
-      snapshotDate: snapshot_date && `UTC ${formatDate(snapshot_date)}`,
-      necToDistribute: nec_to_distribute,
-      endDate: end_date && `UTC ${formatDate(end_date)}`,
-      startDate: start_date && `UTC ${formatDate(start_date)}`,
-      id,
-    };
-  });
-};
-
 export const BeehiveAdmin = inject("root")(
   observer((props) => {
     const token = localStorage.getItem("token");
@@ -147,37 +99,28 @@ export const BeehiveAdmin = inject("root")(
     const [weeks, setWeeks] = useState(0);
     const [scheduleStartDate, setScheduleStartDate] = useState(minDate);
     const [necPerWeek, setNecPerWeek] = useState({});
-    const [tableDataDtos, setTableDataDtos] = useState<TableDataDTO[]>([]);
-
-    const rows = tableDataMapper(tableDataDtos);
+    const [rows, setRows] = useState<AdminTableData[]>([]);
 
     const fetchWeekData = async () => {
-      const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/week/all`);
-      const json = await response.json();
-      if (!json.error) {
-        setTableDataDtos(json);
+      try {
+        const weeksData = await fetchWeeksData();
+        setRows(weeksData);
+      } catch (error) {
+        console.log(error);
       }
     };
 
     useEffect(() => {
+      if(!isAuthenticated) {
+        history.push('/login')
+        return
+      }
       fetchWeekData();
     }, []);
 
     const onSchedule = async () => {
-      const necs = Object.values(necPerWeek).slice(0, weeks);
-
       try {
-        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/period`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            necPerWeek: necs,
-            weeks,
-            start_date: scheduleStartDate,
-          }),
-        });
+        await schedulePeriods(necPerWeek, weeks, scheduleStartDate);
         await fetchWeekData();
         setNecPerWeek({});
         setWeeks(0);
@@ -186,11 +129,9 @@ export const BeehiveAdmin = inject("root")(
       }
     };
 
-    const takeSnapshot = async (weekId: string) => {
+    const onTakeSnapshot = async (weekId: string) => {
       try {
-        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/take/${weekId}`, {
-          method: "POST",
-        });
+        await takeSnapshot(weekId);
         await fetchWeekData();
       } catch (error) {
         console.log(error);
@@ -199,9 +140,7 @@ export const BeehiveAdmin = inject("root")(
 
     const publishResults = async (weekId: string) => {
       try {
-        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/publish/${weekId}`, {
-          method: "POST",
-        });
+        await publishWeek(weekId);
         await fetchWeekData();
       } catch (error) {
         console.log(error);
@@ -210,91 +149,93 @@ export const BeehiveAdmin = inject("root")(
 
     const redeployContract = async (weekId: string) => {
       try {
-        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/redeploy/${weekId}`, {
-          method: "POST",
-        });
+        await deployContract(weekId);
         await fetchWeekData();
       } catch (error) {
         console.log(error);
       }
     };
 
-    const addBeneficiaries = async (weekId: string) => {
+    const reAddBeneficiaries = async (weekId: string) => {
       try {
-        await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/addBeneficiaries/${weekId}`, {
-          method: "POST",
-        });
+        await addBeneficiaries(weekId);
         await fetchWeekData();
       } catch (error) {
         console.log(error);
       }
     };
 
-    const getSnapshotCsv = async (weekId: string) => {
-      window.open(`${process.env.REACT_APP_SNAPSHOT_API_URL}/snapshot/csv/${weekId}`);
-    };
+    const onLogout = () => {
+      localStorage.removeItem('token')
+      history.push('/')
+    }
 
     return (
       <>
         {" "}
-          <PageWrapper>
-            <InputsContainer>
-              <Typography variant={"h4"} color={"primary"}>
-                Schedule New Period
-              </Typography>
-              <Box paddingY='25px'>
-                <PickerWrapper>
-                  <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                    <DatePicker
-                      minDate={minDate}
-                      value={scheduleStartDate}
-                      onChange={(date) => setScheduleStartDate(date as any)}
-                    />
-                  </MuiPickersUtilsProvider>
-                </PickerWrapper>
-              </Box>
-              <TextField
-                type={"number"}
-                label={"Weeks"}
-                value={weeks}
-                inputProps={{
-                  min: 0,
-                }}
-                onChange={(e) => setWeeks(Number(e.currentTarget.value))}
-              />
-              {Array.from(Array(weeks).keys()).map((x) => {
-                return (
-                  <Box paddingY='25px'>
-                    <TextField
-                      inputProps={{
-                        min: 0,
-                      }}
-                      key={`nec-${x}`}
-                      type={"number"}
-                      label={`NEC to distribute on week #${x + 1}`}
-                      value={necPerWeek[x]}
-                      onChange={(e) =>
-                        setNecPerWeek({
-                          ...necPerWeek,
-                          [`${x}`]: Number(e.currentTarget.value),
-                        })
-                      }
-                    />
-                  </Box>
-                );
-              })}
-              <Box paddingY='25px'>
-                <Button
-                  variant={"outlined"}
-                  color={"primary"}
-                  onClick={onSchedule}
-                  fullWidth={true}
-                >
-                  Schedule
-                </Button>
-              </Box>
-            </InputsContainer>
-          </PageWrapper>
+        <PageWrapper>
+          <InputsContainer>
+            <Typography variant={"h4"} color={"primary"}>
+              Schedule New Period
+            </Typography>
+            <Box paddingY="25px">
+              <PickerWrapper>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                  <DatePicker
+                    minDate={minDate}
+                    value={scheduleStartDate}
+                    onChange={(date) => setScheduleStartDate(date as any)}
+                  />
+                </MuiPickersUtilsProvider>
+              </PickerWrapper>
+            </Box>
+            <TextField
+              type={"number"}
+              label={"Weeks"}
+              value={weeks}
+              inputProps={{
+                min: 0,
+              }}
+              onChange={(e) => setWeeks(Number(e.currentTarget.value))}
+            />
+            {Array.from(Array(weeks).keys()).map((x) => {
+              return (
+                <Box paddingY="25px">
+                  <TextField
+                    inputProps={{
+                      min: 0,
+                    }}
+                    key={`nec-${x}`}
+                    type={"number"}
+                    label={`NEC to distribute on week #${x + 1}`}
+                    value={necPerWeek[x]}
+                    onChange={(e) =>
+                      setNecPerWeek({
+                        ...necPerWeek,
+                        [`${x}`]: Number(e.currentTarget.value),
+                      })
+                    }
+                  />
+                </Box>
+              );
+            })}
+            <Box paddingY="25px">
+              <Button
+                variant={"outlined"}
+                color={"primary"}
+                onClick={onSchedule}
+                fullWidth={true}
+              >
+                Schedule
+              </Button>
+            </Box>
+          </InputsContainer>
+          <InputsContainer>
+            <Button onClick={onLogout} variant='outlined' color='primary' fullWidth={true}>
+              Logout
+            </Button>
+          </InputsContainer>
+        </PageWrapper>
         <Box>
           <TableWrapper>
             <TableContainer component={Paper}>
@@ -320,7 +261,9 @@ export const BeehiveAdmin = inject("root")(
                       <HeaderText variant={"h6"}>Snapshot Date</HeaderText>
                     </TableCell>
                     <TableCell align="left">
-                      <HeaderText variant={"h6"}>Timelock Contract Address</HeaderText>
+                      <HeaderText variant={"h6"}>
+                        Timelock Contract Address
+                      </HeaderText>
                     </TableCell>
                     <TableCell align="left">
                       <HeaderText variant={"h6"}>Actions</HeaderText>
@@ -332,13 +275,6 @@ export const BeehiveAdmin = inject("root")(
                     const weekIsFuture = dayjs
                       .utc(row.startDate)
                       .isAfter(dayjs.utc());
-
-                      console.log(dayjs
-                        .utc(row.startDate).format())
-
-                        console.log(dayjs.utc().format())
-
-                      console.log("HERE ", weekIsFuture)
                     return (
                       <TableRow key={row.period}>
                         <TableCell component="th" scope="row">
@@ -346,11 +282,11 @@ export const BeehiveAdmin = inject("root")(
                             Period {row.period}
                           </Typography>
                           <Typography variant={"h6"}>
-                            Ends UTC {(row.endDate)}
+                            Ends UTC {row.endDate}
                           </Typography>
                         </TableCell>
                         <TableCell align="left">
-                          {(row.startDate) || "-"}
+                          {row.startDate || "-"}
                         </TableCell>
                         <TableCell align="right">
                           <StatusCell>
@@ -369,32 +305,35 @@ export const BeehiveAdmin = inject("root")(
                           {row.necToDistribute}
                         </TableCell>
                         <TableCell align="left">
-                          {row.unlockDate? (row.unlockDate) : "-"}
+                          {row.unlockDate ? row.unlockDate : "-"}
                         </TableCell>
                         <TableCell align="left">
-                          {row.snapshotDate? (row.snapshotDate) : "-"}
+                          {row.snapshotDate ? row.snapshotDate : "-"}
                         </TableCell>
-                        <TableCell align="left" style={{ wordBreak: 'break-word' }}>
-                          {row.contractAddress? row.contractAddress : "-"}
+                        <TableCell
+                          align="left"
+                          style={{ wordBreak: "break-word" }}
+                        >
+                          {row.contractAddress ? row.contractAddress : "-"}
                         </TableCell>
                         <TableCell align="left">
                           <Box
                             width="100%"
                             display="flex"
-                            flexWrap='wrap'
-                            maxWidth='400px'
+                            flexWrap="wrap"
+                            maxWidth="400px"
                           >
                             <Button
-                              size='small'
+                              size="small"
                               variant={"outlined"}
                               color={"primary"}
-                              onClick={() => takeSnapshot(row.id)}
+                              onClick={() => onTakeSnapshot(row.id)}
                               disabled={!!row.snapshotDate || weekIsFuture}
                             >
                               Take Snapshot
                             </Button>
                             <Button
-                              size='small'
+                              size="small"
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => publishResults(row.id)}
@@ -403,25 +342,27 @@ export const BeehiveAdmin = inject("root")(
                               Publish Results and Close
                             </Button>
                             <Button
-                              size='small'
+                              size="small"
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => redeployContract(row.id)}
-                              disabled={!row.snapshotDate || row.status === 'Open'}
+                              disabled={
+                                !row.snapshotDate || row.status === "Open"
+                              }
                             >
                               Redeploy contract
                             </Button>
                             <Button
-                              size='small'
+                              size="small"
                               variant={"outlined"}
                               color={"primary"}
-                              onClick={() => addBeneficiaries(row.id)}
+                              onClick={() => reAddBeneficiaries(row.id)}
                               disabled={!row.contractAddress}
                             >
                               Add Beneficiaries
                             </Button>
                             <Button
-                              size='small'
+                              size="small"
                               variant={"outlined"}
                               color={"primary"}
                               onClick={() => getSnapshotCsv(row.id)}
