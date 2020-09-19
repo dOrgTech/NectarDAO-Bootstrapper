@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { useHistory } from 'react-router-dom';
 import { Input, Button } from "@material-ui/core";
 import { login } from "services/fetch-actions/httpApi";
 
@@ -24,10 +25,12 @@ const PageWrapper = styled.div`
 export const BeehiveLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const history = useHistory()
 
   const onSubmit = async () => {
     try {
       const response = await login(email, password)
+      history.push('/admin')
       console.log(response)
     } catch(error) {
       console.log(error)

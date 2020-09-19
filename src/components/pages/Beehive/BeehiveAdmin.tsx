@@ -13,7 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  TableBody,
+  TableBody, Grid
 } from "@material-ui/core";
 import DateFnsUtils from "@date-io/date-fns";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
@@ -27,6 +27,7 @@ import {
   getSnapshotCsv,
   publishWeek,
   schedulePeriods,
+  signup,
   takeSnapshot,
 } from "services/fetch-actions/httpApi";
 
@@ -96,6 +97,8 @@ export const BeehiveAdmin = inject("root")(
     const history = useHistory();
     const minDate = dayjs();
 
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [weeks, setWeeks] = useState(0);
     const [scheduleStartDate, setScheduleStartDate] = useState(minDate);
     const [necPerWeek, setNecPerWeek] = useState({});
@@ -111,9 +114,9 @@ export const BeehiveAdmin = inject("root")(
     };
 
     useEffect(() => {
-      if(!isAuthenticated) {
-        history.push('/login')
-        return
+      if (!isAuthenticated) {
+        history.push("/login");
+        return;
       }
       fetchWeekData();
     }, []);
@@ -166,9 +169,32 @@ export const BeehiveAdmin = inject("root")(
     };
 
     const onLogout = () => {
-      localStorage.removeItem('token')
-      history.push('/')
-    }
+      localStorage.removeItem("token");
+      history.push("/");
+    };
+
+    const onSubmit = async () => {
+      try {
+        const response = await signup(email, password);
+        console.log(response);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    const onChangeEmail = (
+      event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => {
+      console.log(event);
+      setEmail(event.currentTarget.value);
+    };
+
+    const onChangePassword = (
+      event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>
+    ) => {
+      console.log(event);
+      setPassword(event.currentTarget.value);
+    };
 
     return (
       <>
@@ -231,7 +257,42 @@ export const BeehiveAdmin = inject("root")(
             </Box>
           </InputsContainer>
           <InputsContainer>
-            <Button onClick={onLogout} variant='outlined' color='primary' fullWidth={true}>
+            <Typography variant={"h4"} color={"primary"}>
+              Register new admin
+            </Typography>
+            <Grid container direction='column' spacing={3}>
+              <Grid item>
+                <TextField
+                  placeholder={"Email"}
+                  value={email}
+                  onChange={onChangeEmail}
+                />
+              </Grid>
+              <Grid item>
+                <TextField
+                  placeholder={"Password"}
+                  type="password"
+                  value={password}
+                  onChange={onChangePassword}
+                />
+              </Grid>
+            </Grid>
+
+            <Button
+              variant={"outlined"}
+              color={"primary"}
+              onClick={onSubmit}
+              fullWidth={true}
+            >
+              Register
+            </Button>
+            <Button
+              onClick={onLogout}
+              variant="outlined"
+              color="primary"
+              fullWidth={true}
+              style={{ marginTop: 20 }}
+            >
               Logout
             </Button>
           </InputsContainer>
