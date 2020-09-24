@@ -275,7 +275,7 @@ const BigHeader = inject("root")(
     return (
       <>
         <Box width="100%" textAlign="center">
-          <Title text={"Nectar Beehive"} afterElement={true} />
+          <Title text={"Nectar Beehive V1"} afterElement={true} />
           <Box display="flex" justifyContent="center" paddingX="30px">
             <Box maxWidth="1110px" width="100%">
               <Grid container direction="column" alignItems="center">

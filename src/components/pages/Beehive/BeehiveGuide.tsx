@@ -132,10 +132,10 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                 <Title text={"Walkthrough guide"} afterElement={true} />
 
                 <Subtitle>
-                  Join Our
+                  Join Our{" "}
                   <a
                     style={{ color: "#E2A907" }}
-                    href="https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
+                    href="https://discord.com/invite/7x7YwYX"
                     target="_blank"
                   >
                     Discord{" "}
@@ -289,12 +289,12 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     color={"textPrimary"}
                     style={{ fontWeight: "bold" }}
                   >
-                    BPT Rewards Sent Directly To Your Wallet
+                    BAL Rewards Sent Directly To Your Wallet
                   </Typography>
                   <BodyText variant={"body2"}>
-                    BPT (Balancer Pool Token) rewards will be sentto your wallet
+                    BPT rewards will be sent to your wallet
                     weekly. These rewards are independent of DeversiFi and
-                    therefore the process for claiming the BPT rewards may
+                    therefore the process for claiming the BAL rewards may
                     change
                   </BodyText>
                 </StepTextWrapper>

@@ -50,7 +50,7 @@ export const AppHeader = inject("root")(
               {showCountdown ? (
                 <BeehiveCountdown />
               ) : (
-                <Button variant={"outlined"} color={"primary"}>
+                <Button variant={"outlined"} color={"primary"} href="https://www.deversifi.com">
                   <Typography
                     variant={"body2"}
                     align={"left"}
