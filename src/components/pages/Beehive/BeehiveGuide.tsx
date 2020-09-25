@@ -166,7 +166,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     dont already have NEC or ETH
                   </BodyText>
 
-                  <BodyText variant={"body2"} onClick={() => window.open('https://pools.balancer.exchange/#/', "_blank")}>
+                  <BodyText variant={"body2"} onClick={() => window.open('https://pools.balancer.exchange/#/pool/0xb21e53d8bd2c81629dd916eeAd08d338e7fCC201', "_blank")}>
                     <Link>https://pools.balancer.exchange/#/</Link>
                   </BodyText>
                 </StepTextWrapper>

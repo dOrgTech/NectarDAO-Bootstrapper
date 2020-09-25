@@ -281,7 +281,7 @@ const BigHeader = inject("root")(
               <Grid container direction="column" alignItems="center">
                 <Box maxWidth="445px" paddingX="25px" boxSizing="border-box">
                   <Typography color={"textSecondary"} variant={"subtitle2"}>
-                    Earn $NEC $BAL and Reputation Rewards for Staking into The
+                    Earn $NEC and $BAL Rewards for Staking into The
                     Balancer NEC/wEth Pool
                   </Typography>
                 </Box>

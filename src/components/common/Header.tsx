@@ -9,7 +9,7 @@ import { BeehiveCountdown } from "components/common/beehive/Countdown";
 
 const Header = styled(Box)`
   position: fixed;
-  z-index: 10000;
+  z-index: 1200;
   width: 100%;
   padding: 0 166px;
   height: 70px;
