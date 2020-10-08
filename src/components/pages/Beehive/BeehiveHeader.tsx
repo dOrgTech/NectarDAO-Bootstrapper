@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { observer, inject } from "mobx-react";
-import { RootStore } from "stores/Root";
-import styled from "styled-components";
-import { tooltip } from "strings";
-import { Title } from "components/common/beehive/Title";
 import {
-  Typography,
-  Link,
   Box,
   Grid,
+  Link,
+  Tooltip,
+  Typography,
   useMediaQuery,
   useTheme,
-  Tooltip,
 } from "@material-ui/core";
-import BeehiveGuide from "./BeehiveGuide";
 import { NecRewardsDTO, PoolDataDTO } from "types";
+import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
+
+import BeehiveGuide from "./BeehiveGuide";
+import { RootStore } from "stores/Root";
+import { Title } from "components/common/beehive/Title";
+import styled from "styled-components";
+import { tooltip } from "strings";
 
 const Statsbox = styled(Box)`
   position: relative;
@@ -289,7 +290,7 @@ const BigHeader = inject("root")(
                 <Box width="100%" padding="65px 0 2.5% 0" textAlign="center">
                   <Grid container justify="space-between">
                     <StatisticsBox
-                      title="Total Nec Rewards"
+                      title="Total Nec Rewards (pre-multipliers)"
                       number={totalRewards}
                       subnumber={totalRewardsInUsd}
                     />
