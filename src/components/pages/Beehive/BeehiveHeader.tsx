@@ -177,8 +177,8 @@ const InstructionBox: React.FC<InstructionBoxProps> = ({
           </Link>
         </Tooltip>
       ) : (
-        renderContent()
-      )}
+          renderContent()
+        )}
     </Grid>
   );
 };
@@ -327,6 +327,12 @@ const BigHeader = inject("root")(
                     />
                     <InstructionBox
                       number={4}
+                      title="Trade"
+                      text="Trade in DeversiFi to gain NEC reward multipliers up to 2x."
+                      shaped={true}
+                    />
+                    <InstructionBox
+                      number={5}
                       title="Claim"
                       text="Unlock Your $NEC Rewards in 12 Months."
                       shaped={false}
