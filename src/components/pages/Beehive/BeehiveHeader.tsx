@@ -300,7 +300,8 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="APY" number={apy} isApy={true} />
+                    <StatisticsBox title="Your 24hr Diversifi Volume" number={1090099} />
+                    <StatisticsBox title="Your Base/APY" number={apy} isApy={true} />
                   </Grid>
                 </Box>
 
