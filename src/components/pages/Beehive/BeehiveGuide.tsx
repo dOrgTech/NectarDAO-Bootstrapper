@@ -230,7 +230,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                   <BodyText variant={"body2"}>
                     Head to app.deversifi.com, connect your wallet and trade to earn NEC reward multiples
                   </BodyText>
-                  <BeehiveMultipleTable />
+                  <BeehiveMultipleTable editable={false}/>
                 </StepTextWrapper>
               </StepWrapper>
             </StepBox>

@@ -65,8 +65,58 @@ const data = [
 
 const CustomizedTable = inject("root")(
     observer((props) => {
+        const { editable } = props;
+        const editableProps = editable === false ? null :
+            {
+                isEditable: rowData => rowData.name === 'a', // only name(a) rows would be editable
+                isEditHidden: rowData => rowData.name === 'x',
+                isDeletable: rowData => rowData.name === 'b', // only name(b) rows would be deletable,
+                isDeleteHidden: rowData => rowData.name === 'y',
+                onBulkUpdate: changes =>
+                    new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            /* setData([...data, newData]); */
+
+                            resolve();
+                        }, 1000);
+                    }),
+                onRowAddCancelled: rowData => console.log('Row adding cancelled'),
+                onRowUpdateCancelled: rowData => console.log('Row editing cancelled'),
+                onRowAdd: newData =>
+                    new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            /* setData([...data, newData]); */
+
+                            resolve();
+                        }, 1000);
+                    }),
+                onRowUpdate: (newData, oldData) =>
+                    new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const dataUpdate = [...data];
+                            const index = oldData.tableData.id;
+                            dataUpdate[index] = newData;
+                            setData([...dataUpdate]);
+
+                            resolve();
+                        }, 1000);
+                    }),
+                onRowDelete: oldData =>
+                    new Promise((resolve, reject) => {
+                        setTimeout(() => {
+                            const dataDelete = [...data];
+                            const index = oldData.tableData.id;
+                            dataDelete.splice(index, 1);
+                            setData([...dataDelete]);
+
+                            resolve();
+                        }, 1000);
+                    })
+            }
+
         return (
             <MaterialTable
+                editable={editableProps}
                 icons={tableIcons}
                 title={'Reward Multiples'}
                 columns={[
@@ -75,7 +125,7 @@ const CustomizedTable = inject("root")(
                         field: 'volumeAtSnapshot',
                         type: 'numeric',
                         cellStyle: {
-                            backgroundColor:  "rgba(5, 15, 22, 0.5)",
+                            backgroundColor: "rgba(5, 15, 22, 0.5)",
                         },
                     },
                     {
@@ -83,7 +133,7 @@ const CustomizedTable = inject("root")(
                         field: 'multiple',
                         type: 'numeric',
                         cellStyle: {
-                            backgroundColor:  "rgba(5, 15, 22, 0.5)",
+                            backgroundColor: "rgba(5, 15, 22, 0.5)",
                         },
                     }
                 ]}
@@ -102,7 +152,7 @@ const CustomizedTable = inject("root")(
                         backgroundColor: "rgba(5, 15, 22, 0.5)",
                     },
                     headerStyle: {
-                        backgroundColor:  "rgba(5, 15, 22, 0.5)",
+                        backgroundColor: "rgba(5, 15, 22, 0.5)",
                     }
                 }}
             />
