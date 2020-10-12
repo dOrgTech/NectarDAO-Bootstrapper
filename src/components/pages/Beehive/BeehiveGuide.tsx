@@ -2,6 +2,7 @@ import { Button, IconButton, Link, Modal } from "@material-ui/core";
 import React, { useState } from "react";
 import { inject, observer } from "mobx-react";
 
+import BeehiveMultipleTable from "./BeehiveMultipleTable"
 import { Close } from "@material-ui/icons";
 import { RootStore } from "stores/Root";
 import { Title } from "../../../components/common/beehive/Title";
@@ -229,6 +230,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                   <BodyText variant={"body2"}>
                     Head to app.deversifi.com, connect your wallet and trade to earn NEC reward multiples
                   </BodyText>
+                  <BeehiveMultipleTable />
                 </StepTextWrapper>
               </StepWrapper>
             </StepBox>
