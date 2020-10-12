@@ -1,11 +1,12 @@
+import { Button, IconButton, Link, Modal } from "@material-ui/core";
 import React, { useState } from "react";
-import { observer, inject } from "mobx-react";
-import { RootStore } from "stores/Root";
-import styled from "styled-components";
-import { Title } from "../../../components/common/beehive/Title";
-import { Modal, Button, Link, IconButton } from "@material-ui/core";
-import { Typography } from "@material-ui/core";
+import { inject, observer } from "mobx-react";
+
 import { Close } from "@material-ui/icons";
+import { RootStore } from "stores/Root";
+import { Title } from "../../../components/common/beehive/Title";
+import { Typography } from "@material-ui/core";
+import styled from "styled-components";
 
 const CenterWrapper = styled.div`
   display: flex;
@@ -162,12 +163,13 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     Stake NEC & wETH into the Balancer Pool
                   </Typography>
                   <BodyText variant={"body2"}>
-                    Buy NEC and ETH at app.deversifi.com, or Balancer if you
-                    dont already have NEC or ETH
+                    Use your NEC and ETH to stake into the NEC/wETH Balancer Exchange pool.
+                    You can turn your ETH into wETH on the Balancer front-end.
+                    Warning - Please only stake if you are familar with the concept of impernament loss that can result from AMMs
                   </BodyText>
 
                   <BodyText variant={"body2"} onClick={() => window.open('https://pools.balancer.exchange/#/pool/0xb21e53d8bd2c81629dd916eeAd08d338e7fCC201', "_blank")}>
-                    <Link>https://pools.balancer.exchange/#/</Link>
+                    <Link>NEC/wETH Balancer Pool</Link>
                   </BodyText>
                 </StepTextWrapper>
               </StepWrapper>
@@ -189,6 +191,10 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                   >
                     Hold the BPT in your Private Wallet
                   </Typography>
+                  <BodyText variant={"body2"}>
+                    To be eligible for Beehive rewards you simply need to hold the BPT tokens in your private wallet.
+                    Beehive has been designed so that you pay as little gas as possible - you dont need to stake your BPT tokens anywhere
+                  </BodyText>
                   <BPTBalance>
                     <BalanceText variant={"body2"}>
                       Your BPT Balance:{" "}
@@ -200,10 +206,6 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                       </BalanceNumberText>
                     </BalanceText>
                   </BPTBalance>
-                  <BodyText variant={"body2"}>
-                    Simply hold the BPT tokens in your private wallet. You do
-                    not need to do anything else with them
-                  </BodyText>
                 </StepTextWrapper>
               </StepWrapper>
             </StepBox>
@@ -222,14 +224,10 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     color={"textPrimary"}
                     style={{ fontWeight: "bold" }}
                   >
-                    Wait for Weekly BPT Snapshot
+                    Trade On DeversiFi to Earn NEC Reward Multiples
                   </Typography>
                   <BodyText variant={"body2"}>
-                    Once per week Monday morning 00:00 to Sunday evening 23:59,
-                    a hidden snapshot will be taken to determine $NEC rewards.
-                    After the week has ended, the results will be published and
-                    your earned NEC rewards will be displayed in the Beehive
-                    dashboard
+                    Head to app.deversifi.com, connect your wallet and trade to earn NEC reward multiples
                   </BodyText>
                 </StepTextWrapper>
               </StepWrapper>
@@ -249,27 +247,14 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     color={"textPrimary"}
                     style={{ fontWeight: "bold" }}
                   >
-                    Be part of the DeversiFi Community
+                    Wait for Weekly BPT Snapshot
                   </Typography>
                   <BodyText variant={"body2"}>
-                    Be part of the DeversiFi community as DeversiFi becomes the
-                    Layer 2 exchange of choice for professional traders.
-                    Upcoming features such as instant withdrawals, advanced
-                    trading features and new DeFi token listings will make
-                    DeversiFi the gas-free way to trade all the popular DeFi
-                    tokens
-                  </BodyText>
-
-                  <Link
-                    href={
-                      "https://alchemy.daostack.io/dao/0xe56b4d8d42b1c9ea7dda8a6950e3699755943de7/members/"
-                    }
-                  >
-                  </Link>
-                  <BodyText variant={"body2"}>
-                    Participation in the community does not impact NEC Beehive
-                    rewards, but we hope you will be part of the DeversiFi
-                    community over the coming months.
+                    Once per week Monday morning 00:00 to Sunday evening 23:59,
+                    a hidden snapshot will be taken to determine $NEC rewards.
+                    After the week has ended, the results will be published and
+                    your earned NEC rewards will be displayed in the Beehive
+                    dashboard
                   </BodyText>
                 </StepTextWrapper>
               </StepWrapper>
