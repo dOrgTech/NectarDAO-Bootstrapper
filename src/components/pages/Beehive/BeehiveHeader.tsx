@@ -185,9 +185,12 @@ const InstructionBox: React.FC<InstructionBoxProps> = ({
 
 interface StatisticsBoxProps {
   title: string;
-  number: number;
-  subnumber?: number;
+  number?: number;
   isApy?: boolean;
+  subnumber?: number;
+  baseApy?: number;
+  currency?: number,
+  multiple?: number,
 }
 
 const StatisticsBox: React.FC<StatisticsBoxProps> = ({
@@ -195,6 +198,9 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
   number,
   subnumber,
   isApy,
+  baseApy,
+  currency,
+  multiple
 }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
@@ -209,13 +215,33 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
         >
           {title}
         </Typography>
-        <Typography
-          variant={"h3"}
-          align={matches ? "left" : "center"}
-          color={"textPrimary"}
-        >
-          {number ? `${number}${isApy ? "%" : ""}` : "0"}
-        </Typography>
+        {typeof currency === "number" && (
+          <Typography
+            variant={"h3"}
+            align={matches ? "left" : "center"}
+            color={"textPrimary"}
+          >
+            {currency ? `$${currency}` : "$0"}
+          </Typography>
+        )}
+        {typeof multiple === "number" && (
+          <SmallSubtitle
+            variant={"body2"}
+            align={matches ? "left" : "center"}
+            color={"textSecondary"}
+          >
+            {multiple ? `${multiple}x Multiple` : ""}
+          </SmallSubtitle>
+        )}
+        {typeof number === "number" && (
+          <Typography
+            variant={"h3"}
+            align={matches ? "left" : "center"}
+            color={"textPrimary"}
+          >
+            {number ? `${number}${isApy ? "%" : ""}` : "0"}
+          </Typography>
+        )}
         {typeof subnumber === "number" && (
           <SmallSubtitle
             variant={"body2"}
@@ -225,14 +251,14 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             {subnumber ? `$${subnumber}` : "$0"}
           </SmallSubtitle>
         )}
-        {isApy && (
-          <Typography
+        {typeof baseApy === "number" && (
+          <SmallSubtitle
+            variant={"body2"}
             align={matches ? "left" : "center"}
-            variant={"body1"}
-            color="textPrimary"
+            color={"textSecondary"}
           >
-            + BAL
-          </Typography>
+            {baseApy ? `${baseApy}%` : "0"}
+          </SmallSubtitle>
         )}
       </Statsbox>
     </Grid>
@@ -300,8 +326,8 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="Your 24hr Diversifi Volume" number={1090099} />
-                    <StatisticsBox title="Your Base/APY" number={apy} isApy={true} />
+                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={1090099} multiple={2} />
+                    <StatisticsBox title="Your/Base APY" number={apy} isApy={true} baseApy={poolData?.apy} />
                   </Grid>
                 </Box>
 
