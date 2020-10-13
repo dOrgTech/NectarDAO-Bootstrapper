@@ -12,10 +12,10 @@ export class Lock {
     public scores: Map<number, BigNumber>,
     public releasable: number,
     public released: boolean
-  ) {}
+  ) { }
 }
 export class BatchesMetadata {
-  constructor(public locksIncluded: Set<string>) {}
+  constructor(public locksIncluded: Set<string>) { }
 }
 
 export enum TxType {
@@ -33,7 +33,7 @@ interface Tx {
 }
 
 export class TxTracker {
-  constructor(tracked: Map<string, Tx>) {}
+  constructor(tracked: Map<string, Tx>) { }
 }
 
 export class PendingTx {
@@ -43,7 +43,7 @@ export class PendingTx {
     public snapshotRedeem: boolean,
     public extendLock: boolean,
     public releaseLock: Map<string, boolean>
-  ) {}
+  ) { }
 }
 
 export enum AuctionStatus {
@@ -58,7 +58,7 @@ export class Auction {
     public bids: Map<string, BigNumber>,
     public status: AuctionStatus,
     public rep: Map<string, BigNumber>
-  ) {}
+  ) { }
 }
 
 export class Batch {
@@ -71,7 +71,7 @@ export class Batch {
     public userScore: BigNumber,
     public totalScore: BigNumber,
     public isComplete: boolean
-  ) {}
+  ) { }
 }
 
 export function newBatch(id: number): Batch {
@@ -93,7 +93,7 @@ export class SnapshotInfo {
     public rep: BigNumber,
     public hasRedeemed: boolean,
     public claimedAmount: BigNumber
-  ) {}
+  ) { }
 }
 
 export interface BidStaticParams {
@@ -125,15 +125,15 @@ export interface AirdropStaticParams {
 }
 
 export interface TableData {
-    period: string;
-    status: string;
-    snapshot1: string;
-    earnedNec: string;
-    unlockDate: string;
-    contractAddress: string;
-    claim: string;
-    endDate: string;
-    earnedNecPercent: string;
+  period: string;
+  status: string;
+  snapshot1: string;
+  earnedNec: string;
+  unlockDate: string;
+  contractAddress: string;
+  claim: string;
+  endDate: string;
+  earnedNecPercent: string;
 }
 
 export interface TableDataDTO {
@@ -167,4 +167,9 @@ declare global {
   interface Window {
     ledgerData: any;
   }
+}
+
+export interface TradingVolumeDTO {
+  totalUSDVolume: number,
+  startDate: string
 }

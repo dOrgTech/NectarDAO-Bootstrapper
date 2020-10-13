@@ -7,7 +7,7 @@ import {
   useMediaQuery,
   useTheme,
 } from "@material-ui/core";
-import { NecRewardsDTO, PoolDataDTO } from "types";
+import { NecRewardsDTO, PoolDataDTO, TradingVolumeDTO } from "types";
 import React, { useEffect, useState } from "react";
 import { inject, observer } from "mobx-react";
 
@@ -270,6 +270,7 @@ const BigHeader = inject("root")(
     const [isGuideOpen, setIsGuideOpen] = useState(false);
     const [poolData, setPoolData] = useState<PoolDataDTO>();
     const [necRewards, setNecRewards] = useState<NecRewardsDTO>();
+    const [tradingVolume, setTradingVolume] = useState<TradingVolumeDTO>();
 
     const { beehiveStore } = props.root as RootStore;
 
@@ -280,6 +281,10 @@ const BigHeader = inject("root")(
     useEffect(() => {
       setNecRewards(beehiveStore.necRewards);
     }, [beehiveStore.necRewards]);
+
+    useEffect(() => {
+      setTradingVolume(beehiveStore.tradingVolume);
+    }, [beehiveStore.tradingVolume]);
 
     const apy = poolData && poolData.apy && Number(poolData.apy.toFixed(4));
     const necPrice =
@@ -298,6 +303,9 @@ const BigHeader = inject("root")(
       remainingRewards &&
       necPrice &&
       Number((remainingRewards * necPrice).toFixed(4));
+
+    const totalUSDVolume =
+      tradingVolume && tradingVolume.totalUSDVolume;
 
     return (
       <>
@@ -326,7 +334,7 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={1090099} multiple={2} />
+                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={totalUSDVolume} multiple={2} />
                     <StatisticsBox title="Your/Base APY" number={apy} isApy={true} baseApy={poolData?.apy} />
                   </Grid>
                 </Box>

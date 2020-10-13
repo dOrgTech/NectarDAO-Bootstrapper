@@ -7,10 +7,12 @@ import { deployed } from "config.json";
 import BigNumber from "utils/bignumber";
 import {
   PoolDataDTO,
-  NecRewardsDTO, TableData
+  NecRewardsDTO, TableData, TradingVolumeDTO
 } from "types";
 import { BeehiveTableFetch } from "services/fetch-actions/beehive/beehiveTable";
 import { PoolDataFetch } from "services/fetch-actions/beehive/poolData";
+import { TradingVolumeFetch } from "services/fetch-actions/beehive/tradingVolume";
+
 import { StatusEnum } from "services/fetch-actions/BaseFetch";
 import BaseStore from "./BaseStore";
 import { NecRewardsFetch } from "services/fetch-actions/beehive/necRewards";
@@ -24,6 +26,7 @@ export default class BeehiveStore extends BaseStore {
   @observable necRewards?: NecRewardsDTO;
   @observable bptBalance: string = "0";
   @observable showCountdown: boolean = false;
+  @observable tradingVolume: TradingVolumeDTO;
 
   private BPTAddress = "0xb21e53d8bd2c81629dd916eead08d338e7fcc201";
 
@@ -93,14 +96,25 @@ export default class BeehiveStore extends BaseStore {
     console.log('Fetching')
     await this.fetchNecRewardsData()
     await this.fetchPoolData()
+    await this.fetchTradingVolume()
 
     setInterval(async () => {
-        await this.fetchNecRewardsData()
-        await this.fetchPoolData()
+      await this.fetchNecRewardsData()
+      await this.fetchPoolData()
+      await this.fetchTradingVolume()
     }, 30000)
   }
 
   @action toggleCountdown = (value: boolean) => {
     this.showCountdown = value
   }
+
+  @action fetchTradingVolume = async () => {
+    const action = new TradingVolumeFetch(null, this.rootStore);
+    const result = await action.fetchData();
+
+    if (result.status === StatusEnum.SUCCESS) {
+      this.tradingVolume = result.data;
+    }
+  };
 }
