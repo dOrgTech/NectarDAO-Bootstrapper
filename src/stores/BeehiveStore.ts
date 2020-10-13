@@ -1,22 +1,24 @@
+import * as log from "loglevel";
+
+import {
+  MultipleTableDataDTO,
+  NecRewardsDTO,
+  PoolDataDTO,
+  TableData,
+  TradingVolumeDTO
+} from "types";
 /* eslint-disable no-await-in-loop */
 /* eslint-disable no-restricted-syntax */
-import { observable, action } from "mobx";
-import * as helpers from "utils/helpers";
-import * as log from "loglevel";
-import { deployed } from "config.json";
-import BigNumber from "utils/bignumber";
-import {
-  PoolDataDTO,
-  NecRewardsDTO, TableData, TradingVolumeDTO
-} from "types";
-import { BeehiveTableFetch } from "services/fetch-actions/beehive/beehiveTable";
-import { PoolDataFetch } from "services/fetch-actions/beehive/poolData";
-import { TradingVolumeFetch } from "services/fetch-actions/beehive/tradingVolume";
+import { action, observable } from "mobx";
 
-import { StatusEnum } from "services/fetch-actions/BaseFetch";
-import BaseStore from "./BaseStore";
-import { NecRewardsFetch } from "services/fetch-actions/beehive/necRewards";
 import { BPTBalanceFetch } from "services/fetch-actions/beehive/bptBalance";
+import BaseStore from "./BaseStore";
+import { BeehiveMultipleTableFetch } from "services/fetch-actions/beehive/beehiveMultipleTable";
+import { BeehiveTableFetch } from "services/fetch-actions/beehive/beehiveTable";
+import { NecRewardsFetch } from "services/fetch-actions/beehive/necRewards";
+import { PoolDataFetch } from "services/fetch-actions/beehive/poolData";
+import { StatusEnum } from "services/fetch-actions/BaseFetch";
+import { TradingVolumeFetch } from "services/fetch-actions/beehive/tradingVolume";
 
 log.setDefaultLevel("warn");
 
@@ -27,6 +29,8 @@ export default class BeehiveStore extends BaseStore {
   @observable bptBalance: string = "0";
   @observable showCountdown: boolean = false;
   @observable tradingVolume: TradingVolumeDTO;
+  @observable multipleTableData: MultipleTableDataDTO[] = [];
+
 
   private BPTAddress = "0xb21e53d8bd2c81629dd916eead08d338e7fcc201";
 
@@ -54,6 +58,15 @@ export default class BeehiveStore extends BaseStore {
 
     if (result.status === StatusEnum.SUCCESS) {
       this.tableData = result.data;
+    }
+  };
+
+  @action fetchMultipleTableData = async () => {
+    const action = new BeehiveMultipleTableFetch(null, this.rootStore);
+    const result = await action.fetchData();
+
+    if (result.status === StatusEnum.SUCCESS) {
+      this.multipleTableData = result.data;
     }
   };
 
@@ -97,11 +110,13 @@ export default class BeehiveStore extends BaseStore {
     await this.fetchNecRewardsData()
     await this.fetchPoolData()
     await this.fetchTradingVolume()
+    await this.fetchMultipleTableData()
 
     setInterval(async () => {
       await this.fetchNecRewardsData()
       await this.fetchPoolData()
       await this.fetchTradingVolume()
+      await this.fetchMultipleTableData()
     }, 30000)
   }
 

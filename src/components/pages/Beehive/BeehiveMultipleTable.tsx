@@ -65,6 +65,9 @@ const data = [
 
 const CustomizedTable = inject("root")(
     observer((props) => {
+        const { beehiveStore, providerStore } = props.root as RootStore;
+        const tableData = beehiveStore.multipleTableData;
+        console.log(tableData)
         const { editable } = props;
         const editableProps = editable === false ? null :
             {
@@ -122,7 +125,7 @@ const CustomizedTable = inject("root")(
                 columns={[
                     {
                         title: '24 Hr Volume At Snapshot',
-                        field: 'volumeAtSnapshot',
+                        field: 'volumeMin',
                         type: 'numeric',
                         cellStyle: {
                             backgroundColor: "rgba(5, 15, 22, 0.5)",
@@ -130,14 +133,14 @@ const CustomizedTable = inject("root")(
                     },
                     {
                         title: 'Multiple',
-                        field: 'multiple',
+                        field: 'rewardMultiple',
                         type: 'numeric',
                         cellStyle: {
                             backgroundColor: "rgba(5, 15, 22, 0.5)",
                         },
                     }
                 ]}
-                data={data}
+                data={tableData}
                 style={{
                     background: "rgba(5, 15, 22, 0.5)",
                     border: "1px solid #404b67",

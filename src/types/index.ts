@@ -173,3 +173,15 @@ export interface TradingVolumeDTO {
   totalUSDVolume: number,
   startDate: string
 }
+
+export interface MultipleTableData {
+  volumeMin: number,
+  rewardMultiple: number,
+  id: number
+}
+
+export interface MultipleTableDataDTO {
+  volume_minimum: number,
+  reward_multiple: number,
+  id: number,
+}
