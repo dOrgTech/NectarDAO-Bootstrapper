@@ -75,14 +75,16 @@ const CustomizedTable = inject("root")(
                 isEditHidden: rowData => rowData.name === 'x',
                 isDeletable: rowData => rowData.name === 'b', // only name(b) rows would be deletable,
                 isDeleteHidden: rowData => rowData.name === 'y',
-                onBulkUpdate: changes =>
+                onBulkUpdate: null, // won't support this for now
+                /*changes =>
                     new Promise((resolve, reject) => {
                         setTimeout(() => {
-                            /* setData([...data, newData]); */
+                            // setData([...data, newData]); 
 
                             resolve();
                         }, 1000);
                     }),
+                    */
                 onRowAddCancelled: rowData => console.log('Row adding cancelled'),
                 onRowUpdateCancelled: rowData => console.log('Row editing cancelled'),
                 onRowAdd: newData =>
