@@ -305,7 +305,7 @@ const BigHeader = inject("root")(
       Number((remainingRewards * necPrice).toFixed(4));
 
     const totalUSDVolume =
-      tradingVolume && tradingVolume.totalUSDVolume;
+      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
 
     return (
       <>

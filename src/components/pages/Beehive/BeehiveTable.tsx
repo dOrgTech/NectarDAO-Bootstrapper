@@ -10,6 +10,7 @@ import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
+import { TradingVolumeDTO } from "types";
 import dayjs from "dayjs";
 import dotenv from "dotenv";
 import styled from "styled-components";
@@ -79,6 +80,7 @@ const CustomizedTable = inject("root")(
     const poolData = beehiveStore.poolData
     const necPrice =
       poolData && poolData.necPrice && Number(poolData.necPrice);
+    const [tradingVolume, setTradingVolume] = useState<TradingVolumeDTO>();
 
     useEffect(() => {
       beehiveStore.toggleCountdown(true)
@@ -87,12 +89,19 @@ const CustomizedTable = inject("root")(
       }
     }, [])
 
+    useEffect(() => {
+      setTradingVolume(beehiveStore.tradingVolume);
+    }, [beehiveStore.tradingVolume]);
+
     const claim = async (contractAddress: string) => {
       const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
       const gasPrice = await providerStore.web3.eth.getGasPrice()
       const from = (await providerStore.getAccounts())[0]
       await tokenlockInstance.methods.release().send({ from, gas: 235000, gasPrice });
     }
+
+    const totalUSDVolume =
+      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
 
     return (
       <TableWrapper>
@@ -155,7 +164,7 @@ const CustomizedTable = inject("root")(
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
                         <Orangeletters align='center' variant={"h4"} color={"primary"}>
-                          {"1090099"}
+                          {totalUSDVolume}
                         </Orangeletters>
                         {`\n`} <Tinyletters>{"2x Multiple"}</Tinyletters>
                       </Box>
