@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from "react";
-import { observer, inject } from "mobx-react";
-import { RootStore } from "stores/Root";
-import styled from "styled-components";
-import { tooltip } from "strings";
-import { Title } from "components/common/beehive/Title";
 import {
-  Typography,
-  Link,
   Box,
   Grid,
+  Link,
+  Tooltip,
+  Typography,
   useMediaQuery,
   useTheme,
-  Tooltip,
 } from "@material-ui/core";
+import { NecRewardsDTO, PoolDataDTO, TradingVolumeDTO } from "types";
+import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
+
 import BeehiveGuide from "./BeehiveGuide";
-import { NecRewardsDTO, PoolDataDTO } from "types";
+import { RootStore } from "stores/Root";
+import { Title } from "components/common/beehive/Title";
+import styled from "styled-components";
+import { tooltip } from "strings";
 
 const Statsbox = styled(Box)`
   position: relative;
@@ -176,17 +177,20 @@ const InstructionBox: React.FC<InstructionBoxProps> = ({
           </Link>
         </Tooltip>
       ) : (
-        renderContent()
-      )}
+          renderContent()
+        )}
     </Grid>
   );
 };
 
 interface StatisticsBoxProps {
   title: string;
-  number: number;
-  subnumber?: number;
+  number?: number;
   isApy?: boolean;
+  subnumber?: number;
+  baseApy?: number;
+  currency?: number,
+  multiple?: number,
 }
 
 const StatisticsBox: React.FC<StatisticsBoxProps> = ({
@@ -194,6 +198,9 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
   number,
   subnumber,
   isApy,
+  baseApy,
+  currency,
+  multiple
 }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
@@ -208,13 +215,33 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
         >
           {title}
         </Typography>
-        <Typography
-          variant={"h3"}
-          align={matches ? "left" : "center"}
-          color={"textPrimary"}
-        >
-          {number ? `${number}${isApy ? "%" : ""}` : "0"}
-        </Typography>
+        {typeof currency === "number" && (
+          <Typography
+            variant={"h3"}
+            align={matches ? "left" : "center"}
+            color={"textPrimary"}
+          >
+            {currency ? `$${currency}` : "$0"}
+          </Typography>
+        )}
+        {typeof multiple === "number" && (
+          <SmallSubtitle
+            variant={"body2"}
+            align={matches ? "left" : "center"}
+            color={"textSecondary"}
+          >
+            {multiple ? `${multiple}x Multiple` : ""}
+          </SmallSubtitle>
+        )}
+        {typeof number === "number" && (
+          <Typography
+            variant={"h3"}
+            align={matches ? "left" : "center"}
+            color={"textPrimary"}
+          >
+            {number ? `${number}${isApy ? "%" : ""}` : "0"}
+          </Typography>
+        )}
         {typeof subnumber === "number" && (
           <SmallSubtitle
             variant={"body2"}
@@ -224,14 +251,14 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             {subnumber ? `$${subnumber}` : "$0"}
           </SmallSubtitle>
         )}
-        {isApy && (
-          <Typography
+        {typeof baseApy === "number" && (
+          <SmallSubtitle
+            variant={"body2"}
             align={matches ? "left" : "center"}
-            variant={"body1"}
-            color="textPrimary"
+            color={"textSecondary"}
           >
-            + BAL
-          </Typography>
+            {baseApy ? `${baseApy}%` : "0"}
+          </SmallSubtitle>
         )}
       </Statsbox>
     </Grid>
@@ -243,6 +270,7 @@ const BigHeader = inject("root")(
     const [isGuideOpen, setIsGuideOpen] = useState(false);
     const [poolData, setPoolData] = useState<PoolDataDTO>();
     const [necRewards, setNecRewards] = useState<NecRewardsDTO>();
+    const [tradingVolume, setTradingVolume] = useState<TradingVolumeDTO>();
 
     const { beehiveStore } = props.root as RootStore;
 
@@ -253,6 +281,10 @@ const BigHeader = inject("root")(
     useEffect(() => {
       setNecRewards(beehiveStore.necRewards);
     }, [beehiveStore.necRewards]);
+
+    useEffect(() => {
+      setTradingVolume(beehiveStore.tradingVolume);
+    }, [beehiveStore.tradingVolume]);
 
     const apy = poolData && poolData.apy && Number(poolData.apy.toFixed(4));
     const necPrice =
@@ -272,6 +304,9 @@ const BigHeader = inject("root")(
       necPrice &&
       Number((remainingRewards * necPrice).toFixed(4));
 
+    const totalUSDVolume =
+      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
+
     return (
       <>
         <Box width="100%" textAlign="center">
@@ -289,7 +324,7 @@ const BigHeader = inject("root")(
                 <Box width="100%" padding="65px 0 2.5% 0" textAlign="center">
                   <Grid container justify="space-between">
                     <StatisticsBox
-                      title="Total Nec Rewards"
+                      title="Total Nec Rewards (pre-multipliers)"
                       number={totalRewards}
                       subnumber={totalRewardsInUsd}
                     />
@@ -299,7 +334,8 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="APY" number={apy} isApy={true} />
+                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={totalUSDVolume} multiple={2} />
+                    <StatisticsBox title="Your/Base APY" number={apy} isApy={true} baseApy={poolData?.apy} />
                   </Grid>
                 </Box>
 
@@ -326,6 +362,12 @@ const BigHeader = inject("root")(
                     />
                     <InstructionBox
                       number={4}
+                      title="Trade"
+                      text="Trade in DeversiFi to gain NEC reward multipliers up to 2x."
+                      shaped={true}
+                    />
+                    <InstructionBox
+                      number={5}
                       title="Claim"
                       text="Unlock Your $NEC Rewards in 12 Months."
                       shaped={false}

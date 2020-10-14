@@ -1,18 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { observer, inject } from "mobx-react";
+import { Box, Button, Typography } from "@material-ui/core";
+import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
+
+import Paper from "@material-ui/core/Paper";
 import { RootStore } from "stores/Root";
-import { withStyles } from "@material-ui/core/styles";
 import Table from "@material-ui/core/Table";
 import TableBody from "@material-ui/core/TableBody";
 import TableCell from "@material-ui/core/TableCell";
 import TableContainer from "@material-ui/core/TableContainer";
 import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
-import Paper from "@material-ui/core/Paper";
-import styled from "styled-components";
-import { Typography, Button, Box } from "@material-ui/core";
-import dotenv from "dotenv";
+import { TradingVolumeDTO } from "types";
 import dayjs from "dayjs";
+import dotenv from "dotenv";
+import styled from "styled-components";
+import { withStyles } from "@material-ui/core/styles";
 
 const timelockContract = require("../../../abi/TokenTimelock.json")
 
@@ -78,6 +80,7 @@ const CustomizedTable = inject("root")(
     const poolData = beehiveStore.poolData
     const necPrice =
       poolData && poolData.necPrice && Number(poolData.necPrice);
+    const [tradingVolume, setTradingVolume] = useState<TradingVolumeDTO>();
 
     useEffect(() => {
       beehiveStore.toggleCountdown(true)
@@ -86,12 +89,19 @@ const CustomizedTable = inject("root")(
       }
     }, [])
 
+    useEffect(() => {
+      setTradingVolume(beehiveStore.tradingVolume);
+    }, [beehiveStore.tradingVolume]);
+
     const claim = async (contractAddress: string) => {
       const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
       const gasPrice = await providerStore.web3.eth.getGasPrice()
       const from = (await providerStore.getAccounts())[0]
       await tokenlockInstance.methods.release().send({ from, gas: 235000, gasPrice });
     }
+
+    const totalUSDVolume =
+      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
 
     return (
       <TableWrapper>
@@ -109,6 +119,9 @@ const CustomizedTable = inject("root")(
                   <HeaderText variant={"h6"}>BPT Snapshot</HeaderText>
                 </TableCell>
                 <TableCell align="center">
+                  <HeaderText variant={"h6"}>24 Hr Vol Snapshot</HeaderText>
+                </TableCell>
+                <TableCell align="center">
                   <HeaderText variant={"h6"}>Your Earned $NEC</HeaderText>
                 </TableCell>
                 <TableCell align="center">
@@ -124,7 +137,7 @@ const CustomizedTable = inject("root")(
                 <TableRow key={row.period}>
                   <TableCell component="th" scope="row">
                     <Typography variant={"body2"}>Period {row.period}</Typography>
-                    <Tinyletters>{row.endDate? `Ends in ${(parseDate(row.endDate))} UTC`: '-'}</Tinyletters>
+                    <Tinyletters>{row.endDate ? `Ends in ${(parseDate(row.endDate))} UTC` : '-'}</Tinyletters>
                   </TableCell>
                   <TableCell align="right">
                     <StatusCell>
@@ -149,19 +162,29 @@ const CustomizedTable = inject("root")(
                   </TableCell>
                   <TableCell>
                     <Box display="flex" flexDirection='column' alignItems="center">
-                    <Box>
-                      <Orangeletters align='center' variant={"h4"} color={"primary"}>
-                        {row.earnedNec}{" "}
-                      </Orangeletters>
-                      {`\n`} <Tinyletters>${row.earnedNec? Number((Number(row.earnedNec) * necPrice).toFixed(4)): '-' }</Tinyletters>
-                    </Box>
+                      <Box>
+                        <Orangeletters align='center' variant={"h4"} color={"primary"}>
+                          {totalUSDVolume}
+                        </Orangeletters>
+                        {`\n`} <Tinyletters>{"2x Multiple"}</Tinyletters>
+                      </Box>
                     </Box>
                   </TableCell>
                   <TableCell>
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
-                        {row.unlockDate? parseDate(row.unlockDate): '-'} {`\n`}{" "}
-                        <Tinyletters>{row.unlockDate? `${(parseDate(row.unlockDate))} UTC`: '-'}</Tinyletters>
+                        <Orangeletters align='center' variant={"h4"} color={"primary"}>
+                          {row.earnedNec}{" "}
+                        </Orangeletters>
+                        {`\n`} <Tinyletters>${row.earnedNec ? Number((Number(row.earnedNec) * necPrice).toFixed(4)) : '-'}</Tinyletters>
+                      </Box>
+                    </Box>
+                  </TableCell>
+                  <TableCell>
+                    <Box display="flex" flexDirection='column' alignItems="center">
+                      <Box>
+                        {row.unlockDate ? parseDate(row.unlockDate) : '-'} {`\n`}{" "}
+                        <Tinyletters>{row.unlockDate ? `${(parseDate(row.unlockDate))} UTC` : '-'}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>

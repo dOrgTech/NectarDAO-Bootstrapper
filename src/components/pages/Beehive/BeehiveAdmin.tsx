@@ -1,27 +1,6 @@
-import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import { useHistory } from "react-router-dom";
-import { observer, inject } from "mobx-react";
 import {
-  TextField,
-  Typography,
-  Button,
-  Box,
-  Paper,
-  Table,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableBody, Grid
-} from "@material-ui/core";
-import DateFnsUtils from "@date-io/date-fns";
-import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import {
-  addBeneficiaries,
   AdminTableData,
+  addBeneficiaries,
   deployContract,
   fetchWeeksData,
   getSnapshotCsv,
@@ -30,6 +9,30 @@ import {
   signup,
   takeSnapshot,
 } from "services/fetch-actions/httpApi";
+import {
+  Box,
+  Button,
+  Grid,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TextField,
+  Typography
+} from "@material-ui/core";
+import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
+import React, { useEffect, useState } from "react";
+import { inject, observer } from "mobx-react";
+
+import BeehiveMultipleTable from "./BeehiveMultipleTable"
+import DateFnsUtils from "@date-io/date-fns";
+import dayjs from "dayjs";
+import styled from "styled-components";
+import { useHistory } from "react-router-dom";
+import utc from "dayjs/plugin/utc";
 
 dayjs.extend(utc);
 dayjs.Ls.en.weekStart = 1;
@@ -257,6 +260,7 @@ export const BeehiveAdmin = inject("root")(
               </Button>
             </Box>
           </InputsContainer>
+          <BeehiveMultipleTable editable={true}/>
           <InputsContainer>
             <Typography variant={"h4"} color={"primary"}>
               Register new admin

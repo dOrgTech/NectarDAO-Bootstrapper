@@ -1,8 +1,10 @@
-// Stores
-import { observable, action } from 'mobx'
-import { deployed } from 'config.json'
-import { RootStore } from './Root';
 import * as log from 'loglevel';
+
+// Stores
+import { action, observable } from 'mobx'
+
+import { RootStore } from './Root';
+import { deployed } from 'config.json'
 
 export default class DataFetcher {
     dataUpdateInterval: any

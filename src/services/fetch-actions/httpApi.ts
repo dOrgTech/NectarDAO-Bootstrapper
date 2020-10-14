@@ -1,3 +1,5 @@
+import {  } from "types"
+
 import dayjs from "dayjs";
 import { saveAs } from 'file-saver'
 
@@ -99,7 +101,7 @@ export const fetchWeeksData = async () => {
   });
   const result = await response.json();
 
-  if(result.error) {
+  if (result.error) {
     throw new Error(result.message)
   }
 
@@ -151,7 +153,7 @@ export const login = async (email: string, password: string) => {
   });
   const result = await response.json();
 
-  if(result.error) {
+  if (result.error) {
     throw new Error(result.message)
   }
 
@@ -169,9 +171,55 @@ export const signup = async (email: string, password: string) => {
   });
   const result = await response.json();
 
-  if(result.error) {
+  if (result.error) {
     throw new Error(result.message)
   }
 
   localStorage.setItem('token', result.token)
+}
+
+export const addRewardMultiple = async (data: any) => {
+  const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/reward/multiple`, {
+    method: 'POST',
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthorizationHeader()
+    },
+    body: JSON.stringify({ volume_minimum: data.volumeMin, reward_multiple: data.rewardMultiple })
+  });
+  const result = await response.json();
+
+  if (result.error) {
+    throw new Error(result.message)
+  }
+}
+
+export const updateRewardMultiple = async (data: any) => {
+  const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/reward/multiple/${data.id}`, {
+    method: 'PUT',
+    headers: {
+      "Content-Type": "application/json",
+      ...getAuthorizationHeader()
+    },
+    body: JSON.stringify({ volume_minimum: data.volumeMin, reward_multiple: data.rewardMultiple })
+  });
+  const result = await response.json();
+
+  if (result.error) {
+    throw new Error(result.message)
+  }
+}
+
+export const deleteRewardMultiple = async (id: any) => {
+  const response = await fetch(`${process.env.REACT_APP_SNAPSHOT_API_URL}/reward/multiple/${id}`, {
+    method: 'DELETE',
+    headers: {
+      ...getAuthorizationHeader()
+    },
+  });
+  const result = await response.json();
+
+  if (result.error) {
+    throw new Error(result.message)
+  }
 }
