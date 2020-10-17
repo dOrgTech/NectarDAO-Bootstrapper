@@ -175,13 +175,12 @@ export interface TradingVolumeDTO {
 }
 
 export interface MultipleTableData {
-  volumeMin: number,
-  rewardMultiple: number,
-  id: number
+  multiplier: number,
+  upper_limit: number,
 }
 
 export interface MultipleTableDataDTO {
-  volume_minimum: number,
-  reward_multiple: number,
+  multiplier: number,
+  upper_limit: number,
   id: number,
 }

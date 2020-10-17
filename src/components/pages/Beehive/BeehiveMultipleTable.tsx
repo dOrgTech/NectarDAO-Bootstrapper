@@ -15,7 +15,7 @@ import FilterList from "@material-ui/icons/FilterList";
 import FirstPage from "@material-ui/icons/FirstPage";
 import LastPage from "@material-ui/icons/LastPage";
 import MaterialTable from "material-table"
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Remove from "@material-ui/icons/Remove";
 import { RootStore } from "stores/Root";
 import SaveAlt from "@material-ui/icons/SaveAlt";
@@ -49,7 +49,15 @@ dotenv.config();
 const CustomizedTable = inject("root")(
     observer((props) => {
         const { beehiveStore } = props.root as RootStore;
+        const [tableState, setTableState] = useState([])
         const tableData = beehiveStore.multipleTableData;
+
+        useEffect(() => {
+            setTableState(beehiveStore.multipleTableData)
+        }, [beehiveStore.multipleTableData])
+
+        console.log(tableState)
+
         const { editable } = props;
         const editableProps = editable === false ? null :
             {
@@ -92,30 +100,44 @@ const CustomizedTable = inject("root")(
                 },
             }
 
+        const columns = [
+            {
+                title: "24 Hr Volume At Snapshot",
+                field: "upper_limit",
+                type: "numeric",
+                cellStyle: {
+                    backgroundColor: "rgba(5, 15, 22, 0.5)",
+                },
+            },
+            {
+                title: "Multiple",
+                field: "multiplier",
+                type: "numeric",
+                cellStyle: {
+                    backgroundColor: "rgba(5, 15, 22, 0.5)",
+                },
+            }
+        ]
+
+        const editableColumns = [
+            {
+                title: '#',
+                field: "ordinal",
+                type: "numeric",
+                cellStyle: {
+                    backgroundColor: "rgba(5, 15, 22, 0.5)",
+                },
+            },
+            ...columns
+        ]
+
         return (
             <MaterialTable
-                editable={editableProps}
                 icons={tableIcons}
+                editable={editableProps}
                 title={"Reward Multiples"}
-                columns={[
-                    {
-                        title: "24 Hr Volume At Snapshot",
-                        field: "volumeMin",
-                        type: "numeric",
-                        cellStyle: {
-                            backgroundColor: "rgba(5, 15, 22, 0.5)",
-                        },
-                    },
-                    {
-                        title: "Multiple",
-                        field: "rewardMultiple",
-                        type: "numeric",
-                        cellStyle: {
-                            backgroundColor: "rgba(5, 15, 22, 0.5)",
-                        },
-                    }
-                ]}
-                data={tableData}
+                columns={editable? editableColumns: columns}
+                data={tableData.map((t, i) => ({ ...t, ordinal: i}))}
                 style={{
                     background: "rgba(5, 15, 22, 0.5)",
                     border: "1px solid #404b67",

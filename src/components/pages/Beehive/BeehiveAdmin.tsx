@@ -21,7 +21,8 @@ import {
   TableHead,
   TableRow,
   TextField,
-  Typography
+  Typography,
+  Container
 } from "@material-ui/core";
 import { DatePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 import React, { useEffect, useState } from "react";
@@ -49,7 +50,8 @@ const InputsContainer = styled.div`
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  padding-bottom: "25px";
+  padding-bottom: 25px;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
 `;
@@ -260,7 +262,6 @@ export const BeehiveAdmin = inject("root")(
               </Button>
             </Box>
           </InputsContainer>
-          <BeehiveMultipleTable editable={true}/>
           <InputsContainer>
             <Typography variant={"h4"} color={"primary"}>
               Register new admin
@@ -302,6 +303,9 @@ export const BeehiveAdmin = inject("root")(
             </Button>
           </InputsContainer>
         </PageWrapper>
+        <Container>
+          <BeehiveMultipleTable editable={true}/>
+        </Container>
         <Box>
           <TableWrapper>
             <TableContainer component={Paper}>
