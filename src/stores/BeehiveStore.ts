@@ -109,12 +109,10 @@ export default class BeehiveStore extends BaseStore {
     console.log('Fetching')
     await this.fetchNecRewardsData()
     await this.fetchPoolData()
-    await this.fetchTradingVolume()
 
     setInterval(async () => {
       await this.fetchNecRewardsData()
       await this.fetchPoolData()
-      await this.fetchTradingVolume()
     }, 30000)
   }
 
