@@ -18,7 +18,9 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): TableData[] => {
       end_date,
       snapshot_date,
       unlock_date,
-      contract_address
+      contract_address,
+      trading_volume,
+      multiplier
     } = dto;
     return {
       period: week_number,
@@ -30,6 +32,8 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): TableData[] => {
       contractAddress: contract_address,
       claim: "Unlock NEC",
       snapshotDate: snapshot_date,
+      tradingVolume: trading_volume? Number(trading_volume).toFixed(3): "0",
+      multiplier: multiplier? Number(multiplier).toFixed(2): "0",
       earnedNecPercent: nec_earned
         ? ((Number(nec_earned) * 100) / Number(nec_to_distribute)).toFixed(2)
         : "0",

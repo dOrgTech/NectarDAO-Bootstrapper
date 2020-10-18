@@ -122,8 +122,8 @@ export default class BeehiveStore extends BaseStore {
     this.showCountdown = value
   }
 
-  @action fetchTradingVolume = async () => {
-    const action = new TradingVolumeFetch(null, this.rootStore);
+  @action fetchTradingVolume = async (address: string) => {
+    const action = new TradingVolumeFetch(null, this.rootStore, address);
     const result = await action.fetchData();
 
     if (result.status === StatusEnum.SUCCESS) {
