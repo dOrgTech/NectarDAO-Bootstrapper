@@ -1,10 +1,6 @@
 // @ts-nocheck
 
-import {
-  addRewardMultiple,
-  deleteRewardMultiple,
-  updateRewardMultiple,
-} from "services/fetch-actions/httpApi";
+import { addRewardMultiples } from "services/fetch-actions/httpApi";
 import { inject, observer } from "mobx-react";
 
 import AddBox from "@material-ui/icons/AddBox";
@@ -59,21 +55,28 @@ dotenv.config();
 const CustomizedTable = inject("root")(
   observer((props) => {
     const { beehiveStore } = props.root as RootStore;
-    const [storedTableState, setStoredTableState] = useState([]);
-    const [tableState, setTableState] = useState([]);
+    const [storedTableState, setStoredTableState] = useState();
+    const [tableState, setTableState] = useState();
     const [newInfo, infoIsNew] = useState(false);
-
-    useEffect(() => {
-      //   setTableState(beehiveStore.multipleTableData);
-      console.log("yah its happening");
-    }, [beehiveStore.multipleTableData]);
 
     useEffect(() => {
       const isNew = !isEqual(tableState, storedTableState);
       infoIsNew(isNew);
     }, [tableState]);
-
-    console.log(tableState);
+    
+    useEffect(() => {
+        (async () => {
+            await beehiveStore.fetchMultipleTableData();
+            setStoredTableState(beehiveStore.multipleTableData);
+            setTableState(beehiveStore.multipleTableData);
+        })();
+    }, []);
+    
+    const storeInformation = async () => {
+        await addRewardMultiples(tableState);
+        setStoredTableState(tableState);
+        infoIsNew(false);
+    };
 
     const { editable } = props;
     const editableProps =
@@ -164,7 +167,11 @@ const CustomizedTable = inject("root")(
             },
           }}
         />
-        {newInfo && <Button variant="outlined">Save</Button>}
+        {newInfo && (
+          <Button onClick={storeInformation} variant="outlined">
+            Save
+          </Button>
+        )}
       </>
     );
   })
