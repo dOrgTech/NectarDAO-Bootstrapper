@@ -63,19 +63,19 @@ const CustomizedTable = inject("root")(
       const isNew = !isEqual(tableState, storedTableState);
       infoIsNew(isNew);
     }, [tableState]);
-    
+
     useEffect(() => {
-        (async () => {
-            await beehiveStore.fetchMultipleTableData();
-            setStoredTableState(beehiveStore.multipleTableData);
-            setTableState(beehiveStore.multipleTableData);
-        })();
+      (async () => {
+        await beehiveStore.fetchMultipleTableData();
+        setStoredTableState(beehiveStore.multipleTableData);
+        setTableState(beehiveStore.multipleTableData);
+      })();
     }, []);
-    
+
     const storeInformation = async () => {
-        await addRewardMultiples(tableState);
-        setStoredTableState(tableState);
-        infoIsNew(false);
+      await addRewardMultiples(tableState);
+      setStoredTableState(tableState);
+      infoIsNew(false);
     };
 
     const { editable } = props;

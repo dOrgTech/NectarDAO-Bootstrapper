@@ -30,8 +30,6 @@ export class BeehiveMultipleTableFetch extends BaseFetch {
       `${process.env.REACT_APP_SNAPSHOT_API_URL}/reward/multiple`
     );
     const result = await response.json();
-    console.log("Result ",result)
-    console.log("after mapper ", tableDataMapper(result.multiples))
     if (!result.error) {
       return {
         status: StatusEnum.SUCCESS,
