@@ -42,7 +42,7 @@ const InstructBox = styled(Box)`
   border: 1px solid #404b67;
   box-sizing: border-box;
   border-radius: 6px;
-  width: 255px;
+  width: 100%;
   height: 148px;
   padding: 14px 16px;
 
@@ -206,7 +206,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
   const matches = useMediaQuery(theme.breakpoints.up("md"));
 
   return (
-    <Grid item container xs={12} sm={6} md={3} justify="center">
+    <Grid item container xs={12} sm={6} md={2} justify="center">
       <Statsbox centered={!matches}>
         <Typography
           variant={"body1"}
