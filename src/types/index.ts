@@ -134,6 +134,8 @@ export interface TableData {
   claim: string;
   endDate: string;
   earnedNecPercent: string;
+  tradingVolume: string;
+  multiplier: string;
 }
 
 export interface TableDataDTO {
@@ -148,6 +150,8 @@ export interface TableDataDTO {
   bpt_balance: string;
   unlock_date: string;
   contract_address: string;
+  trading_volume: string;
+  multiplier: string
 }
 
 export interface PoolDataDTO {
@@ -170,8 +174,8 @@ declare global {
 }
 
 export interface TradingVolumeDTO {
-  totalUSDVolume: number,
-  startDate: string
+  multiplier: number,
+  trading_volume: number
 }
 
 export interface MultipleTableData {

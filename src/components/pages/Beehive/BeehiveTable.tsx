@@ -80,7 +80,6 @@ const CustomizedTable = inject("root")(
     const poolData = beehiveStore.poolData
     const necPrice =
       poolData && poolData.necPrice && Number(poolData.necPrice);
-    const [tradingVolume, setTradingVolume] = useState<TradingVolumeDTO>();
 
     useEffect(() => {
       beehiveStore.toggleCountdown(true)
@@ -89,19 +88,12 @@ const CustomizedTable = inject("root")(
       }
     }, [])
 
-    useEffect(() => {
-      setTradingVolume(beehiveStore.tradingVolume);
-    }, [beehiveStore.tradingVolume]);
-
     const claim = async (contractAddress: string) => {
       const tokenlockInstance = new providerStore.web3.eth.Contract(timelockContract.abi, contractAddress);
       const gasPrice = await providerStore.web3.eth.getGasPrice()
       const from = (await providerStore.getAccounts())[0]
       await tokenlockInstance.methods.release().send({ from, gas: 235000, gasPrice });
     }
-
-    const totalUSDVolume =
-      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
 
     return (
       <TableWrapper>
@@ -164,9 +156,9 @@ const CustomizedTable = inject("root")(
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
                         <Orangeletters align='center' variant={"h4"} color={"primary"}>
-                          {totalUSDVolume}
+                          {Number(row.tradingVolume)}
                         </Orangeletters>
-                        {`\n`} <Tinyletters>{"2x Multiple"}</Tinyletters>
+                        {`\n`} <Tinyletters>x{Number(row.multiplier)}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>

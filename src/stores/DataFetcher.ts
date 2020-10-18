@@ -77,6 +77,7 @@ export default class DataFetcher {
         console.log(`[Fetch] Beehive Data for ${userAddress}`)
         const { beehiveStore } = this.rootStore
 
+        await beehiveStore.fetchTradingVolume(userAddress)
         await beehiveStore.fetchTableData(userAddress)
         await beehiveStore.fetchBptBalance(userAddress)
     }

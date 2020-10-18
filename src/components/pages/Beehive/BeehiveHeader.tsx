@@ -221,7 +221,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             align={matches ? "left" : "center"}
             color={"textPrimary"}
           >
-            {currency ? `$${currency}` : "$0"}
+            {currency >= 0 ? `$${currency}` : "-"}
           </Typography>
         )}
         {typeof multiple === "number" && (
@@ -230,7 +230,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             align={matches ? "left" : "center"}
             color={"textSecondary"}
           >
-            {multiple ? `${multiple}x Multiple` : ""}
+            {multiple ? `${multiple}x Multiple` : "-"}
           </SmallSubtitle>
         )}
         {typeof number === "number" && (
@@ -305,12 +305,14 @@ const BigHeader = inject("root")(
       Number((remainingRewards * necPrice).toFixed(4));
 
     const totalUSDVolume =
-      tradingVolume && Number((tradingVolume.totalUSDVolume).toFixed(4));
+      tradingVolume && tradingVolume.trading_volume && Number((tradingVolume.trading_volume).toFixed(4));
+
+    const multiplier = tradingVolume && tradingVolume.multiplier
 
     return (
       <>
         <Box width="100%" textAlign="center">
-          <Title text={"Nectar Beehive V1"} afterElement={true} />
+          <Title text={"Nectar Beehive V2"} afterElement={true} />
           <Box display="flex" justifyContent="center" paddingX="30px">
             <Box maxWidth="1110px" width="100%">
               <Grid container direction="column" alignItems="center">
@@ -334,7 +336,7 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={totalUSDVolume} multiple={2} />
+                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={typeof totalUSDVolume === 'number'? totalUSDVolume: -1} multiple={multiplier} />
                     <StatisticsBox title="Your/Base APY" number={apy} isApy={true} baseApy={poolData?.apy} />
                   </Grid>
                 </Box>
@@ -356,7 +358,7 @@ const BigHeader = inject("root")(
                     />
                     <InstructionBox
                       number={3}
-                      title="EARN"
+                      title="Earn"
                       text="Earn $BAL Rewards Weekly."
                       shaped={true}
                     />

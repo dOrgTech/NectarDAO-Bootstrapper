@@ -109,13 +109,12 @@ export default class BeehiveStore extends BaseStore {
     console.log('Fetching')
     await this.fetchNecRewardsData()
     await this.fetchPoolData()
-    await this.fetchTradingVolume()
     await this.fetchMultipleTableData()
 
     setInterval(async () => {
       await this.fetchNecRewardsData()
       await this.fetchPoolData()
-      await this.fetchTradingVolume()
+
       await this.fetchMultipleTableData()
     }, 30000)
   }
@@ -124,8 +123,8 @@ export default class BeehiveStore extends BaseStore {
     this.showCountdown = value
   }
 
-  @action fetchTradingVolume = async () => {
-    const action = new TradingVolumeFetch(null, this.rootStore);
+  @action fetchTradingVolume = async (address: string) => {
+    const action = new TradingVolumeFetch(null, this.rootStore, address);
     const result = await action.fetchData();
 
     if (result.status === StatusEnum.SUCCESS) {
