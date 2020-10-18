@@ -6,7 +6,6 @@ import {
 import { MultipleTableData, MultipleTableDataDTO } from "types";
 
 import { RootStore } from "stores/Root";
-import dayjs from "dayjs";
 
 const tableDataMapper = (
   multipleTableDataDtos: MultipleTableDataDTO[]
@@ -35,7 +34,7 @@ export class BeehiveMultipleTableFetch extends BaseFetch {
     if (!result.error) {
       return {
         status: StatusEnum.SUCCESS,
-        data: tableDataMapper(result.multiples),
+        data: result.multiples ? tableDataMapper(result.multiples) : [],
       };
     }
 
