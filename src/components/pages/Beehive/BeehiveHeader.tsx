@@ -257,7 +257,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             align={matches ? "left" : "center"}
             color={"textSecondary"}
           >
-            {baseApy ? `${baseApy}%` : "0"}
+            {baseApy ? `${Number(baseApy.toFixed(4))}%` : "0"}
           </SmallSubtitle>
         )}
       </Statsbox>
