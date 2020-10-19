@@ -337,7 +337,7 @@ const BigHeader = inject("root")(
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
                     <StatisticsBox title="Your 24hr Diversifi Volume" currency={typeof totalUSDVolume === 'number'? totalUSDVolume: -1} multiple={multiplier} />
-                    <StatisticsBox title="Your/Base APY" number={apy * multiplier} isApy={true} baseApy={poolData?.apy} />
+                    <StatisticsBox title="Your/Base APY" number={apy * multiplier} isApy={true} baseApy={apy} />
                   </Grid>
                 </Box>
 
