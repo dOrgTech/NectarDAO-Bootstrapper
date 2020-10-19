@@ -307,7 +307,7 @@ const BigHeader = inject("root")(
     const totalUSDVolume =
       tradingVolume && tradingVolume.trading_volume && Number((tradingVolume.trading_volume).toFixed(4));
 
-    const multiplier = tradingVolume && tradingVolume.multiplier
+    const multiplier = tradingVolume && tradingVolume.multiplier && Number(tradingVolume.multiplier)
 
     return (
       <>
