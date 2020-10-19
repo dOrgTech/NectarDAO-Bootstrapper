@@ -25,6 +25,8 @@ import dotenv from "dotenv";
 import { forwardRef } from "react";
 import { Button } from "@material-ui/core";
 import { isEqual } from "lodash";
+import { Typography } from "@material-ui/core";
+import styled from "styled-components";
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -51,6 +53,10 @@ const tableIcons = {
 };
 
 dotenv.config();
+
+const TableText = styled(Typography)`
+  color: rgba(169, 171, 203, 0.8) !important;
+`;
 
 const CustomizedTable = inject("root")(
   observer((props) => {
@@ -125,16 +131,24 @@ const CustomizedTable = inject("root")(
         title: "24 Hr Volume At Snapshot",
         field: "upper_limit",
         type: "numeric",
+        align: "left",
+        render: (rowData: any) => {
+          return <TableText variant={"body2"}>{rowData.upper_limit}</TableText>;
+        },
         cellStyle: {
-          backgroundColor: "rgba(5, 15, 22, 0.5)",
+          border: "none",
         },
       },
       {
         title: "Multiple",
         field: "multiplier",
         type: "numeric",
+        align: "center",
+        render: (rowData: any) => {
+          return <TableText variant={"body2"}>{rowData.multiplier}</TableText>;
+        },
         cellStyle: {
-          backgroundColor: "rgba(5, 15, 22, 0.5)",
+          border: "none",
         },
       },
     ];
@@ -146,7 +160,6 @@ const CustomizedTable = inject("root")(
         <MaterialTable
           icons={tableIcons}
           editable={editableProps}
-          title={"Reward Multiples"}
           columns={editable ? editableColumns : columns}
           data={tableState}
           style={{
@@ -155,15 +168,23 @@ const CustomizedTable = inject("root")(
             boxSizing: "border-box",
             borderRadius: "6px",
             margin: "15px 0 20px 0",
+            maxWidth: "530px"
           }}
           options={{
             paging: false,
             search: false,
-            rowStyle: {
-              backgroundColor: "rgba(5, 15, 22, 0.5)",
-            },
+            showTitle: false,
+            toolbar: false,
             headerStyle: {
-              backgroundColor: "rgba(5, 15, 22, 0.5)",
+              backgroundColor: "inherit",
+              fontSize: "16px",
+              fontStyle: "normal",
+              fontFamily: "Sen",
+              fontWeight: "normal",
+              lineHeight: "24px",
+              letterSpacing: "0.01071em",
+              color: "rgba(169,171,203,0.8)",
+              border: 'none'
             },
           }}
         />
