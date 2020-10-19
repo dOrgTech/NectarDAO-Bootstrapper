@@ -174,7 +174,7 @@ const CustomizedTable = inject("root")(
             paging: false,
             search: false,
             showTitle: false,
-            toolbar: false,
+            toolbar: editable,
             headerStyle: {
               backgroundColor: "inherit",
               fontSize: "16px",
