@@ -129,11 +129,11 @@ const CustomizedTable = inject("root")(
     const columns = [
       {
         title: "24 Hr Volume At Snapshot",
-        field: "upper_limit",
+        field: "lower_limit",
         type: "numeric",
         align: "left",
         render: (rowData: any) => {
-          return <TableText variant={"body2"}>{rowData.upper_limit}</TableText>;
+          return <TableText variant={"body2"}>{rowData.lower_limit}</TableText>;
         },
         cellStyle: {
           border: "none",

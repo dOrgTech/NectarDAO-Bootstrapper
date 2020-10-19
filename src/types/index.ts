@@ -180,11 +180,11 @@ export interface TradingVolumeDTO {
 
 export interface MultipleTableData {
   multiplier: number,
-  upper_limit: number,
+  lower_limit: number,
 }
 
 export interface MultipleTableDataDTO {
   multiplier: number,
-  upper_limit: number,
+  lower_limit: number,
   id: number,
 }

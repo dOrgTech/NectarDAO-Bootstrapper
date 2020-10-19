@@ -11,10 +11,10 @@ const tableDataMapper = (
   multipleTableDataDtos: MultipleTableDataDTO[]
 ): MultipleTableData[] => {
   return multipleTableDataDtos.map((dto) => {
-    const { multiplier, upper_limit } = dto;
+    const { multiplier, lower_limit } = dto;
     return {
       multiplier,
-      upper_limit,
+      lower_limit,
     };
   });
 };
