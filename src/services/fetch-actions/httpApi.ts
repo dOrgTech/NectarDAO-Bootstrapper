@@ -1,7 +1,6 @@
-import {  } from "types"
-
 import dayjs from "dayjs";
 import { saveAs } from 'file-saver'
+import { parse } from "json2csv";
 
 export interface AdminTableData {
   id: string;
@@ -13,6 +12,7 @@ export interface AdminTableData {
   contractAddress: string;
   snapshotDate: string;
   necToDistribute: string;
+  necToDistributeWithMultiplier: string
 }
 
 interface TableDataDTO {
@@ -28,6 +28,7 @@ interface TableDataDTO {
   contract_address: string;
   unlock_date: string;
   end_date: string;
+  nec_to_distribute_with_multiplier: string
 }
 
 const getAuthorizationHeader = () => {
@@ -53,6 +54,7 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): AdminTableData[] => {
       unlock_date,
       end_date,
       id,
+      nec_to_distribute_with_multiplier
     } = dto;
     return {
       period: week_number,
@@ -64,6 +66,7 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): AdminTableData[] => {
       endDate: end_date && `UTC ${formatDate(end_date)}`,
       startDate: start_date && `UTC ${formatDate(start_date)}`,
       id,
+      necToDistributeWithMultiplier: nec_to_distribute_with_multiplier || "0"
     };
   });
 };
@@ -138,9 +141,11 @@ export const getSnapshotCsv = async (weekId: string) => {
     }
   });
 
-  const result = await response.blob()
-
-  saveAs(result, 'snapshot.csv')
+  const result = await response.json()
+  const snapshot = parse(result.snapshotData)
+  console.log(snapshot)
+  const blob = new Blob([snapshot], {type: "text/csv"});
+  saveAs(blob, 'snapshot.csv')
 }
 
 export const login = async (email: string, password: string) => {

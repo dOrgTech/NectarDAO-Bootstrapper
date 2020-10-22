@@ -336,6 +336,11 @@ export const BeehiveAdmin = inject("root")(
                       </HeaderText>
                     </TableCell>
                     <TableCell align="left">
+                      <HeaderText variant={"h6"}>
+                        NEC to distribute with multiplier
+                      </HeaderText>
+                    </TableCell>
+                    <TableCell align="left">
                       <HeaderText variant={"h6"}>Actions</HeaderText>
                     </TableCell>
                   </TableRow>
@@ -385,6 +390,9 @@ export const BeehiveAdmin = inject("root")(
                           style={{ wordBreak: "break-word" }}
                         >
                           {row.contractAddress ? row.contractAddress : "-"}
+                        </TableCell>
+                        <TableCell align="left">
+                          {row.necToDistributeWithMultiplier ?? "-"}
                         </TableCell>
                         <TableCell align="left">
                           <Box

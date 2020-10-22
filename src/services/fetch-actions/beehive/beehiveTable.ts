@@ -35,7 +35,7 @@ const tableDataMapper = (tableDataDtos: TableDataDTO[]): TableData[] => {
       tradingVolume: trading_volume? Number(trading_volume).toFixed(3): "0",
       multiplier: multiplier? Number(multiplier).toFixed(2): "0",
       earnedNecPercent: nec_earned
-        ? ((Number(nec_earned) * 100) / Number(nec_to_distribute)).toFixed(2)
+        ? (((Number(nec_earned) * 100) / Number(nec_to_distribute)) / Number(multiplier) ).toFixed(2)
         : "0",
     };
   });
