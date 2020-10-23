@@ -8,7 +8,7 @@ import HomePage from "./pages/HomePage";
 import Beehive from "./pages/Beehive";
 import BeehiveGuide from "./pages/Beehive/BeehiveGuide";
 import styled from "styled-components";
-import { Typography, Button, ThemeProvider } from "@material-ui/core";
+import { Typography, Link, ThemeProvider } from "@material-ui/core";
 import NectarLogo from "assets/pngs/NECwithoutText.png";
 
 import HexagonsBackground from "assets/svgs/hexagonsBackground.svg";
@@ -29,7 +29,7 @@ const AppBody = styled.div`
 const Footer = styled.div`
   position: fixed;
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
   bottom: 0;
   width: 100%;
@@ -41,11 +41,9 @@ const FooterText = styled(Typography)`
   color: rgba(169, 171, 203, 0.5);
   font-size: 14px;
   text-align: right;
-  padding-right: 166px;
 `;
 
 const FooterLogo = styled.img`
-  padding-left: 166px;
   height: 32px;
   width: 32px;
 `;
@@ -102,6 +100,17 @@ const App = inject("root")(
                 </Web3Manager>
                 <Footer>
                   <FooterLogo src={NectarLogo} />
+                  <Typography
+                    variant={"body2"}
+                    onClick={() =>
+                      window.open(
+                        "https://discord.com/invite/7x7YwYX",
+                        "_blank"
+                      )
+                    }
+                  >
+                    <Link>Join Our Discord</Link>
+                  </Typography>
                   <FooterText>Copyright @2020 DeversiFi</FooterText>
                 </Footer>
               </AppBody>

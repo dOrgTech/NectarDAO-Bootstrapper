@@ -136,13 +136,8 @@ const HomePage: React.FC = () => {
       <TitleWrapper>
         <MainTitle>
           <Title afterElement={true} text={"Earn Rewards"} />{" "}
-          <Title afterElement={false} text={"For Staking Nectar $NEC"} />
+          <Title afterElement={false} text={"For Trading on DeversiFi and Staking Nectar $NEC"} />
         </MainTitle>
-        <JoinTextWrapper>
-          <Typography color={"textSecondary"} variant={"subtitle2"}>
-            Join Our Discord
-          </Typography>
-        </JoinTextWrapper>
       </TitleWrapper>
       <PageWrapper>
         <Panel>
@@ -180,7 +175,7 @@ const HomePage: React.FC = () => {
           </BadgeContainer>
           <PanelContent>
             <PanelTitle>Beehive</PanelTitle>
-            <SubTitle>Earn REP, BAL and necDAO Reputation</SubTitle>
+            <SubTitle> Earn $NEC and $BAL Rewards</SubTitle>
             <PanelBodyTextWrapper>
               <PanelBodyText>
                 Designed to bootstrap $NEC liquidity, Stake your $NEC & wETH

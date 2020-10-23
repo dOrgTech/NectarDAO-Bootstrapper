@@ -112,6 +112,10 @@ const CloseIcon = styled(IconButton)`
   font-size: 16px;
 `;
 
+const AppLink = styled(Link)`
+  cursor: pointer
+`
+
 const BeehiveGuide: React.FC<any> = inject("root")(
   observer((props) => {
     const { beehiveStore } = props.root as RootStore;
@@ -227,9 +231,18 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                   >
                     Trade On DeversiFi to Earn NEC Reward Multiples
                   </Typography>
-                  <BodyText variant={"body2"}>
-                    Head to app.deversifi.com, connect your wallet and trade to earn NEC reward multiples
-                  </BodyText>
+                  <Typography variant={"body2"}>
+                    Head to{" "}
+                    <AppLink
+                      onClick={() =>
+                        window.open("https://app.deversifi.com", "_blank")
+                      }
+                    >
+                      app.deversifi.com
+                    </AppLink>
+                    , connect your wallet and trade to earn NEC reward
+                    multiples
+                  </Typography>
                   <BeehiveMultipleTable editable={false}/>
                 </StepTextWrapper>
               </StepWrapper>

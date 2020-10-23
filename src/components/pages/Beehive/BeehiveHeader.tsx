@@ -25,6 +25,10 @@ const Statsbox = styled(Box)`
   padding: 15px 20px 15px 0px;
   box-sizing: border-box;
 
+  & > * {
+    flex: 1;
+  }
+
   &::before {
     content: "";
     width: 60px;
@@ -45,6 +49,7 @@ const InstructBox = styled(Box)`
   width: 100%;
   height: 148px;
   padding: 14px 16px;
+  min-width: 200px;
 
   @media (max-width: 599px) {
     min-width: 255px;
@@ -161,7 +166,7 @@ const InstructionBox: React.FC<InstructionBoxProps> = ({
   };
 
   return (
-    <Grid item container xs={12} sm={6} md={3} justify="center">
+    <Grid item container xs={12} sm={6} md={3} lg={2} justify="center">
       {tooltip ? (
         <Tooltip title="Go to NEC Balancer Pool">
           <Link
@@ -189,7 +194,7 @@ interface StatisticsBoxProps {
   isApy?: boolean;
   subnumber?: number;
   baseApy?: number;
-  currency?: number,
+  currency?: number | string,
   multiple?: number,
 }
 
@@ -200,7 +205,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
   isApy,
   baseApy,
   currency,
-  multiple
+  multiple,
 }) => {
   const theme = useTheme();
   const matches = useMediaQuery(theme.breakpoints.up("md"));
@@ -221,7 +226,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             align={matches ? "left" : "center"}
             color={"textPrimary"}
           >
-            {currency >= 0 ? `$${currency}` : "-"}
+            {currency >= 0 ? `$${currency.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : "-"}
           </Typography>
         )}
         {typeof multiple === "number" && (
@@ -314,11 +319,11 @@ const BigHeader = inject("root")(
         <Box width="100%" textAlign="center">
           <Title text={"Nectar Beehive V2"} afterElement={true} />
           <Box display="flex" justifyContent="center" paddingX="30px">
-            <Box maxWidth="1110px" width="100%">
+            <Box maxWidth="1350px" width="100%">
               <Grid container direction="column" alignItems="center">
                 <Box maxWidth="445px" paddingX="25px" boxSizing="border-box">
                   <Typography color={"textSecondary"} variant={"subtitle2"}>
-                    Earn $NEC and $BAL Rewards for Staking into The
+                    Earn $NEC and $BAL for Trading on DeversiFi and Staking into The
                     Balancer NEC/wEth Pool
                   </Typography>
                 </Box>
@@ -336,8 +341,8 @@ const BigHeader = inject("root")(
                       subnumber={remainingRewardsInUsd}
                     />
                     <StatisticsBox title="NEC Price" number={necPrice} />
-                    <StatisticsBox title="Your 24hr Diversifi Volume" currency={typeof totalUSDVolume === 'number'? totalUSDVolume: -1} multiple={multiplier} />
-                    <StatisticsBox title="Your/Base APY" number={Number((apy * multiplier).toFixed(4))} isApy={true} baseApy={apy} />
+                    <StatisticsBox title="Your 24hr Deversifi Volume" currency={typeof totalUSDVolume === 'number'? totalUSDVolume : -1} multiple={multiplier} />
+                    <StatisticsBox title="Your/Base APY" number={Number((apy * multiplier).toFixed(2))} isApy={true} baseApy={apy} />
                   </Grid>
                 </Box>
 
@@ -365,7 +370,7 @@ const BigHeader = inject("root")(
                     <InstructionBox
                       number={4}
                       title="Trade"
-                      text="Trade in DeversiFi to gain NEC reward multipliers up to 2x."
+                      text="Trade on DeversiFi to gain NEC reward multipliers up to 2x."
                       shaped={true}
                     />
                     <InstructionBox

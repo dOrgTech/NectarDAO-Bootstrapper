@@ -133,7 +133,9 @@ const CustomizedTable = inject("root")(
         type: "numeric",
         align: "left",
         render: (rowData: any) => {
-          return <TableText variant={"body2"}>{rowData.lower_limit}</TableText>;
+          const lowerLimit = rowData.lower_limit
+          const limit = editable ? lowerLimit : Number(lowerLimit).toLocaleString('en-US', { maximumFractionDigits: 0 })
+          return <TableText variant={"body2"}>{`$${limit}`}</TableText>;
         },
         cellStyle: {
           border: "none",
