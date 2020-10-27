@@ -237,17 +237,17 @@ class LedgerAccountPicker extends Component {
               <Close />
             </CloseIcon>
           </CloseIconContainer>
+          <Box width='100%' paddingBottom='25px' display='flex' justifyContent='center'>
+            <Title text={"Connect Ledger"} afterElement={true} />
+          </Box>
           {
             !this.state.ledgerConnected &&
             <Box width='100%' padding='10px 0'>
-              <Subtitle color='textSecondary' variant='body2'>
+              <Subtitle color='textSecondary' variant='body2' align='center'>
                 Please check if your ledger is connected...
               </Subtitle>
             </Box>
           }
-            <Box width='100%' paddingBottom='25px' display='flex' justifyContent='center'>
-              <Title text={"Connect Ledger"} afterElement={true} />
-            </Box>
             <Grid container justify={'center'} style={{ paddingBottom: 25 }}>
               <Grid item>
               <Select
