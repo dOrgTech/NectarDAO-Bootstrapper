@@ -207,7 +207,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                         variant={"body2"}
                         color={"textPrimary"}
                       >
-                        {beehiveStore.bptBalance}
+                        {Number(Number(beehiveStore.bptBalance).toFixed(4))}
                       </BalanceNumberText>
                     </BalanceText>
                   </BPTBalance>
@@ -231,7 +231,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                   >
                     Trade On DeversiFi to Earn NEC Reward Multiples
                   </Typography>
-                  <Typography variant={"body2"}>
+                  <Typography variant={"body2"} color={"textSecondary"} style={{ paddingTop: 15 }}>
                     Head to{" "}
                     <AppLink
                       onClick={() =>
@@ -265,7 +265,7 @@ const BeehiveGuide: React.FC<any> = inject("root")(
                     Wait for Weekly BPT Snapshot
                   </Typography>
                   <BodyText variant={"body2"}>
-                    Once per week Monday morning 00:00 to Sunday evening 23:59,
+                    Once per week,
                     a hidden snapshot will be taken to determine $NEC rewards.
                     After the week has ended, the results will be published and
                     your earned NEC rewards will be displayed in the Beehive

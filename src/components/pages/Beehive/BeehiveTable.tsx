@@ -156,7 +156,7 @@ const CustomizedTable = inject("root")(
                     <Box display="flex" flexDirection='column' alignItems="center">
                       <Box>
                         <Orangeletters align='center' variant={"h4"} color={"primary"}>
-                          {Number(row.tradingVolume)}
+                          {`$${Number(row.tradingVolume).toLocaleString('en-US', { maximumFractionDigits: 0 })}`}
                         </Orangeletters>
                         {`\n`} <Tinyletters>x{Number(row.multiplier)}</Tinyletters>
                       </Box>
@@ -168,7 +168,7 @@ const CustomizedTable = inject("root")(
                         <Orangeletters align='center' variant={"h4"} color={"primary"}>
                           {row.earnedNec}{" "}
                         </Orangeletters>
-                        {`\n`} <Tinyletters>${row.earnedNec ? Number((Number(row.earnedNec) * necPrice).toFixed(4)) : '-'}</Tinyletters>
+                        {`\n`} <Tinyletters>${row.earnedNec ? (Number(row.earnedNec) * necPrice).toLocaleString('en-US', { maximumFractionDigits: 2 }) : '-'}</Tinyletters>
                       </Box>
                     </Box>
                   </TableCell>

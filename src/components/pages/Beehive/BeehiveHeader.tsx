@@ -192,6 +192,7 @@ interface StatisticsBoxProps {
   title: string;
   number?: number;
   isApy?: boolean;
+  subcurrency?: number;
   subnumber?: number;
   baseApy?: number;
   currency?: number | string,
@@ -202,6 +203,7 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
   title,
   number,
   subnumber,
+  subcurrency,
   isApy,
   baseApy,
   currency,
@@ -254,6 +256,15 @@ const StatisticsBox: React.FC<StatisticsBoxProps> = ({
             color={"textSecondary"}
           >
             {subnumber ? `$${subnumber}` : "$0"}
+          </SmallSubtitle>
+        )}
+        {typeof subcurrency === "number" && (
+          <SmallSubtitle
+            variant={"body2"}
+            align={matches ? "left" : "center"}
+            color={"textSecondary"}
+          >
+            {subcurrency ? `$${subcurrency.toLocaleString('en-US', { maximumFractionDigits: 0 })}` : "$0"}
           </SmallSubtitle>
         )}
         {typeof baseApy === "number" && (
@@ -333,14 +344,14 @@ const BigHeader = inject("root")(
                     <StatisticsBox
                       title="Total Nec Rewards (pre-multipliers)"
                       number={totalRewards}
-                      subnumber={totalRewardsInUsd}
+                      subcurrency={totalRewardsInUsd}
                     />
                     <StatisticsBox
                       title="Remaining NEC Rewards"
                       number={remainingRewards}
                       subnumber={remainingRewardsInUsd}
                     />
-                    <StatisticsBox title="NEC Price" number={necPrice} />
+                    <StatisticsBox title="NEC Price" currency={necPrice} />
                     <StatisticsBox title="Your 24hr Deversifi Volume" currency={typeof totalUSDVolume === 'number'? totalUSDVolume : -1} multiple={multiplier} />
                     <StatisticsBox title="Your/Base APY" number={Number((apy * multiplier).toFixed(2))} isApy={true} baseApy={apy} />
                   </Grid>
