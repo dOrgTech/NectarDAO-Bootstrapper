@@ -10,6 +10,9 @@ import { Title } from './index';
 
 const StyledModal = styled(Modal)`
   max-width: 1068px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin: auto;
   height: 815px;
   overflow-y: auto;
@@ -243,7 +246,7 @@ class LedgerAccountPicker extends Component {
               </Subtitle>
             </Box>
           }
-            <Grid container justify={'center'}>
+            <Grid container justify={'center'} style={{ paddingBottom: 25 }}>
               <Grid item>
               <Select
                 placeholder="Derivation"
@@ -322,7 +325,7 @@ class LedgerAccountPicker extends Component {
                     this.state.accounts.map(acc => (
                       <tr key={acc.address}
                           onClick={() => this.setPath(acc.path, acc.address)}>
-                        <td><BodyText variant={"body2"}>{acc.address}</BodyText></td>
+                        <td><BodyText variant={"body2"} color={'textPrimary'}>{acc.address}</BodyText></td>
                       </tr>
                     ))
                   }
