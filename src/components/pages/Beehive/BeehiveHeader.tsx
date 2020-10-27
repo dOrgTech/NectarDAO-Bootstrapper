@@ -328,14 +328,13 @@ const BigHeader = inject("root")(
     return (
       <>
         <Box width="100%" textAlign="center">
-          <Title text={"Nectar Beehive V2"} afterElement={true} />
+          <Title text={"Nectar Beehive V1"} afterElement={true} />
           <Box display="flex" justifyContent="center" paddingX="30px">
             <Box maxWidth="1350px" width="100%">
               <Grid container direction="column" alignItems="center">
                 <Box maxWidth="445px" paddingX="25px" boxSizing="border-box">
                   <Typography color={"textSecondary"} variant={"subtitle2"}>
-                    Earn $NEC and $BAL for Trading on DeversiFi and Staking into The
-                    Balancer NEC/wEth Pool
+                    Earn $NEC nd $BAL for Staking into the Balancer NEC/wEth Pool
                   </Typography>
                 </Box>
 

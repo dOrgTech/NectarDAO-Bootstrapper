@@ -242,14 +242,12 @@ const Selector = withRouter((props) => {
         <Logo src={NECLogo} />
 
       <Title>
-        Nectar Beehive
+        Nectar Beehive V1
       </Title>
       <Biodiv>
 
       <Tooltip title="" content={tooltip.necDAOBasics} position="right top" />
-
-          Earn $NEC $BAL and Reputation Rewards for Staking into 
-         The Balancer NEC/wEth Pool
+        Earn $NEC nd $BAL for Staking into the Balancer NEC/wEth Pool
         </Biodiv>
         </HeaderWrapper>
          <StatsHolder>
