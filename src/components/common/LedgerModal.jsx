@@ -6,7 +6,7 @@ import ActiveButton from './buttons/ActiveButton';
 import { inject, observer } from 'mobx-react';
 import { Wallet } from '../../stores/Provider';
 import { Close } from "@material-ui/icons";
-import { Title } from './index';
+import { Title } from './beehive/Title'
 
 const StyledModal = styled(Modal)`
   max-width: 1068px;
@@ -107,7 +107,6 @@ const CloseIconContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-bottom: -30px;
 `;
 
 const CloseIcon = styled(IconButton)`
@@ -246,6 +245,9 @@ class LedgerAccountPicker extends Component {
               </Subtitle>
             </Box>
           }
+            <Box width='100%' paddingBottom='25px' display='flex' justifyContent='center'>
+              <Title text={"Connect Ledger"} afterElement={true} />
+            </Box>
             <Grid container justify={'center'} style={{ paddingBottom: 25 }}>
               <Grid item>
               <Select
